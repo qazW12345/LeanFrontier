@@ -20,6 +20,14 @@ jobs:
       TRUSTED_REF: f61ae6b17c51b0b5ed80ab11ea0e876225edc661
       CANDIDATE_REF: cdde64f72811e9d17a433368379910147f999cc6
     steps:
+      - name: Clean previous validation worktrees
+        shell: bash
+        run: |
+          rm -rf "$GITHUB_WORKSPACE/trusted" \
+                 "$GITHUB_WORKSPACE/candidate" \
+                 "$GITHUB_WORKSPACE/report-output" \
+                 "$GITHUB_WORKSPACE/preflight-report.json"
+
       - name: Check out trusted receiver revision
         uses: actions/checkout@v4
         with:
