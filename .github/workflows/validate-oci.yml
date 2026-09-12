@@ -65,6 +65,19 @@ jobs:
             sleep 5
           done
 
+      - name: Diagnostic compile of submitted Lean module
+        run: |
+          docker run --rm --network none --read-only --cap-drop ALL \
+            --security-opt no-new-privileges \
+            --memory 2g --cpus 2 --pids-limit 512 \
+            --tmpfs /tmp:size=1g \
+            -v "$RUN_ROOT/elan:/elan:ro" \
+            -v "$RUN_ROOT/candidate:/candidate:ro" \
+            -v "$RUN_ROOT/candidate/.lake:/candidate/.lake" \
+            -w /candidate \
+            leanfrontier-validator:ci \
+            lake env lean LeanFrontier/Analysis/Nesbitt.lean
+
       - name: Restricted formal validation
         run: |
           mkdir -p "$RUN_ROOT/report-output"
