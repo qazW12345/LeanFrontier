@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 30
     env:
       TRUSTED_REF: f61ae6b17c51b0b5ed80ab11ea0e876225edc661
-      CANDIDATE_REF: 9b3e756c84525b7b6c21f6a5968d26604392196b
+      CANDIDATE_REF: 0570a07c130918d6bdd9419b397b7b667d6b8f2d
       RUN_ROOT: ${{ github.workspace }}/validation-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - name: Check out trusted receiver revision
