@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 30
     env:
       TRUSTED_REF: f61ae6b17c51b0b5ed80ab11ea0e876225edc661
-      CANDIDATE_REF: cdde64f72811e9d17a433368379910147f999cc6
+      CANDIDATE_REF: 9b3e756c84525b7b6c21f6a5968d26604392196b
       RUN_ROOT: ${{ github.workspace }}/validation-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - name: Check out trusted receiver revision
@@ -73,9 +73,8 @@ jobs:
             -v "$RUN_ROOT/candidate:/candidate:ro" \
             -w /candidate \
             leanfrontier-validator:ci sh -c '
-              find .lake/packages/mathlib -path "*Nlinarith*" -maxdepth 12 -print | head -40 || true
-              test -f .lake/packages/mathlib/Mathlib/Tactic/Nlinarith.lean && echo "Nlinarith source: present" || echo "Nlinarith source: missing"
-              test -f .lake/packages/mathlib/.lake/build/lib/lean/Mathlib/Tactic/Nlinarith.olean && echo "Nlinarith olean: present" || echo "Nlinarith olean: missing"
+              test -f .lake/packages/mathlib/Mathlib/Tactic/Linarith.lean && echo "Linarith source: present" || echo "Linarith source: missing"
+              test -f .lake/packages/mathlib/.lake/build/lib/lean/Mathlib/Tactic/Linarith.olean && echo "Linarith olean: present" || echo "Linarith olean: missing"
             '
 
       - name: Diagnostic Lake build
