@@ -65,7 +65,20 @@ jobs:
             sleep 5
           done
 
-      - name: Diagnostic compile of submitted Lean module
+      - name: Inspect cached tactic module
+        run: |
+          docker run --rm --network none --read-only --cap-drop ALL \
+            --security-opt no-new-privileges \
+            --memory 1g --cpus 1 --pids-limit 128 \
+            -v "$RUN_ROOT/candidate:/candidate:ro" \
+            -w /candidate \
+            leanfrontier-validator:ci sh -c '
+              find .lake/packages/mathlib -path "*Nlinarith*" -maxdepth 12 -print | head -40 || true
+              test -f .lake/packages/mathlib/Mathlib/Tactic/Nlinarith.lean && echo "Nlinarith source: present" || echo "Nlinarith source: missing"
+              test -f .lake/packages/mathlib/.lake/build/lib/lean/Mathlib/Tactic/Nlinarith.olean && echo "Nlinarith olean: present" || echo "Nlinarith olean: missing"
+            '
+
+      - name: Diagnostic Lake build
         run: |
           docker run --rm --network none --read-only --cap-drop ALL \
             --security-opt no-new-privileges \
@@ -76,7 +89,7 @@ jobs:
             -v "$RUN_ROOT/candidate/.lake:/candidate/.lake" \
             -w /candidate \
             leanfrontier-validator:ci \
-            lake env lean LeanFrontier/Analysis/Nesbitt.lean
+            lake build
 
       - name: Restricted formal validation
         run: |
