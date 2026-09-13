@@ -1,17 +1,11 @@
 name: validate-oci
 
 on:
-  workflow_dispatch:
-    inputs:
-      candidate_ref:
-        description: Candidate branch or commit in qazW12345/LeanFrontier
-        required: true
-        type: string
-      trusted_ref:
-        description: Trusted ref in carlok/LeanFrontier
-        required: true
-        default: main
-        type: string
+  push:
+    branches:
+      - ops/oci-validator
+    paths:
+      - .github/oci-validation-target
 
 permissions:
   contents: read
@@ -28,12 +22,31 @@ jobs:
     env:
       TRUSTED_REPO: carlok/LeanFrontier
       CANDIDATE_REPO: qazW12345/LeanFrontier
-      TRUSTED_REF: ${{ inputs.trusted_ref }}
-      CANDIDATE_REF: ${{ inputs.candidate_ref }}
       RUN_ROOT: ${{ github.workspace }}/validation-${{ github.run_id }}-${{ github.run_attempt }}
       ELAN_HOME_HOST: /srv/mathgraph-data/leanfrontier/cache/elan
 
     steps:
+      - name: Check out OCI control branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: control
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Load pinned validation target
+        shell: bash
+        run: |
+          set -euo pipefail
+          source "$GITHUB_WORKSPACE/control/.github/oci-validation-target"
+          [[ "$TRUSTED_REF" =~ ^[0-9a-f]{40}$ ]] || { echo "TRUSTED_REF must be an exact 40-hex commit SHA" >&2; exit 1; }
+          [[ "$CANDIDATE_REF" =~ ^[0-9a-f]{40}$ ]] || { echo "CANDIDATE_REF must be an exact 40-hex commit SHA" >&2; exit 1; }
+          {
+            echo "TRUSTED_REF=$TRUSTED_REF"
+            echo "CANDIDATE_REF=$CANDIDATE_REF"
+            echo "REQUEST_ID=${REQUEST_ID:-unspecified}"
+          } >> "$GITHUB_ENV"
+
       - name: Prepare persistent toolchain cache
         run: |
           install -d -m 0755 "$ELAN_HOME_HOST"
@@ -66,9 +79,12 @@ jobs:
         run: |
           trusted_sha=$(git -C "$RUN_ROOT/trusted" rev-parse HEAD)
           candidate_sha=$(git -C "$RUN_ROOT/candidate" rev-parse HEAD)
+          test "$trusted_sha" = "$TRUSTED_REF"
+          test "$candidate_sha" = "$CANDIDATE_REF"
           {
             echo "### LeanFrontier OCI validation"
             echo
+            echo "- Request: \`$REQUEST_ID\`"
             echo "- Trusted: \`$TRUSTED_REPO@$trusted_sha\`"
             echo "- Candidate: \`$CANDIDATE_REPO@$candidate_sha\`"
           } >> "$GITHUB_STEP_SUMMARY"
