@@ -24,6 +24,7 @@ jobs:
       CANDIDATE_REPO: qazW12345/LeanFrontier
       RUN_ROOT: ${{ github.workspace }}/validation-${{ github.run_id }}-${{ github.run_attempt }}
       ELAN_HOME_HOST: /srv/mathgraph-data/leanfrontier/cache/elan
+      MATHLIB_CACHE_HOST: /srv/mathgraph-data/leanfrontier/cache/mathlib
 
     steps:
       - name: Check out OCI control branch
@@ -47,9 +48,9 @@ jobs:
             echo "REQUEST_ID=${REQUEST_ID:-unspecified}"
           } >> "$GITHUB_ENV"
 
-      - name: Prepare persistent toolchain cache
+      - name: Prepare persistent caches
         run: |
-          install -d -m 0755 "$ELAN_HOME_HOST"
+          install -d -m 0755 "$ELAN_HOME_HOST" "$MATHLIB_CACHE_HOST"
 
       - name: Prune stale validation workspaces
         run: |
@@ -110,6 +111,8 @@ jobs:
           for attempt in 1 2 3; do
             docker run --rm \
               -v "$ELAN_HOME_HOST:/elan" \
+              -v "$MATHLIB_CACHE_HOST:/mathlib-cache" \
+              -e MATHLIB_CACHE_DIR=/mathlib-cache \
               -v "$RUN_ROOT/candidate:/candidate" \
               -w /candidate \
               leanfrontier-validator:ci sh -c 'lake exe cache get' && exit 0
@@ -148,7 +151,7 @@ jobs:
           chmod 0777 "$RUN_ROOT/report-output"
           docker run --rm --network none --read-only --cap-drop ALL \
             --security-opt no-new-privileges \
-            --memory 2g --cpus 2 --pids-limit 512 \
+            --memory 4g --cpus 2 --pids-limit 512 \
             --tmpfs /tmp:size=2g \
             -v "$ELAN_HOME_HOST:/elan:ro" \
             -v "$RUN_ROOT/trusted:/trusted:ro" \
