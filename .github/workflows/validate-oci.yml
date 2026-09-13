@@ -1,0 +1,165 @@
+name: validate-oci
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_ref:
+        description: Candidate branch or commit in qazW12345/LeanFrontier
+        required: true
+        type: string
+      trusted_ref:
+        description: Trusted ref in carlok/LeanFrontier
+        required: true
+        default: main
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: leanfrontier-oci-validation
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: validate on OCI
+    runs-on: [self-hosted, Linux, ARM64, leanfrontier]
+    timeout-minutes: 30
+    env:
+      TRUSTED_REPO: carlok/LeanFrontier
+      CANDIDATE_REPO: qazW12345/LeanFrontier
+      TRUSTED_REF: ${{ inputs.trusted_ref }}
+      CANDIDATE_REF: ${{ inputs.candidate_ref }}
+      RUN_ROOT: ${{ github.workspace }}/validation-${{ github.run_id }}-${{ github.run_attempt }}
+      ELAN_HOME_HOST: /srv/mathgraph-data/leanfrontier/cache/elan
+
+    steps:
+      - name: Prepare persistent toolchain cache
+        run: |
+          install -d -m 0755 "$ELAN_HOME_HOST"
+
+      - name: Prune stale validation workspaces
+        run: |
+          find "${{ github.workspace }}" \
+            -mindepth 1 -maxdepth 1 -type d -name 'validation-*' -mtime +1 \
+            -print -exec sudo rm -rf -- {} +
+
+      - name: Check out trusted receiver revision
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.TRUSTED_REPO }}
+          ref: ${{ env.TRUSTED_REF }}
+          path: validation-${{ github.run_id }}-${{ github.run_attempt }}/trusted
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Check out untrusted candidate revision
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.CANDIDATE_REPO }}
+          ref: ${{ env.CANDIDATE_REF }}
+          path: validation-${{ github.run_id }}-${{ github.run_attempt }}/candidate
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Record resolved revisions
+        run: |
+          trusted_sha=$(git -C "$RUN_ROOT/trusted" rev-parse HEAD)
+          candidate_sha=$(git -C "$RUN_ROOT/candidate" rev-parse HEAD)
+          {
+            echo "### LeanFrontier OCI validation"
+            echo
+            echo "- Trusted: \`$TRUSTED_REPO@$trusted_sha\`"
+            echo "- Candidate: \`$CANDIDATE_REPO@$candidate_sha\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+          printf 'Trusted SHA: %s\nCandidate SHA: %s\n' "$trusted_sha" "$candidate_sha"
+
+      - name: Trusted cheap preflight
+        run: >-
+          python3 "$RUN_ROOT/trusted/tools/validate-submission"
+          --base-dir "$RUN_ROOT/trusted"
+          --candidate-dir "$RUN_ROOT/candidate"
+          --preflight-only
+          --json-out "$RUN_ROOT/preflight-report.json"
+
+      - name: Build trusted validation image
+        run: >-
+          docker build
+          -f "$RUN_ROOT/trusted/tools/Dockerfile.validator"
+          -t leanfrontier-validator:ci
+          "$RUN_ROOT/trusted"
+
+      - name: Fetch pinned dependencies and compiled Mathlib cache
+        run: |
+          for attempt in 1 2 3; do
+            docker run --rm \
+              -v "$ELAN_HOME_HOST:/elan" \
+              -v "$RUN_ROOT/candidate:/candidate" \
+              -w /candidate \
+              leanfrontier-validator:ci sh -c 'lake exe cache get' && exit 0
+            if [ "$attempt" -eq 3 ]; then exit 1; fi
+            sleep 5
+          done
+
+      - name: Inspect cached tactic module
+        run: |
+          docker run --rm --network none --read-only --cap-drop ALL \
+            --security-opt no-new-privileges \
+            --memory 1g --cpus 1 --pids-limit 128 \
+            -v "$RUN_ROOT/candidate:/candidate:ro" \
+            -w /candidate \
+            leanfrontier-validator:ci sh -c '
+              test -f .lake/packages/mathlib/Mathlib/Tactic/Linarith.lean && echo "Linarith source: present" || echo "Linarith source: missing"
+              test -f .lake/packages/mathlib/.lake/build/lib/lean/Mathlib/Tactic/Linarith.olean && echo "Linarith olean: present" || echo "Linarith olean: missing"
+            '
+
+      - name: Diagnostic Lake build
+        run: |
+          docker run --rm --network none --read-only --cap-drop ALL \
+            --security-opt no-new-privileges \
+            --memory 2g --cpus 2 --pids-limit 512 \
+            --tmpfs /tmp:size=1g \
+            -v "$ELAN_HOME_HOST:/elan:ro" \
+            -v "$RUN_ROOT/candidate:/candidate:ro" \
+            -v "$RUN_ROOT/candidate/.lake:/candidate/.lake" \
+            -w /candidate \
+            leanfrontier-validator:ci \
+            lake build
+
+      - name: Restricted formal validation
+        run: |
+          mkdir -p "$RUN_ROOT/report-output"
+          chmod 0777 "$RUN_ROOT/report-output"
+          docker run --rm --network none --read-only --cap-drop ALL \
+            --security-opt no-new-privileges \
+            --memory 2g --cpus 2 --pids-limit 512 \
+            --tmpfs /tmp:size=2g \
+            -v "$ELAN_HOME_HOST:/elan:ro" \
+            -v "$RUN_ROOT/trusted:/trusted:ro" \
+            -v "$RUN_ROOT/candidate:/candidate:ro" \
+            -v "$RUN_ROOT/candidate/.lake:/candidate/.lake" \
+            -v "$RUN_ROOT/report-output:/report-output" \
+            -w /candidate \
+            -e PYTHONPATH=/trusted/tools \
+            leanfrontier-validator:ci \
+            python3 /trusted/tools/validate-submission \
+            --base-dir /trusted --candidate-dir /candidate \
+            --json-out /report-output/report.json
+
+      - name: Upload receiver report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: leanfrontier-validation-report-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.RUN_ROOT }}/preflight-report.json
+            ${{ env.RUN_ROOT }}/report-output/report.json
+          if-no-files-found: warn
+
+      - name: Clean disposable validation workspace
+        if: always()
+        run: |
+          case "$RUN_ROOT" in
+            "${{ github.workspace }}"/validation-*) sudo rm -rf -- "$RUN_ROOT" ;;
+            *) echo "Refusing to clean unexpected RUN_ROOT: $RUN_ROOT" >&2; exit 1 ;;
+          esac
