@@ -1,6 +1,6 @@
 # OCI validation control file.
 # Keep both refs pinned to exact 40-hex commit SHAs.
 # Updating this file is the only push that triggers the ops/oci-validator workflow.
-TRUSTED_REF=9f708c18fccb311646b10af124c60ca70e41857b
+TRUSTED_REF=f61ae6b17c51b0b5ed80ab11ea0e876225edc661
 CANDIDATE_REF=0570a07c130918d6bdd9419b397b7b667d6b8f2d
-REQUEST_ID=bootstrap-no-run
+REQUEST_ID=smoke-nesbitt-2026-09-13
