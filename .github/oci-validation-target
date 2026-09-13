@@ -2,5 +2,5 @@
 # Keep both refs pinned to exact 40-hex commit SHAs.
 # Updating this file is the only push that triggers the ops/oci-validator workflow.
 TRUSTED_REF=9f708c18fccb311646b10af124c60ca70e41857b
-CANDIDATE_REF=0b5639d85382e0d7a2e1ed0160bcddd61614c845
-REQUEST_ID=markov-tree-descent-diagnostic-2026-09-13
+CANDIDATE_REF=274d71f20a8b9f626a0fb7ed0f29f0b1f9d9999a
+REQUEST_ID=ford-circle-sphere-tangency-diagnostic-2026-09-13
