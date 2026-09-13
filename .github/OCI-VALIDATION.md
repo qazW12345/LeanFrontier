@@ -19,6 +19,13 @@ This branch is fork-only operational infrastructure. It must never be used as th
 5. Commit only that control-file update on `ops/oci-validator`. Its push triggers `.github/workflows/validate-oci.yml`.
 6. Require the OCI workflow and the trusted receiver report to pass before opening the upstream PR.
 
-The workflow checks out trusted receiver code directly from `carlok/LeanFrontier` and the candidate from `qazW12345/LeanFrontier`, verifies both resolved SHAs, serializes OCI validations, reuses a persistent Elan/toolchain cache at `/srv/mathgraph-data/leanfrontier/cache/elan`, uploads the receiver report, and removes the disposable per-run validation workspace even on failure.
+The workflow checks out trusted receiver code directly from `carlok/LeanFrontier` and the candidate from `qazW12345/LeanFrontier`, verifies both resolved SHAs, serializes OCI validations, uploads the receiver report, and removes the disposable per-run validation workspace even on failure.
 
-Do not make the per-candidate `.lake` tree persistent: it belongs to the untrusted/disposable candidate workspace. Only the Elan toolchain cache is shared across runs.
+Two host caches survive validation runs:
+
+- `/srv/mathgraph-data/leanfrontier/cache/elan` stores the pinned Lean toolchains;
+- `/srv/mathgraph-data/leanfrontier/cache/mathlib` is exposed as `MATHLIB_CACHE_DIR` and stores Mathlib's downloaded `.ltar` cache files.
+
+Do not make the per-candidate `.lake` tree persistent: it belongs to the untrusted/disposable candidate workspace. Package checkouts, elaborated candidate output, and all run-specific files are rebuilt inside that isolated workspace.
+
+The OCI wrapper does not patch or weaken trusted receiver policy. In particular, receiver-internal timeouts remain whatever the pinned trusted upstream revision specifies. The restricted validation container gets a larger memory envelope than the diagnostic build to avoid artificial memory pressure on the small ARM host, but the receiver code and admission criteria are unchanged.
