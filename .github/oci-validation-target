@@ -3,4 +3,4 @@
 # Updating this file is the only push that triggers the ops/oci-validator workflow.
 TRUSTED_REF=f61ae6b17c51b0b5ed80ab11ea0e876225edc661
 CANDIDATE_REF=0570a07c130918d6bdd9419b397b7b667d6b8f2d
-REQUEST_ID=smoke-nesbitt-2026-09-13
+REQUEST_ID=smoke-nesbitt-cache-v2-2026-09-13
