@@ -4,6 +4,8 @@ This is the stable handoff for a new AI-agent session working on `qazW12345/Lean
 
 **Read this file first, then verify live GitHub state before acting.** SHAs, PR states, CI states, and targets below are checkpoints, not timeless truth.
 
+**Contribution planning:** before selecting a new theorem or extension direction, also read [`CONTRIBUTION-DIRECTIONS.md`](./CONTRIBUTION-DIRECTIONS.md). It records the currently audited high-value bridge directions, dependency gates, rejected weak formulations, and research-dossier standard. It is a planning aid only; current upstream contract/policy and live repository state remain authoritative.
+
 ## 1. Project and trust model
 
 - Upstream: `carlok/LeanFrontier`
@@ -174,7 +176,7 @@ At this checkpoint upstream PR #180 is open, non-draft, mergeable, and has no ma
 
 On a fresh session:
 
-1. Read this file.
+1. Read this file and [`CONTRIBUTION-DIRECTIONS.md`](./CONTRIBUTION-DIRECTIONS.md); treat the latter as planning guidance, not trusted policy.
 2. Re-fetch upstream and fork `main`; do not assume any recorded SHA is still current.
 3. Inspect both upstream PR #179 and PR #180, including exact heads, checks, comments/reviews, merge state, and whether upstream `main` moved.
 4. If either PR was merged, verify the actual merge commit and current-main state; do not infer integration merely from a closed PR.
