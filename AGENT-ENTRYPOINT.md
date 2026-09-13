@@ -1,157 +1,142 @@
 # LeanFrontier fork — agent entry point
 
-This file is the stable handoff for a new AI-agent session working on the `qazW12345/LeanFrontier` fork.
+This is the stable handoff for a new AI-agent session working on `qazW12345/LeanFrontier`.
 
-**Read this file first, then verify live GitHub state before acting.** Commit SHAs, PR numbers, CI states, and current targets below are checkpoints, not timeless truth.
+**Read this file first, then verify live GitHub state before acting.** SHAs, PR states, CI states, and targets below are checkpoints, not timeless truth.
 
 ## 1. Project and trust model
 
 - Upstream: `carlok/LeanFrontier`
 - Working fork: `qazW12345/LeanFrontier`
 - LeanFrontier is a library of machine-generated, kernel-verified Lean mathematics.
-- The upstream submission contract and receiver are authoritative. Do not weaken or patch trusted receiver rules just to make a candidate pass.
-- Before producing an ordinary mathematical submission, read current upstream versions of:
-  1. `CONTRACT.md`
-  2. `prompts/SUBMITTER.md`
-  3. `README.md`
-  4. `prompts/TRY-LEANFRONTIER-EXTEND.md` for extension work
-  5. the catalogue and the accepted source/claim being extended
-
-Ordinary submissions may change only ordinary Lean source under `LeanFrontier/` plus exactly one new `Submissions/<submission-id>.json` claim. They must not modify workflows, tools, policy, schema, prompts, tests, toolchain files, or other trusted infrastructure.
+- The current upstream contract, submitter prompt, policy, and trusted receiver are authoritative. Never weaken trusted receiver rules merely to make a candidate pass.
+- For extension work, read current upstream `CONTRACT.md`, `prompts/SUBMITTER.md`, `README.md`, `prompts/TRY-LEANFRONTIER-EXTEND.md`, the catalogue, and the accepted source/claim being extended.
+- An ordinary submission may change mathematical source under `LeanFrontier/` plus exactly one new `Submissions/<submission-id>.json`. It must not modify workflows, tools, policy, schema, prompts, tests, toolchain, generated catalogues, or other trusted infrastructure.
 
 ## 2. Fork branch discipline
 
 The fork deliberately separates upstream mathematics from fork-only operations.
 
-- `main` — keep as an exact mirror of current `carlok/LeanFrontier:main`. Do not put OCI workflows, handoff files, or other fork-only material here.
-- `submission/*` — ordinary mathematical candidates, always based on clean current `main`.
+- `main` — keep as an exact mirror of current `carlok/LeanFrontier:main`.
+- `submission/*` — ordinary mathematical candidates, based on clean current `main`.
 - `ops/oci-validator` — fork-only OCI validation workflow, operational documentation, and this handoff file.
-- `archive/oci-validator-pre-sync-2026-09-13` — preserved historical fork state from before the branch-discipline cleanup.
+- `archive/oci-validator-pre-sync-2026-09-13` — historical fork state from before the branch-discipline cleanup.
 
-Before starting a new mathematical candidate, verify that fork `main` and upstream `main` still match. If upstream has moved, sync the fork first, then branch from that exact clean baseline.
+Before starting a new candidate, verify fork `main` and upstream `main` still match. If upstream moved, sync the fork first, then branch from that clean baseline.
 
 ## 3. Preferred agent workflow
 
-The human operator prefers the agent to own the GitHub/CI repair loop rather than asking for shell copy/paste when GitHub tooling can do the work.
+The human operator wants the agent to own the GitHub/CI repair loop rather than asking for shell copy/paste when GitHub tooling can do the work.
 
 For a mathematical candidate:
 
-1. Inspect current upstream contract, submitter instructions, catalogue, relevant accepted module, and claim.
-2. Choose or refine a meaningful theorem statement.
-3. Create/update the `submission/*` branch through GitHub.
-4. Keep a fork-local **draft PR** to `qazW12345/LeanFrontier:main` as a development/CI harness when useful.
-5. Let GitHub Actions compile/validate the exact candidate.
-6. Inspect job logs and receiver diagnostics.
-7. Repair the Lean source or claim yourself and push a new exact candidate commit.
-8. Repeat until the receiver accepts.
-9. Perform an adversarial self-review of the theorem statement and proof boundary before treating it as ready upstream.
-10. Only then open the real upstream PR.
+1. Inspect current upstream rules and the relevant accepted mathematics.
+2. Formulate a meaningful theorem that genuinely composes or extends the accepted corpus.
+3. Create/update a `submission/*` branch through GitHub.
+4. Use a fork-local draft PR to `qazW12345/LeanFrontier:main` as a development/CI harness when useful.
+5. Let CI compile and validate the exact candidate SHA.
+6. Inspect failing job logs/receiver diagnostics directly and repair the Lean source or claim yourself.
+7. Repeat until receiver acceptance.
+8. Perform an adversarial self-review: actively try edge cases, hidden assumptions, accidental weakening, near-duplication, degenerate families, and cases where the claimed invariant/result could fail.
+9. Only after that review passes, open the real upstream PR.
+10. Never merge the fork-local development PR merely because its CI is green.
 
-Use the GitHub connector and CI/OCI runner directly whenever possible. Ask the human for OCI shell commands only when the required action genuinely cannot be performed through GitHub or the available runner workflow.
+The browser userscript may wake ChatGPT when watched CI completes; nevertheless always re-resolve the live head SHA and CI state through GitHub before acting.
 
 ## 4. OCI / Lean environment
 
-The free-tier OCI ARM64 host is already capable of building LeanFrontier.
+The free-tier OCI ARM64 host can build LeanFrontier.
 
-Known environment from the 2026-09-13 setup:
+Known environment from 2026-09-13:
 
 - 2 ARM Neoverse-N1 vCPUs
 - ~11 GiB RAM
-- Lean 4.33.1 active for the current LeanFrontier release
+- Lean 4.33.1 for the current LeanFrontier release
 - persistent Elan cache: `/srv/mathgraph-data/leanfrontier/cache/elan`
 - persistent Mathlib archive cache: `/srv/mathgraph-data/leanfrontier/cache/mathlib`
 - persistent development checkout: `/srv/mathgraph-data/leanfrontier/dev/work`
 - self-hosted runner: `leanfrontier-runner`
 
-The development checkout completed a full `lake build` successfully with **2296 jobs**. The persistent development `.lake` tree was ~7.7 GiB; Elan ~3.0 GiB; Mathlib archive cache ~440 MiB at that checkpoint.
+A full development `lake build` completed successfully. The fork-only OCI validator uses persistent caches plus disposable per-run `validation-*` workspaces and must always clean those workspaces; stale validator trees previously consumed roughly 53 GiB.
 
-The fork-only OCI workflow on `ops/oci-validator` was improved to:
+Known OCI limitation: on this slow 2-core ARM host, a known-good submission can hit the trusted receiver's fixed 30-second downstream-import timeout. Do not patch or weaken that trusted rule. Canonical upstream hosted CI is the final authority.
 
-- keep Elan persistently cached;
-- keep Mathlib `.ltar` downloads persistently cached;
-- serialize expensive validation;
-- use disposable per-run `validation-*` workspaces;
-- always remove those disposable workspaces, including after failure;
-- retain the receiver report as a workflow artifact.
+## 5. Provenance rule important for this operator
 
-Do not reintroduce unbounded `validation-*` accumulation. Five stale validation trees previously consumed roughly 53 GiB.
+The human prefers extensions that compose accepted LeanFrontier mathematics. A prior agent survey proposed several directions, including Markov-tree descent, a Ford-circle/Mathlib geometry bridge, Stern–Brocot/Calkin–Wilf structure, and Thue–Morse cube-freeness. The agent recommended Markov-tree descent and the human selected that recommendation from the agent's shortlist.
 
-### Known OCI receiver limitation
+Under the current LeanFrontier contract, human subject selection from a producer-proposed shortlist is **not** formal statement authorship. If the agent writes the formal Lean statement and proof, `statement_origin` and `proof_origin` remain `machine`; describe the human selection in `source_context`.
 
-A known-good accepted Nesbitt candidate built successfully, passed kernel recheck and duplicate checks, but the final trusted receiver failed on the **fixed 30-second downstream-import smoke-test timeout** on the slow 2-core ARM host. Increasing the container memory limit did not change that. Treat this as an OCI performance limitation unless later evidence says otherwise; do **not** weaken or locally patch the trusted receiver rule merely to obtain acceptance.
+## 6. Current Markov-tree extension checkpoint — 2026-09-13
 
-The normal development/compile loop on OCI remains useful even if final canonical receiver acceptance has to come from faster upstream CI.
-
-## 5. Mathematical direction preference
-
-The human operator prefers **extensions that compose existing LeanFrontier mathematics** over isolated, unconnected theorems when both are reasonable.
-
-A prior agent survey identified several worthwhile extension directions:
-
-- Markov-tree descent/generation from the accepted Markov-equation/Vieta-jumping module;
-- a Ford-circle bridge to Mathlib geometric tangency;
-- Stern–Brocot / Calkin–Wilf positive-rational structure;
-- Thue–Morse cube-freeness.
-
-The agent recommended the Markov-tree direction as the best balance of mathematical interest, reuse of accepted LeanFrontier results, and likely feasibility. The human then selected that recommended option from the agent-proposed shortlist.
-
-Under the LeanFrontier provenance rules, that human choice does **not** make the formal statement or proof human-authored. If the agent writes the formal theorem statement and proof, `statement_origin` and `proof_origin` remain `machine`; the human's role belongs in `source_context`.
-
-## 6. Current Markov extension checkpoint
-
-As of 2026-09-13, work is on:
+Current candidate:
 
 - branch: `submission/markov-tree-descent`
-- fork-local development PR: `qazW12345/LeanFrontier#2`
-- candidate checkpoint: `0b5639d85382e0d7a2e1ed0160bcddd61614c845`
-- base checkpoint: upstream/fork `main` at `9f708c18fccb311646b10af124c60ca70e41857b`
+- exact candidate head: `ca6a1c3b092e56a24292d424c4ba389df72c63c6`
+- baseline: upstream and fork `main` were both `9f708c18fccb311646b10af124c60ca70e41857b` when the upstream PR was opened
+- fork-local development PR: `qazW12345/LeanFrontier#2` — keep as a draft harness; do **not** merge it
+- real upstream PR: `carlok/LeanFrontier#179` — `feat(NumberTheory): add ordered Markov-tree descent`
 
-The candidate adds exactly:
+The candidate changes exactly:
 
 - `LeanFrontier/NumberTheory/MarkovTree.lean`
 - `Submissions/markov-tree-descent.json`
 
-The public entrypoint is intended to be:
+Public entrypoint:
 
 `LeanFrontier.MarkovTree.jump_descends_ordered_positive`
 
-The goal is the local Markov-tree descent step: for a positive ordered Markov triple `x ≤ y ≤ z`, away from `(1,1,1)`, the Vieta jump in the largest coordinate remains positive, lies at or below the middle coordinate, and therefore strictly decreases the largest coordinate.
+Statement: for a positive ordered Markov solution `x ≤ y ≤ z`, excluding `(1,1,1)`, the accepted Vieta jump in the largest coordinate is positive, is at most the middle coordinate, and is therefore strictly below the largest coordinate.
 
-This is a genuine extension of the accepted `LeanFrontier.NumberTheory.MarkovEquation` API and is intended to use existing results such as `jump_pos` and `mul_jump_eq` rather than restating the Vieta involution.
+The proof genuinely composes the accepted `LeanFrontier.NumberTheory.MarkovEquation` API, notably `jump_pos` and `mul_jump_eq`; it does not add the two coordinate-permuted jump variants.
 
-The claim provenance records that:
+### Adversarial review already performed
 
-- the agent surveyed several extension targets;
-- the agent recommended Markov-tree descent;
-- the human selected that recommendation from the shortlist;
-- the formal statement and proof were authored by GPT-5.6 Sol / ChatGPT;
-- no claim of new mathematics is made.
+The exact candidate survived a deliberate statement/proof-boundary review before the upstream PR was opened:
 
-At the last checkpoint:
+- `(1,1,1)` shows the root exclusion is necessary: its jump is `2`, so descent would fail.
+- `(1,1,2)` shows `jump ≤ y` must be non-strict: its jump is `1 = y`.
+- The private helper proves that a positive ordered Markov solution with `y = z` is necessarily `(1,1,1)`, so a non-root candidate really has `y < z`.
+- The comparison proof uses `z * jump = x² + y²` from the accepted parent module and the factorization `(y-z)(y-jump) = x² + 2y² - 3xy²`.
+- With `1 ≤ x ≤ y`, the right-hand side is nonpositive, forcing `jump ≤ y`; combined with `y < z`, this gives strict descent.
+- No hidden proof-trust issue remains: the trusted receiver kernel-rechecked the exact theorem.
+- Search found no existing upstream Markov-tree descent submission; the accepted MarkovEquation source explicitly left descent ordering for later Markov-tree work.
 
-- ordinary `test` workflow: **PASS**
-- `validate-submission` workflow for commit `0b5639d...`: **in progress**
+### Exact-head CI evidence
 
-A new agent must re-check the live PR head and workflow states rather than assuming those statuses remain current.
+Fork CI for `ca6a1c3b092e56a24292d424c4ba389df72c63c6`:
+
+- `test` run `34775490375`: PASS
+- `validate-submission` run `34775490324`: PASS
+
+Upstream PR #179 CI for the same exact SHA:
+
+- `test` run `34776784578`: PASS
+- `validate-submission` run `34776784563`: PASS
+- trusted preflight: accepted, no diagnostics
+- restricted formal validation: accepted, no diagnostics
+- build: pass
+- kernel recheck: pass
+- downstream import smoke: pass
+- Mathlib exact matches: 0
+- receiver observed exactly the two ordinary submission files
+
+At this checkpoint upstream PR #179 is open and mergeable, with all required candidate checks green. The submitter login `qazW12345` is **not** in the current upstream auto-merge allowlist (`carlok` and `leanfrontier-receiver[bot]` only), so an accepted outside-author PR is expected to wait for maintainer merge/action. Do not try to bypass that policy.
 
 ## 7. What to do when resuming
 
-On a fresh session, do this before changing anything:
+On a fresh session:
 
-1. Read this file from `ops/oci-validator`.
-2. Fetch current upstream `carlok/LeanFrontier:main` and fork `qazW12345/LeanFrontier:main`; confirm whether they still match.
-3. Inspect open `submission/*` branches and fork PRs, especially PR #2 if it still exists.
-4. Resolve the exact current candidate SHA.
-5. Inspect all CI/receiver runs attached to that exact SHA.
-6. If validation failed, read the full failing job log and repair only the mathematical source/claim as appropriate.
-7. If validation passed, adversarially review the statement and proof for edge cases, hidden assumptions, accidental weakening, degeneracy, near-duplication, and whether the theorem genuinely depends on the accepted parent module.
-8. Keep the ordinary submission limited to Lean source + exactly one claim file.
-9. Do not merge the fork-local development PR merely because CI passes; it exists as a harness. Open the actual upstream PR only when the candidate is ready and receiver-compliant.
+1. Read this file.
+2. Re-fetch upstream and fork `main`; do not assume the recorded SHA is still current.
+3. Inspect `carlok/LeanFrontier#179` first. If already merged, verify the merge commit and post-merge/current-main state before beginning anything new.
+4. If #179 remains open, verify its exact head and current checks/comments/reviews. If the exact accepted head is unchanged and no maintainer-requested change exists, leave it waiting for maintainer action.
+5. Keep fork PR #2 unmerged; it is only the development harness.
+6. If a maintainer requests changes, repair only the ordinary submission source/claim, rerun exact-head CI, adversarially re-review any changed theorem boundary, and update the upstream PR.
+7. Only after the Markov submission is settled should a new extension target be selected.
 
-## 8. Important operating principle
+## 8. Operating principle
 
-The desired loop is:
-
-`inspect live state → formulate/repair Lean → commit exact candidate → CI/receiver → inspect diagnostics → repair → repeat → adversarial review → upstream PR`
+`inspect live state → formulate/repair Lean → exact candidate SHA → CI/receiver → inspect diagnostics → repair → adversarial review → upstream PR → maintainer/auto-merge policy`
 
 Do not substitute prose confidence for Lean/kernel evidence, and do not ask the human to manually relay information that GitHub/CI can provide directly.
