@@ -2,5 +2,5 @@
 # Keep both refs pinned to exact 40-hex commit SHAs.
 # Updating this file is the only push that triggers the ops/oci-validator workflow.
 TRUSTED_REF=9f708c18fccb311646b10af124c60ca70e41857b
-CANDIDATE_REF=addd754b4b0da9162cbf5bee161b18697243b90c
-REQUEST_ID=horadam-companion-matrix-diagnostic-7-2026-09-15
+CANDIDATE_REF=fbbb8b8a1bd6faea5d2ef71615c5e34cfe98455c
+REQUEST_ID=horadam-companion-matrix-diagnostic-8-2026-09-15
