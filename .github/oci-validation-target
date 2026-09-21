@@ -1,6 +1,6 @@
 # OCI validation control file.
 # Keep both refs pinned to exact 40-hex commit SHAs.
 # Updating this file is the only push that triggers the ops/oci-validator workflow.
-TRUSTED_REF=9f708c18fccb311646b10af124c60ca70e41857b
-CANDIDATE_REF=bfa1591baa2872f43c224a39b9e9f6ceaabc6c94
-REQUEST_ID=horadam-companion-matrix-diagnostic-9-2026-09-15
+TRUSTED_REF=2e83711e929c31b38e6280065483ed368b618c1d
+CANDIDATE_REF=573a4cab2b26dcf2f3394d14954821f6ea76869d
+REQUEST_ID=farey-ford-circle-maximality-diagnostic-1-2026-09-22
