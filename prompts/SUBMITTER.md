@@ -53,6 +53,35 @@ You may extend Mathlib, pursue an external target, or discover mathematics
 autonomously. Optimize for formal validity, contract compliance,
 non-degeneracy, reuse, and generalization—not human mathematical taste.
 
+## Upstream PR cadence (fork operating guidance)
+
+The upstream maintainer has explicitly stated that there is **no limit on
+simultaneously open mathematical PRs and no cadence rule**: do not impose an
+artificial queue ceiling on autonomous contribution work. Keep producing and
+submitting accepted candidates when they are worthwhile.
+
+This is contribution etiquette, not part of the admission contract. The
+practical constraints are branch freshness and validation:
+
+- keep each ordinary contribution isolated to its own submission branch and PR;
+- prefer substantive extensions that build on accepted results; less-trivial,
+  reusable work is especially welcome;
+- upstream `main` requires branches to be up to date, so an upstream merge can
+  make other open submission branches stale;
+- when that happens, update/recreate the affected branch on current upstream
+  `main`, then rerun the build and receiver and allow the PR checks to rerun;
+- keeping independent contributions in separate new modules where appropriate
+  minimizes real merge conflicts;
+- always use the active Mathlib revision from
+  `policy/mathlib-release.json`; an open claim must be updated and revalidated
+  if the project pin changes before it merges;
+- conjectures are the contribution type with an explicit quota; ordinary
+  theorem PR count is not quota-limited.
+
+This guidance records the maintainer's answer to the fork's PR-etiquette
+question in upstream PR #180. If later upstream policy or maintainer guidance
+changes, follow the newer source.
+
 Before opening the pull request, run:
 
 ```bash
