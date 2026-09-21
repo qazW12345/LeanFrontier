@@ -2,5 +2,5 @@
 # Keep both refs pinned to exact 40-hex commit SHAs.
 # Updating this file is the only push that triggers the ops/oci-validator workflow.
 TRUSTED_REF=2e83711e929c31b38e6280065483ed368b618c1d
-CANDIDATE_REF=573a4cab2b26dcf2f3394d14954821f6ea76869d
-REQUEST_ID=farey-ford-circle-maximality-diagnostic-1-2026-09-22
+CANDIDATE_REF=dabbca7da5591c60dc406789f4f8b74b0ff053fb
+REQUEST_ID=farey-ford-circle-maximality-diagnostic-2-2026-09-22
