@@ -337,20 +337,41 @@ The following may be mathematically adjacent but currently lack a sufficiently u
 
 Keep isolated modules isolated until a real theorem justifies a connection.
 
-## 7. Suggested sequencing while upstream PRs #179 and #180 wait
+## 7. Contribution cadence and branch maintenance
 
-Do not flood upstream with additional PRs merely because candidates can be produced quickly. The present practical policy is to keep the two already-open upstream contributions as the temporary public ceiling while using the waiting time for deeper target work.
+The upstream maintainer has explicitly confirmed that there is **no limit on
+simultaneously open PRs and no cadence rule**. Do not hold an accepted
+mathematical contribution merely because other submissions are already open,
+and do not impose a temporary public PR ceiling on the agent.
 
-Recommended research/development order:
+The operational constraint is instead that upstream `main` requires branches
+to stay current. Each upstream merge can leave other open submissions behind.
+For every affected branch:
 
-1. Design and scratch-check **Largest Ford circle between Farey neighbours** against accepted `main`.
-2. Independently design the **Lucas characteristic polynomial of Q-matrix powers**; this does not depend on the two pending PRs.
-3. Prototype the **general Horadam companion matrix** sufficiently to determine the right abstraction boundary, but do not rush it into a PR.
-4. If PR #180 merges, re-evaluate and design the strong geometric **Ford–Farey–Descartes configuration** on the new `main`.
-5. If PR #179 merges, begin designing the missing Markov-tree path/object layer before attempting the Markov/Farey correspondence.
-6. Keep the Calkin–Wilf/Stern–Brocot representation bridge as a foundational research target; do not implement it until its precise path conventions are settled.
+1. fetch current upstream `main`;
+2. update, rebase, or recreate the isolated submission branch on that baseline;
+3. resolve any real API or source conflict without mixing unrelated changes;
+4. rerun `lake build` and the full receiver;
+5. allow the upstream PR checks to rerun before treating the candidate as
+   current again.
 
-Any finished held candidate must be rebased/recreated and revalidated against current upstream `main` before eventual upstream submission if the baseline has moved.
+Keeping each contribution in its own branch and, where mathematically natural,
+its own new module reduces real conflicts between simultaneously open PRs.
+
+A Mathlib release change is another freshness boundary: read
+`policy/mathlib-release.json` before preparing or refreshing a claim, update
+`base_mathlib_revision` when required, and revalidate against the new pin.
+
+Conjectures remain subject to their explicit policy quota. Ordinary theorem PR
+count is not quota-limited.
+
+As a direction preference rather than an admission rule, favor substantive,
+nontrivial extensions that reuse accepted LeanFrontier results. The maintainer
+specifically identified that style of contribution as useful to the corpus.
+
+This records the maintainer's PR-etiquette guidance from upstream PR #180. If
+newer upstream policy or maintainer guidance conflicts with this section, the
+newer source takes precedence.
 
 ## 8. Per-target research dossier format
 
