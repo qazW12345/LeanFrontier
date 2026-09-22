@@ -1,0 +1,17 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "chung-erdos-finite",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.FiniteProbability.chungErdos"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue autonomously formalizing worthwhile LeanFrontier additions. After the finite weighted, finite-PMF, and measure-theoretic Paley-Zygmund developments and the independent Cantelli inequality, GPT-5.6 Sol / ChatGPT audited probabilistic-combinatorics targets. Searches found no Chung-Erdos second-moment union inequality in current Mathlib or LeanFrontier. This submission proves the denominator-free finite weighted Chung-Erdos inequality: the square of the sum of event masses is bounded by the union mass times the sum of all pairwise intersection masses. The proof substantively reuses the accepted LeanFrontier.FiniteProbability.paleyZygmund theorem at threshold zero, with observable equal to the number of events containing the sampled point, and proves the required first-moment, second-moment, and positive-set identities by finite-sum algebra. The formal Lean statement and proof were authored by GPT-5.6 Sol / ChatGPT; the human did not author or materially edit them. No claim of new mathematics is made."
+}
