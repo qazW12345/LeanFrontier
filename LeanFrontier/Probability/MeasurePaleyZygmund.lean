@@ -45,10 +45,6 @@ private theorem setIntegral_sq_le_measureReal_mul_integral_sq
       _ = ∫ ω in A, X ω ∂μ :=
         setIntegral_congr_ae hA (hfcoe.mono fun _ h _ => h)
 
-  have hfu : inner ℝ f u = ∫ ω in A, X ω ∂μ := by
-    rw [real_inner_comm]
-    exact huf
-
   have huu : inner ℝ u u = μ.real A := by
     simpa [u] using
       (L2.real_inner_indicatorConstLp_one_indicatorConstLp_one
@@ -61,17 +57,9 @@ private theorem setIntegral_sq_le_measureReal_mul_integral_sq
     rw [hω]
     simp [sq]
 
-  have hcs := inner_mul_inner_self_le (𝕜 := ℝ) u f
-  rw [huf, hfu, huu, hff] at hcs
-  have habs :
-      ‖∫ ω in A, X ω ∂μ‖ * ‖∫ ω in A, X ω ∂μ‖ =
-        (∫ ω in A, X ω ∂μ) ^ 2 := by
-    rw [Real.norm_eq_abs, ← abs_mul, abs_mul_self, pow_two]
-  calc
-    (∫ ω in A, X ω ∂μ) ^ 2 =
-        ‖∫ ω in A, X ω ∂μ‖ * ‖∫ ω in A, X ω ∂μ‖ := habs.symm
-    _ ≤ μ.real A * ∫ ω, X ω ^ 2 ∂μ := by
-      simpa using hcs
+  have hcs := real_inner_mul_inner_self_le u f
+  rw [huf, huu, hff] at hcs
+  simpa [pow_two] using hcs
 
 /-- **Paley-Zygmund inequality on an arbitrary probability space.**
 
