@@ -76,13 +76,15 @@ theorem cantelli (μ : Measure Ω) [IsProbabilityMeasure μ]
             apply integral_congr_ae
             filter_upwards with ω
             ring
+      _ = (∫ ω, (X ω - μ[X]) ^ 2 + (2 * t) * (X ω - μ[X]) ∂μ) +
+            ∫ _ : Ω, t ^ 2 ∂μ := by
+          exact integral_add
+            (hcenter2.integrable_sq.add (hcenterInt.const_mul (2 * t)))
+            (integrable_const (t ^ 2))
       _ = (∫ ω, (X ω - μ[X]) ^ 2 ∂μ) +
             (∫ ω, (2 * t) * (X ω - μ[X]) ∂μ) +
             ∫ _ : Ω, t ^ 2 ∂μ := by
-          rw [← integral_add hcenter2.integrable_sq (hcenterInt.const_mul (2 * t)),
-              ← integral_add
-                (hcenter2.integrable_sq.add (hcenterInt.const_mul (2 * t)))
-                (integrable_const (t ^ 2))]
+          rw [integral_add hcenter2.integrable_sq (hcenterInt.const_mul (2 * t))]
       _ = v + t ^ 2 := by
           rw [hcenterSq, integral_const_mul, hcenterMean]
           simp
