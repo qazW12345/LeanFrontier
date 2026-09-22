@@ -57,7 +57,8 @@ private theorem setIntegral_sq_le_measureReal_mul_integral_sq
     rw [hω]
     simp [sq]
 
-  have hcs := real_inner_mul_inner_self_le u f
+  have hcs :=
+    @real_inner_mul_inner_self_le (Lp ℝ 2 μ) _ _ u f
   rw [huf, huu, hff] at hcs
   simpa [pow_two] using hcs
 
