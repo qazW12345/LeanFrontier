@@ -44,7 +44,6 @@ private theorem pathMoves_append (n : OrientedNode) (p q : List Bool) :
   | cons dir p ih =>
       simp only [List.cons_append, pathMoves, follow]
       rw [ih (n := child n dir)]
-      rfl
 
 /-- The oriented Markov node corresponding to a Stern-Brocot path.
 
@@ -69,7 +68,7 @@ corresponding forward coordinate move to the non-backtracking Markov walk. -/
 theorem sternMoves_cons (dir : Bool) (path : List Bool) :
     sternMoves (dir :: path) =
       sternMoves path ++ [forwardMove (sternNode path).back dir] := by
-  simp [sternMoves, sternNode, pathMoves_append, pathMoves, follow]
+  simp [sternMoves, sternNode, pathMoves_append, pathMoves]
 
 /-- Every Stern-Brocot path gives a non-backtracking Vieta-move walk from the oriented Markov
 root. -/
