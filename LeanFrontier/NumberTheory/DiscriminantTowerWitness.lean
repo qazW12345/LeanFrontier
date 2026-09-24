@@ -296,28 +296,23 @@ theorem quadraticPowerBasis_discriminants :
   ⟨sqrtTwoPowerBasis_discr, sqrtNegTwoPowerBasis_discr⟩
 
 
-private theorem zetaEight_isIntegral : IsIntegral ℤ zetaEight :=
-  zetaEight_spec.isIntegral (by decide)
-
-private theorem sqrtTwoGen_isIntegral : IsIntegral ℤ sqrtTwoGen := by
-  rw [sqrtTwoGen]
-  exact zetaEight_isIntegral.add (zetaEight_isIntegral.pow 7)
-
-private theorem sqrtNegTwoGen_isIntegral : IsIntegral ℤ sqrtNegTwoGen := by
-  rw [sqrtNegTwoGen]
-  exact zetaEight_isIntegral.sub (zetaEight_isIntegral.pow 7)
-
 private theorem sqrtTwoPowerBasis_gen_isIntegral :
     IsIntegral ℤ sqrtTwoPowerBasis.gen := by
+  have hζ : IsIntegral ℤ zetaEight := zetaEight_spec.isIntegral (by decide)
+  have hu : IsIntegral ℤ sqrtTwoGen := by
+    rw [sqrtTwoGen]
+    exact hζ.add (hζ.pow 7)
   rw [← IntermediateField.coe_isIntegral_iff]
-  simpa [sqrtTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen] using
-    sqrtTwoGen_isIntegral
+  simpa [sqrtTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen] using hu
 
 private theorem sqrtNegTwoPowerBasis_gen_isIntegral :
     IsIntegral ℤ sqrtNegTwoPowerBasis.gen := by
+  have hζ : IsIntegral ℤ zetaEight := zetaEight_spec.isIntegral (by decide)
+  have hv : IsIntegral ℤ sqrtNegTwoGen := by
+    rw [sqrtNegTwoGen]
+    exact hζ.sub (hζ.pow 7)
   rw [← IntermediateField.coe_isIntegral_iff]
-  simpa [sqrtNegTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen] using
-    sqrtNegTwoGen_isIntegral
+  simpa [sqrtNegTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen] using hv
 
 private theorem minpoly_sqrtTwoPowerBasis_int :
     minpoly ℤ sqrtTwoPowerBasis.gen = quadPlusZ := by
