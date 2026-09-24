@@ -40,13 +40,13 @@ local instance cyclotomicEight_isCyclotomic :
 noncomputable def zetaEight : CyclotomicEight :=
   IsCyclotomicExtension.zeta 8 ℚ CyclotomicEight
 
-private def zetaEight_spec : IsPrimitiveRoot zetaEight 8 := by
+private theorem zetaEight_spec : IsPrimitiveRoot zetaEight 8 := by
   exact IsCyclotomicExtension.zeta_spec 8 ℚ CyclotomicEight
 
-private def zetaEight_pow_eight : zetaEight ^ 8 = 1 :=
+private theorem zetaEight_pow_eight : zetaEight ^ 8 = 1 :=
   zetaEight_spec.pow_eq_one
 
-private def zetaEight_pow_four : zetaEight ^ 4 = -1 := by
+private theorem zetaEight_pow_four : zetaEight ^ 4 = -1 := by
   have hsq : (zetaEight ^ 4) ^ 2 = 1 := by
     rw [← pow_mul]
     norm_num
@@ -60,12 +60,12 @@ noncomputable def sqrtTwoGen : CyclotomicEight :=
 noncomputable def sqrtNegTwoGen : CyclotomicEight :=
   zetaEight - zetaEight ^ 7
 
-private def zetaEight_pow_six : zetaEight ^ 6 = -(zetaEight ^ 2) := by
+private theorem zetaEight_pow_six : zetaEight ^ 6 = -(zetaEight ^ 2) := by
   calc
     zetaEight ^ 6 = zetaEight ^ 2 * zetaEight ^ 4 := by ring
     _ = -(zetaEight ^ 2) := by rw [zetaEight_pow_four]; ring
 
-private def zetaEight_pow_fourteen : zetaEight ^ 14 = zetaEight ^ 6 := by
+private theorem zetaEight_pow_fourteen : zetaEight ^ 14 = zetaEight ^ 6 := by
   calc
     zetaEight ^ 14 = zetaEight ^ 6 * zetaEight ^ 8 := by ring
     _ = zetaEight ^ 6 := by rw [zetaEight_pow_eight, mul_one]
@@ -101,20 +101,20 @@ private def quadMinusQ : ℚ[X] := X ^ 2 - C (-2)
 
 private def spanTwo : Ideal ℤ := Ideal.span ({(2 : ℤ)} : Set ℤ)
 
-private def spanTwo_prime : spanTwo.IsPrime := by
+private theorem spanTwo_prime : spanTwo.IsPrime := by
   rw [spanTwo, Ideal.span_singleton_prime (by norm_num : (2 : ℤ) ≠ 0),
     Int.prime_iff_natAbs_prime]
   norm_num
 
-private def quadPlusZ_monic : quadPlusZ.Monic := by
+private theorem quadPlusZ_monic : quadPlusZ.Monic := by
   rw [quadPlusZ]
   exact monic_X_pow_sub_C (2 : ℤ) (by decide)
 
-private def quadMinusZ_monic : quadMinusZ.Monic := by
+private theorem quadMinusZ_monic : quadMinusZ.Monic := by
   rw [quadMinusZ]
   exact monic_X_pow_sub_C (-2 : ℤ) (by decide)
 
-private def quadPlusZ_eisenstein : quadPlusZ.IsEisensteinAt spanTwo := by
+private theorem quadPlusZ_eisenstein : quadPlusZ.IsEisensteinAt spanTwo := by
   apply quadPlusZ_monic.isEisensteinAt_of_mem_of_notMem
   · exact spanTwo_prime.ne_top
   · intro n hn
@@ -122,13 +122,13 @@ private def quadPlusZ_eisenstein : quadPlusZ.IsEisensteinAt spanTwo := by
       rw [quadPlusZ, natDegree_X_pow_sub_C] at hn
       exact hn
     interval_cases n <;>
-      simp [quadPlusZ, spanTwo, Ideal.mem_span_singleton]
+      simp [quadPlusZ, spanTwo]
   · have hcoeff : quadPlusZ.coeff 0 = (-2 : ℤ) := by
       simp [quadPlusZ]
     rw [hcoeff, spanTwo, Ideal.span_singleton_pow, Ideal.mem_span_singleton]
     norm_num
 
-private def quadMinusZ_eisenstein : quadMinusZ.IsEisensteinAt spanTwo := by
+private theorem quadMinusZ_eisenstein : quadMinusZ.IsEisensteinAt spanTwo := by
   apply quadMinusZ_monic.isEisensteinAt_of_mem_of_notMem
   · exact spanTwo_prime.ne_top
   · intro n hn
@@ -136,23 +136,23 @@ private def quadMinusZ_eisenstein : quadMinusZ.IsEisensteinAt spanTwo := by
       rw [quadMinusZ, natDegree_X_pow_sub_C] at hn
       exact hn
     interval_cases n <;>
-      simp [quadMinusZ, spanTwo, Ideal.mem_span_singleton]
+      simp [quadMinusZ, spanTwo]
   · have hcoeff : quadMinusZ.coeff 0 = (2 : ℤ) := by
       simp [quadMinusZ]
     rw [hcoeff, spanTwo, Ideal.span_singleton_pow, Ideal.mem_span_singleton]
     norm_num
 
-private def quadPlusZ_irreducible : Irreducible quadPlusZ :=
+private theorem quadPlusZ_irreducible : Irreducible quadPlusZ :=
   quadPlusZ_eisenstein.irreducible spanTwo_prime
     quadPlusZ_monic.isPrimitive
     (by rw [quadPlusZ, natDegree_X_pow_sub_C]; norm_num)
 
-private def quadMinusZ_irreducible : Irreducible quadMinusZ :=
+private theorem quadMinusZ_irreducible : Irreducible quadMinusZ :=
   quadMinusZ_eisenstein.irreducible spanTwo_prime
     quadMinusZ_monic.isPrimitive
     (by rw [quadMinusZ, natDegree_X_pow_sub_C]; norm_num)
 
-private def quadPlusQ_irreducible : Irreducible quadPlusQ := by
+private theorem quadPlusQ_irreducible : Irreducible quadPlusQ := by
   have h :=
     (Polynomial.IsPrimitive.Int.irreducible_iff_irreducible_map_cast
       quadPlusZ_monic.isPrimitive).mp
@@ -163,7 +163,7 @@ private def quadPlusQ_irreducible : Irreducible quadPlusQ := by
   rw [← hmap]
   exact h
 
-private def quadMinusQ_irreducible : Irreducible quadMinusQ := by
+private theorem quadMinusQ_irreducible : Irreducible quadMinusQ := by
   have h :=
     (Polynomial.IsPrimitive.Int.irreducible_iff_irreducible_map_cast
       quadMinusZ_monic.isPrimitive).mp
@@ -174,7 +174,7 @@ private def quadMinusQ_irreducible : Irreducible quadMinusQ := by
   rw [← hmap]
   exact h
 
-private def minpoly_sqrtTwoGen : minpoly ℚ sqrtTwoGen = quadPlusQ := by
+private theorem minpoly_sqrtTwoGen : minpoly ℚ sqrtTwoGen = quadPlusQ := by
   symm
   apply minpoly.eq_of_irreducible_of_monic quadPlusQ_irreducible
   · rw [quadPlusQ]
@@ -184,7 +184,7 @@ private def minpoly_sqrtTwoGen : minpoly ℚ sqrtTwoGen = quadPlusQ := by
   · rw [quadPlusQ]
     exact monic_X_pow_sub_C (2 : ℚ) (by decide)
 
-private def minpoly_sqrtNegTwoGen : minpoly ℚ sqrtNegTwoGen = quadMinusQ := by
+private theorem minpoly_sqrtNegTwoGen : minpoly ℚ sqrtNegTwoGen = quadMinusQ := by
   symm
   apply minpoly.eq_of_irreducible_of_monic quadMinusQ_irreducible
   · rw [quadMinusQ]
@@ -206,7 +206,7 @@ theorem quadraticFields_degrees :
       (IsIntegral.of_finite ℚ sqrtNegTwoGen), minpoly_sqrtNegTwoGen]
     simp [quadMinusQ]
 
-private def zetaEight_eq_half_sum :
+private theorem zetaEight_eq_half_sum :
     zetaEight = (2 : CyclotomicEight)⁻¹ * (sqrtTwoGen + sqrtNegTwoGen) := by
   rw [sqrtTwoGen, sqrtNegTwoGen]
   norm_num
@@ -233,12 +233,12 @@ theorem quadraticFields_sup :
       (le_sup_right (show sqrtNegTwoGen ∈ sqrtNegTwoField from
         IntermediateField.mem_adjoin_simple_self ℚ sqrtNegTwoGen)))
 
-private def cyclotomicEight_degree :
+private theorem cyclotomicEight_degree :
     Module.finrank ℚ CyclotomicEight = 4 := by
   simpa using
     (IsCyclotomicExtension.Rat.finrank 8 CyclotomicEight)
 
-private def cyclotomicEight_discr_abs :
+private theorem cyclotomicEight_discr_abs :
     (NumberField.discr CyclotomicEight).natAbs = 256 := by
   simpa using
     (IsCyclotomicExtension.Rat.natAbs_discr (n := 8) (K := CyclotomicEight))
@@ -264,24 +264,24 @@ private noncomputable def sqrtTwoPowerBasis : PowerBasis ℚ sqrtTwoField :=
 private noncomputable def sqrtNegTwoPowerBasis : PowerBasis ℚ sqrtNegTwoField :=
   IntermediateField.adjoin.powerBasis (IsIntegral.of_finite ℚ sqrtNegTwoGen)
 
-private def minpoly_sqrtTwoPowerBasis :
+private theorem minpoly_sqrtTwoPowerBasis :
     minpoly ℚ sqrtTwoPowerBasis.gen = quadPlusQ := by
   rw [sqrtTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen,
     IntermediateField.minpoly_gen, minpoly_sqrtTwoGen]
 
-private def minpoly_sqrtNegTwoPowerBasis :
+private theorem minpoly_sqrtNegTwoPowerBasis :
     minpoly ℚ sqrtNegTwoPowerBasis.gen = quadMinusQ := by
   rw [sqrtNegTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen,
     IntermediateField.minpoly_gen, minpoly_sqrtNegTwoGen]
 
-private def sqrtTwoPowerBasis_discr :
+private theorem sqrtTwoPowerBasis_discr :
     Algebra.discr ℚ sqrtTwoPowerBasis.basis = 8 := by
   rw [Algebra.discr_powerBasis_eq_norm, quadraticFields_degrees.1,
     minpoly_sqrtTwoPowerBasis]
   norm_num [quadPlusQ, Algebra.PowerBasis.norm_gen_eq_coeff_zero_minpoly,
     minpoly_sqrtTwoPowerBasis, quadraticFields_degrees.1, Algebra.norm_natCast]
 
-private def sqrtNegTwoPowerBasis_discr :
+private theorem sqrtNegTwoPowerBasis_discr :
     Algebra.discr ℚ sqrtNegTwoPowerBasis.basis = -8 := by
   rw [Algebra.discr_powerBasis_eq_norm, quadraticFields_degrees.2,
     minpoly_sqrtNegTwoPowerBasis]
