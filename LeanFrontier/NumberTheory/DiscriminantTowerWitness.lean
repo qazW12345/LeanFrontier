@@ -287,6 +287,44 @@ theorem quadraticPowerBasis_discriminants :
       Algebra.discr ℚ sqrtNegTwoPowerBasis.basis = -8 :=
   ⟨sqrtTwoPowerBasis_discr, sqrtNegTwoPowerBasis_discr⟩
 
+
+private theorem zetaEight_isIntegral : IsIntegral ℤ zetaEight :=
+  zetaEight_spec.isIntegral (by decide)
+
+private theorem sqrtTwoGen_isIntegral : IsIntegral ℤ sqrtTwoGen := by
+  rw [sqrtTwoGen]
+  exact zetaEight_isIntegral.add (zetaEight_isIntegral.pow 7)
+
+private theorem sqrtNegTwoGen_isIntegral : IsIntegral ℤ sqrtNegTwoGen := by
+  rw [sqrtNegTwoGen]
+  exact zetaEight_isIntegral.sub (zetaEight_isIntegral.pow 7)
+
+private theorem sqrtTwoPowerBasis_gen_isIntegral :
+    IsIntegral ℤ sqrtTwoPowerBasis.gen := by
+  rw [← IntermediateField.coe_isIntegral_iff]
+  simpa [sqrtTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen] using
+    sqrtTwoGen_isIntegral
+
+private theorem sqrtNegTwoPowerBasis_gen_isIntegral :
+    IsIntegral ℤ sqrtNegTwoPowerBasis.gen := by
+  rw [← IntermediateField.coe_isIntegral_iff]
+  simpa [sqrtNegTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen] using
+    sqrtNegTwoGen_isIntegral
+
+private theorem minpoly_sqrtTwoPowerBasis_int :
+    minpoly ℤ sqrtTwoPowerBasis.gen = quadPlusZ := by
+  apply map_injective (algebraMap ℤ ℚ) (algebraMap ℤ ℚ).injective_int
+  rw [← minpoly.isIntegrallyClosed_eq_field_fractions' ℚ
+      sqrtTwoPowerBasis_gen_isIntegral, minpoly_sqrtTwoPowerBasis]
+  simp [quadPlusZ, quadPlusQ]
+
+private theorem minpoly_sqrtNegTwoPowerBasis_int :
+    minpoly ℤ sqrtNegTwoPowerBasis.gen = quadMinusZ := by
+  apply map_injective (algebraMap ℤ ℚ) (algebraMap ℤ ℚ).injective_int
+  rw [← minpoly.isIntegrallyClosed_eq_field_fractions' ℚ
+      sqrtNegTwoPowerBasis_gen_isIntegral, minpoly_sqrtNegTwoPowerBasis]
+  simp [quadMinusZ, quadMinusQ]
+
 end
 
 end LeanFrontier.NumberTheory.DiscriminantTower
