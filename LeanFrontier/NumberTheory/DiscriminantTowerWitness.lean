@@ -388,6 +388,99 @@ private theorem quadraticOrders_areIntegralClosures :
         (Nat.prime_iff_prime_int.1 Nat.prime_two)
         sqrtNegTwoPowerBasis_gen_isIntegral h H' hmin
 
+
+/-- The explicit eighth-cyclotomic tower closes the counterexample promised by
+`LeanFrontier.DiscriminantTower.loadBearing_of_witness`. -/
+theorem coprimalityIsLoadBearing :
+    LeanFrontier.DiscriminantTower.CoprimalityIsLoadBearing := by
+  letI :
+      IsIntegralClosure
+        (Algebra.adjoin ℤ ({sqrtTwoPowerBasis.gen} : Set sqrtTwoField)) ℤ sqrtTwoField :=
+    quadraticOrders_areIntegralClosures.1
+  letI :
+      IsIntegralClosure
+        (Algebra.adjoin ℤ ({sqrtNegTwoPowerBasis.gen} : Set sqrtNegTwoField)) ℤ
+          sqrtNegTwoField :=
+    quadraticOrders_areIntegralClosures.2
+
+  let e₁ :
+      Algebra.adjoin ℤ ({sqrtTwoPowerBasis.gen} : Set sqrtTwoField) ≃ₐ[ℤ]
+        (𝓞 sqrtTwoField) :=
+    IsIntegralClosure.equiv ℤ
+      (Algebra.adjoin ℤ ({sqrtTwoPowerBasis.gen} : Set sqrtTwoField))
+      sqrtTwoField (𝓞 sqrtTwoField)
+  let e₂ :
+      Algebra.adjoin ℤ ({sqrtNegTwoPowerBasis.gen} : Set sqrtNegTwoField) ≃ₐ[ℤ]
+        (𝓞 sqrtNegTwoField) :=
+    IsIntegralClosure.equiv ℤ
+      (Algebra.adjoin ℤ ({sqrtNegTwoPowerBasis.gen} : Set sqrtNegTwoField))
+      sqrtNegTwoField (𝓞 sqrtNegTwoField)
+
+  let pB₁ : PowerBasis ℤ (𝓞 sqrtTwoField) :=
+    (Algebra.adjoin.powerBasis' sqrtTwoPowerBasis_gen_isIntegral).map e₁
+  let pB₂ : PowerBasis ℤ (𝓞 sqrtNegTwoField) :=
+    (Algebra.adjoin.powerBasis' sqrtNegTwoPowerBasis_gen_isIntegral).map e₂
+
+  have hpB₁_gen :
+      pB₁.gen =
+        (⟨sqrtTwoPowerBasis.gen, sqrtTwoPowerBasis_gen_isIntegral⟩ :
+          𝓞 sqrtTwoField) := by
+    apply Subtype.ext
+    change algebraMap (𝓞 sqrtTwoField) sqrtTwoField pB₁.gen =
+      sqrtTwoPowerBasis.gen
+    rw [pB₁, PowerBasis.map_gen, Algebra.adjoin.powerBasis'_gen]
+    simp [e₁]
+  have hpB₂_gen :
+      pB₂.gen =
+        (⟨sqrtNegTwoPowerBasis.gen, sqrtNegTwoPowerBasis_gen_isIntegral⟩ :
+          𝓞 sqrtNegTwoField) := by
+    apply Subtype.ext
+    change algebraMap (𝓞 sqrtNegTwoField) sqrtNegTwoField pB₂.gen =
+      sqrtNegTwoPowerBasis.gen
+    rw [pB₂, PowerBasis.map_gen, Algebra.adjoin.powerBasis'_gen]
+    simp [e₂]
+
+  have hdisc₁ : NumberField.discr sqrtTwoField = 8 := by
+    apply (algebraMap ℤ ℚ).injective_int
+    rw [← NumberField.discr_eq_discr _ pB₁.basis,
+      ← Algebra.discr_localizationLocalization ℤ ℤ⁰ sqrtTwoField]
+    convert! sqrtTwoPowerBasis_discr using 1
+    · have hdim : pB₁.dim = sqrtTwoPowerBasis.dim := by
+        rw [← PowerBasis.finrank, ← PowerBasis.finrank]
+        exact RingOfIntegers.rank sqrtTwoField
+      rw [← Algebra.discr_reindex _ _ (finCongr hdim)]
+      congr 1
+      ext i
+      simp_rw [Function.comp_apply, Module.Basis.localizationLocalization_apply,
+        PowerBasis.coe_basis, hpB₁_gen]
+      convert! ← (sqrtTwoPowerBasis.basis_eq_pow i).symm using 1
+    · norm_num
+
+  have hdisc₂ : NumberField.discr sqrtNegTwoField = -8 := by
+    apply (algebraMap ℤ ℚ).injective_int
+    rw [← NumberField.discr_eq_discr _ pB₂.basis,
+      ← Algebra.discr_localizationLocalization ℤ ℤ⁰ sqrtNegTwoField]
+    convert! sqrtNegTwoPowerBasis_discr using 1
+    · have hdim : pB₂.dim = sqrtNegTwoPowerBasis.dim := by
+        rw [← PowerBasis.finrank, ← PowerBasis.finrank]
+        exact RingOfIntegers.rank sqrtNegTwoField
+      rw [← Algebra.discr_reindex _ _ (finCongr hdim)]
+      congr 1
+      ext i
+      simp_rw [Function.comp_apply, Module.Basis.localizationLocalization_apply,
+        PowerBasis.coe_basis, hpB₂_gen]
+      convert! ← (sqrtNegTwoPowerBasis.basis_eq_pow i).symm using 1
+    · norm_num
+
+  apply LeanFrontier.DiscriminantTower.loadBearing_of_witness
+    CyclotomicEight sqrtTwoField sqrtNegTwoField
+  · exact ⟨quadraticFields_linearDisjoint, quadraticFields_sup⟩
+  · exact cyclotomicEight_discr_abs
+  · simpa [LeanFrontier.DiscriminantTower.discrAbs, hdisc₁]
+  · simpa [LeanFrontier.DiscriminantTower.discrAbs, hdisc₂]
+  · simpa [LeanFrontier.DiscriminantTower.degree] using quadraticFields_degrees.1
+  · simpa [LeanFrontier.DiscriminantTower.degree] using quadraticFields_degrees.2
+
 end
 
 end LeanFrontier.NumberTheory.DiscriminantTower
