@@ -328,6 +328,66 @@ private theorem minpoly_sqrtNegTwoPowerBasis_int :
       sqrtNegTwoPowerBasis_gen_isIntegral, minpoly_sqrtNegTwoPowerBasis]
   simp [quadMinusZ, quadMinusQ]
 
+
+private theorem quadraticOrders_areIntegralClosures :
+    IsIntegralClosure
+        (Algebra.adjoin ℤ ({sqrtTwoPowerBasis.gen} : Set sqrtTwoField)) ℤ sqrtTwoField ∧
+      IsIntegralClosure
+        (Algebra.adjoin ℤ ({sqrtNegTwoPowerBasis.gen} : Set sqrtNegTwoField)) ℤ
+          sqrtNegTwoField := by
+  constructor
+  · refine ⟨Subtype.val_injective, @fun x => ⟨fun h => ⟨⟨x, ?_⟩, rfl⟩, ?_⟩⟩
+    swap
+    · rintro ⟨y, rfl⟩
+      exact
+        IsIntegral.algebraMap
+          ((le_integralClosure_iff_isIntegral.1
+              (adjoin_le_integralClosure sqrtTwoPowerBasis_gen_isIntegral)).isIntegral _)
+    have H :=
+      Algebra.discr_mul_isIntegral_mem_adjoin ℚ sqrtTwoPowerBasis_gen_isIntegral h
+    rw [sqrtTwoPowerBasis_discr] at H
+    have H' :
+        (2 : ℤ) ^ 3 • x ∈
+          Algebra.adjoin ℤ ({sqrtTwoPowerBasis.gen} : Set sqrtTwoField) := by
+      simpa [Algebra.smul_def] using H
+    have hmin :
+        (minpoly ℤ sqrtTwoPowerBasis.gen).IsEisensteinAt spanTwo := by
+      rw [minpoly_sqrtTwoPowerBasis_int]
+      exact quadPlusZ_eisenstein
+    exact
+      mem_adjoin_of_smul_prime_pow_smul_of_minpoly_isEisensteinAt
+        (p := (2 : ℤ)) (n := 3)
+        (Nat.prime_iff_prime_int.1 Nat.prime_two)
+        sqrtTwoPowerBasis_gen_isIntegral h H' hmin
+  · refine ⟨Subtype.val_injective, @fun x => ⟨fun h => ⟨⟨x, ?_⟩, rfl⟩, ?_⟩⟩
+    swap
+    · rintro ⟨y, rfl⟩
+      exact
+        IsIntegral.algebraMap
+          ((le_integralClosure_iff_isIntegral.1
+              (adjoin_le_integralClosure sqrtNegTwoPowerBasis_gen_isIntegral)).isIntegral _)
+    have H :=
+      Algebra.discr_mul_isIntegral_mem_adjoin ℚ sqrtNegTwoPowerBasis_gen_isIntegral h
+    rw [sqrtNegTwoPowerBasis_discr] at H
+    have Hpos :
+        (8 : ℚ) • x ∈
+          Algebra.adjoin ℤ ({sqrtNegTwoPowerBasis.gen} : Set sqrtNegTwoField) := by
+      have := Subalgebra.neg_mem _ H
+      simpa [neg_smul] using this
+    have H' :
+        (2 : ℤ) ^ 3 • x ∈
+          Algebra.adjoin ℤ ({sqrtNegTwoPowerBasis.gen} : Set sqrtNegTwoField) := by
+      simpa [Algebra.smul_def] using Hpos
+    have hmin :
+        (minpoly ℤ sqrtNegTwoPowerBasis.gen).IsEisensteinAt spanTwo := by
+      rw [minpoly_sqrtNegTwoPowerBasis_int]
+      exact quadMinusZ_eisenstein
+    exact
+      mem_adjoin_of_smul_prime_pow_smul_of_minpoly_isEisensteinAt
+        (p := (2 : ℤ)) (n := 3)
+        (Nat.prime_iff_prime_int.1 Nat.prime_two)
+        sqrtNegTwoPowerBasis_gen_isIntegral h H' hmin
+
 end
 
 end LeanFrontier.NumberTheory.DiscriminantTower
