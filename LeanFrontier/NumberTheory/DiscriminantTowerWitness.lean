@@ -181,7 +181,7 @@ private def minpoly_sqrtTwoGen : minpoly ℚ sqrtTwoGen = quadPlusQ := by
   symm
   apply minpoly.eq_of_irreducible_of_monic quadPlusQ_irreducible
   · rw [quadPlusQ]
-    simp only [aeval_sub, aeval_pow, aeval_X, aeval_C]
+    simp only [map_sub, map_pow, aeval_X, aeval_C]
     rw [sqrtTwoGen_sq]
     norm_num
   · rw [quadPlusQ]
@@ -229,22 +229,32 @@ theorem quadraticFields_sup :
   subst x
   rw [zetaEight_eq_half_sum]
   exact (sqrtTwoField ⊔ sqrtNegTwoField).mul_mem
-    ((sqrtTwoField ⊔ sqrtNegTwoField).algebraMap_mem ((2 : ℚ)⁻¹))
+    (by
+      simpa using
+        ((sqrtTwoField ⊔ sqrtNegTwoField).algebraMap_mem ((2 : ℚ)⁻¹)))
     ((sqrtTwoField ⊔ sqrtNegTwoField).add_mem
-      (le_sup_left (show sqrtTwoGen ∈ sqrtTwoField from
-        IntermediateField.mem_adjoin_simple_self ℚ sqrtTwoGen))
-      (le_sup_right (show sqrtNegTwoGen ∈ sqrtNegTwoField from
-        IntermediateField.mem_adjoin_simple_self ℚ sqrtNegTwoGen)))
+      ((show sqrtTwoField ≤ sqrtTwoField ⊔ sqrtNegTwoField from le_sup_left)
+        (IntermediateField.mem_adjoin_simple_self ℚ sqrtTwoGen))
+      ((show sqrtNegTwoField ≤ sqrtTwoField ⊔ sqrtNegTwoField from le_sup_right)
+        (IntermediateField.mem_adjoin_simple_self ℚ sqrtNegTwoGen)))
 
 private def cyclotomicEight_degree :
     Module.finrank ℚ CyclotomicEight = 4 := by
-  simpa using
-    (IsCyclotomicExtension.Rat.finrank 8 CyclotomicEight)
+  rw [IsCyclotomicExtension.Rat.finrank 8 CyclotomicEight]
+  rw [show 8 = 2 ^ 3 by norm_num,
+    Nat.totient_prime_pow Nat.prime_two (by norm_num)]
+  norm_num
 
 private def cyclotomicEight_discr_abs :
     (NumberField.discr CyclotomicEight).natAbs = 256 := by
-  simpa using
-    (IsCyclotomicExtension.Rat.natAbs_discr (n := 8) (K := CyclotomicEight))
+  letI : Fact (Nat.Prime 2) := ⟨Nat.prime_two⟩
+  have h := IsCyclotomicExtension.Rat.discr_prime_pow 2 3 CyclotomicEight
+  have hφ : Nat.totient (2 ^ 3) = 4 := by
+    rw [Nat.totient_prime_pow Nat.prime_two (by norm_num)]
+    norm_num
+  norm_num [hφ] at h
+  rw [h]
+  norm_num
 
 /-- The two explicit quadratic subfields are linearly disjoint over `ℚ`. -/
 theorem quadraticFields_linearDisjoint :
@@ -252,7 +262,6 @@ theorem quadraticFields_linearDisjoint :
   apply IntermediateField.LinearDisjoint.of_finrank_sup
   rw [quadraticFields_sup, IntermediateField.finrank_top', cyclotomicEight_degree,
     quadraticFields_degrees.1, quadraticFields_degrees.2]
-  norm_num
 
 /-- The ambient eighth cyclotomic field already has the degree and discriminant required by the
 load-bearing witness. -/
@@ -269,13 +278,13 @@ private noncomputable def sqrtNegTwoPowerBasis : PowerBasis ℚ sqrtNegTwoField 
 
 private def minpoly_sqrtTwoPowerBasis :
     minpoly ℚ sqrtTwoPowerBasis.gen = quadPlusQ := by
-  rw [sqrtTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen,
-    IntermediateField.minpoly_gen, minpoly_sqrtTwoGen]
+  rw [sqrtTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen]
+  exact (IntermediateField.minpoly_gen ℚ sqrtTwoGen).trans minpoly_sqrtTwoGen
 
 private def minpoly_sqrtNegTwoPowerBasis :
     minpoly ℚ sqrtNegTwoPowerBasis.gen = quadMinusQ := by
-  rw [sqrtNegTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen,
-    IntermediateField.minpoly_gen, minpoly_sqrtNegTwoGen]
+  rw [sqrtNegTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen]
+  exact (IntermediateField.minpoly_gen ℚ sqrtNegTwoGen).trans minpoly_sqrtNegTwoGen
 
 private def sqrtTwoPowerBasis_discr :
     Algebra.discr ℚ sqrtTwoPowerBasis.basis = 8 := by
