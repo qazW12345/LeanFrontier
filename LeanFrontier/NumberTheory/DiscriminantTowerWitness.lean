@@ -282,14 +282,26 @@ private def sqrtTwoPowerBasis_discr :
   rw [Algebra.discr_powerBasis_eq_norm, quadraticFields_degrees.1,
     minpoly_sqrtTwoPowerBasis]
   norm_num [quadPlusQ, Algebra.PowerBasis.norm_gen_eq_coeff_zero_minpoly,
-    minpoly_sqrtTwoPowerBasis, quadraticFields_degrees.1, Algebra.norm_natCast]
+    minpoly_sqrtTwoPowerBasis]
+  rw [Algebra.norm_natCast, quadraticFields_degrees.1]
+  have hdim : sqrtTwoPowerBasis.dim = 2 := by
+    rw [← PowerBasis.finrank]
+    exact quadraticFields_degrees.1
+  rw [hdim]
+  norm_num
 
 private def sqrtNegTwoPowerBasis_discr :
     Algebra.discr ℚ sqrtNegTwoPowerBasis.basis = -8 := by
   rw [Algebra.discr_powerBasis_eq_norm, quadraticFields_degrees.2,
     minpoly_sqrtNegTwoPowerBasis]
   norm_num [quadMinusQ, Algebra.PowerBasis.norm_gen_eq_coeff_zero_minpoly,
-    minpoly_sqrtNegTwoPowerBasis, quadraticFields_degrees.2, Algebra.norm_natCast]
+    minpoly_sqrtNegTwoPowerBasis]
+  rw [Algebra.norm_natCast, quadraticFields_degrees.2]
+  have hdim : sqrtNegTwoPowerBasis.dim = 2 := by
+    rw [← PowerBasis.finrank]
+    exact quadraticFields_degrees.2
+  rw [hdim]
+  norm_num
 
 /-- Before passing to rings of integers, the canonical quadratic power bases already have the
 expected signed discriminants `8` and `-8`. -/
