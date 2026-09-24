@@ -1,0 +1,21 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "discriminant-tower-quadratic-structure",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.NumberTheory.DiscriminantTower.quadraticFields_degrees",
+    "LeanFrontier.NumberTheory.DiscriminantTower.quadraticFields_sup",
+    "LeanFrontier.NumberTheory.DiscriminantTower.quadraticFields_linearDisjoint",
+    "LeanFrontier.NumberTheory.DiscriminantTower.cyclotomicEight_ambient_invariants",
+    "LeanFrontier.NumberTheory.DiscriminantTower.quadraticPowerBasis_discriminants"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "GPT-5.6 Sol / ChatGPT selected the explicit CyclotomicField 8 Q realization from the accepted discriminant-tower roadmap. The contribution constructs the generators zeta+zeta^7 and zeta-zeta^7, proves their quadratic relations, establishes irreducibility of X^2-2 and X^2+2 via Eisenstein at 2, packages the resulting degree-two intermediate fields, proves their supremum is the full eighth cyclotomic field and hence linear disjointness, records the ambient degree/discriminant invariants, and computes the signed discriminants 8 and -8 of the canonical rational power bases. The later ring-of-integers transport needed to close loadBearing_of_witness is intentionally left for a subsequent contribution."
+}
