@@ -183,9 +183,7 @@ private def minpoly_sqrtTwoGen : minpoly ℚ sqrtTwoGen = quadPlusQ := by
   symm
   apply minpoly.eq_of_irreducible_of_monic quadPlusQ_irreducible
   · rw [quadPlusQ]
-    simp only [aeval_sub, aeval_pow, aeval_X, aeval_C]
-    rw [sqrtTwoGen_sq]
-    norm_num
+    simp [sqrtTwoGen_sq]
   · rw [quadPlusQ]
     exact monic_X_pow_sub_C (2 : ℚ) (by decide)
 
@@ -193,9 +191,7 @@ private def minpoly_sqrtNegTwoGen : minpoly ℚ sqrtNegTwoGen = quadMinusQ := by
   symm
   apply minpoly.eq_of_irreducible_of_monic quadMinusQ_irreducible
   · rw [quadMinusQ]
-    simp only [aeval_sub, aeval_pow, aeval_X, aeval_C]
-    rw [sqrtNegTwoGen_sq]
-    norm_num
+    simp [sqrtNegTwoGen_sq]
   · rw [quadMinusQ]
     exact monic_X_pow_sub_C (-2 : ℚ) (by decide)
 
@@ -212,7 +208,8 @@ theorem quadraticFields_degrees :
     simp [quadMinusQ]
 
 private def zetaEight_eq_half_sum :
-    zetaEight = (2 : CyclotomicEight)⁻¹ * (sqrtTwoGen + sqrtNegTwoGen) := by
+    zetaEight =
+      algebraMap ℚ CyclotomicEight ((2 : ℚ)⁻¹) * (sqrtTwoGen + sqrtNegTwoGen) := by
   rw [sqrtTwoGen, sqrtNegTwoGen]
   norm_num
   ring
@@ -230,23 +227,25 @@ theorem quadraticFields_sup :
   simp only [Set.mem_singleton_iff] at hx
   subst x
   rw [zetaEight_eq_half_sum]
+  have hu : sqrtTwoGen ∈ sqrtTwoField ⊔ sqrtNegTwoField :=
+    (le_sup_left : sqrtTwoField ≤ sqrtTwoField ⊔ sqrtNegTwoField) <|
+      IntermediateField.mem_adjoin_simple_self ℚ sqrtTwoGen
+  have hv : sqrtNegTwoGen ∈ sqrtTwoField ⊔ sqrtNegTwoField :=
+    (le_sup_right : sqrtNegTwoField ≤ sqrtTwoField ⊔ sqrtNegTwoField) <|
+      IntermediateField.mem_adjoin_simple_self ℚ sqrtNegTwoGen
   exact (sqrtTwoField ⊔ sqrtNegTwoField).mul_mem
     ((sqrtTwoField ⊔ sqrtNegTwoField).algebraMap_mem ((2 : ℚ)⁻¹))
-    ((sqrtTwoField ⊔ sqrtNegTwoField).add_mem
-      (le_sup_left (show sqrtTwoGen ∈ sqrtTwoField from
-        IntermediateField.mem_adjoin_simple_self ℚ sqrtTwoGen))
-      (le_sup_right (show sqrtNegTwoGen ∈ sqrtNegTwoField from
-        IntermediateField.mem_adjoin_simple_self ℚ sqrtNegTwoGen)))
+    ((sqrtTwoField ⊔ sqrtNegTwoField).add_mem hu hv)
 
 private def cyclotomicEight_degree :
     Module.finrank ℚ CyclotomicEight = 4 := by
-  simpa using
-    (IsCyclotomicExtension.Rat.finrank 8 CyclotomicEight)
+  rw [IsCyclotomicExtension.Rat.finrank 8 CyclotomicEight]
+  native_decide
 
 private def cyclotomicEight_discr_abs :
     (NumberField.discr CyclotomicEight).natAbs = 256 := by
-  simpa using
-    (IsCyclotomicExtension.Rat.natAbs_discr (n := 8) (K := CyclotomicEight))
+  rw [IsCyclotomicExtension.Rat.natAbs_discr (n := 8) (K := CyclotomicEight)]
+  native_decide
 
 /-- The two explicit quadratic subfields are linearly disjoint over `ℚ`. -/
 theorem quadraticFields_linearDisjoint :
@@ -254,7 +253,6 @@ theorem quadraticFields_linearDisjoint :
   apply IntermediateField.LinearDisjoint.of_finrank_sup
   rw [quadraticFields_sup, IntermediateField.finrank_top', cyclotomicEight_degree,
     quadraticFields_degrees.1, quadraticFields_degrees.2]
-  norm_num
 
 /-- The ambient eighth cyclotomic field already has the degree and discriminant required by the
 load-bearing witness. -/
@@ -271,13 +269,13 @@ private noncomputable def sqrtNegTwoPowerBasis : PowerBasis ℚ sqrtNegTwoField 
 
 private def minpoly_sqrtTwoPowerBasis :
     minpoly ℚ sqrtTwoPowerBasis.gen = quadPlusQ := by
-  rw [sqrtTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen,
-    IntermediateField.minpoly_gen, minpoly_sqrtTwoGen]
+  rw [sqrtTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen]
+  exact (IntermediateField.minpoly_gen ℚ sqrtTwoGen).trans minpoly_sqrtTwoGen
 
 private def minpoly_sqrtNegTwoPowerBasis :
     minpoly ℚ sqrtNegTwoPowerBasis.gen = quadMinusQ := by
-  rw [sqrtNegTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen,
-    IntermediateField.minpoly_gen, minpoly_sqrtNegTwoGen]
+  rw [sqrtNegTwoPowerBasis, IntermediateField.adjoin.powerBasis_gen]
+  exact (IntermediateField.minpoly_gen ℚ sqrtNegTwoGen).trans minpoly_sqrtNegTwoGen
 
 private def sqrtTwoPowerBasis_discr :
     Algebra.discr ℚ sqrtTwoPowerBasis.basis = 8 := by
