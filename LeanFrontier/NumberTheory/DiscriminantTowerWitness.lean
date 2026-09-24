@@ -283,11 +283,15 @@ private def sqrtTwoPowerBasis_discr :
     minpoly_sqrtTwoPowerBasis]
   norm_num [quadPlusQ, Algebra.PowerBasis.norm_gen_eq_coeff_zero_minpoly,
     minpoly_sqrtTwoPowerBasis]
-  rw [Algebra.norm_natCast, quadraticFields_degrees.1]
+  have hnorm :
+      Algebra.norm ℚ (2 : sqrtTwoField) =
+        (2 : ℚ) ^ Module.finrank ℚ sqrtTwoField := by
+    simpa only [map_ofNat] using
+      (Algebra.norm_algebraMap (R := ℚ) (S := sqrtTwoField) (2 : ℚ))
   have hdim : sqrtTwoPowerBasis.dim = 2 := by
     rw [← PowerBasis.finrank]
     exact quadraticFields_degrees.1
-  rw [hdim]
+  rw [hnorm, quadraticFields_degrees.1, hdim]
   norm_num
 
 private def sqrtNegTwoPowerBasis_discr :
@@ -296,11 +300,15 @@ private def sqrtNegTwoPowerBasis_discr :
     minpoly_sqrtNegTwoPowerBasis]
   norm_num [quadMinusQ, Algebra.PowerBasis.norm_gen_eq_coeff_zero_minpoly,
     minpoly_sqrtNegTwoPowerBasis]
-  rw [Algebra.norm_natCast, quadraticFields_degrees.2]
+  have hnorm :
+      Algebra.norm ℚ (2 : sqrtNegTwoField) =
+        (2 : ℚ) ^ Module.finrank ℚ sqrtNegTwoField := by
+    simpa only [map_ofNat] using
+      (Algebra.norm_algebraMap (R := ℚ) (S := sqrtNegTwoField) (2 : ℚ))
   have hdim : sqrtNegTwoPowerBasis.dim = 2 := by
     rw [← PowerBasis.finrank]
     exact quadraticFields_degrees.2
-  rw [hdim]
+  rw [hnorm, quadraticFields_degrees.2, hdim]
   norm_num
 
 /-- Before passing to rings of integers, the canonical quadratic power bases already have the
