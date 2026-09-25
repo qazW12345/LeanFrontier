@@ -40,9 +40,9 @@ theorem sternMarkovNumber_lt_of_properSuffix
     (hsuffix : ancestor <:+ descendant)
     (hne : ancestor ≠ descendant) :
     sternMarkovNumber ancestor < sternMarkovNumber descendant := by
-  rcases hsuffix with ⟨prefix, hprefix⟩
+  rcases hsuffix with ⟨pre, hpre⟩
   subst descendant
-  cases prefix with
+  cases pre with
   | nil =>
       simp at hne
   | cons dir rest =>
@@ -110,7 +110,17 @@ theorem exists_crossBranchCounterexample_iff :
             (hlabel.trans (congrArg sternMarkovNumber hq))
       · intro hperm
         apply hnotperm
-        simpa [hp, hq] using hperm
+        change
+          (sternNode p).state.coordMultiset =
+            (sternNode q).state.coordMultiset
+        change
+          (sternNode (left ++ false :: commonAncestor p q)).state.coordMultiset =
+            (sternNode (right ++ true :: commonAncestor p q)).state.coordMultiset at hperm
+        have hpcoords :=
+          congrArg (fun path : List Bool => (sternNode path).state.coordMultiset) hp
+        have hqcoords :=
+          congrArg (fun path : List Bool => (sternNode path).state.coordMultiset) hq
+        exact hpcoords.trans (hperm.trans hqcoords.symm)
     · rcases hcase with ⟨hp, hq⟩
       refine ⟨right, left, ?_, ?_⟩
       · exact
@@ -118,16 +128,21 @@ theorem exists_crossBranchCounterexample_iff :
             (hlabel.symm.trans (congrArg sternMarkovNumber hp))
       · intro hperm
         apply hnotperm
-        have hperm' :
-            (sternNode q).state.Permutes (sternNode p).state := by
-          simpa [hp, hq] using hperm
         change
           (sternNode p).state.coordMultiset =
             (sternNode q).state.coordMultiset
         change
-          (sternNode q).state.coordMultiset =
-            (sternNode p).state.coordMultiset at hperm'
-        exact hperm'.symm
+          (sternNode (right ++ false :: commonAncestor p q)).state.coordMultiset =
+            (sternNode (left ++ true :: commonAncestor p q)).state.coordMultiset at hperm
+        have hpcoords :=
+          congrArg (fun path : List Bool => (sternNode path).state.coordMultiset) hp
+        have hqcoords :=
+          congrArg (fun path : List Bool => (sternNode path).state.coordMultiset) hq
+        have hqp :
+            (sternNode q).state.coordMultiset =
+              (sternNode p).state.coordMultiset :=
+          hqcoords.trans (hperm.trans hpcoords.symm)
+        exact hqp.symm
   · rintro ⟨a, left, right, hlabel, hnotperm⟩
     exact
       ⟨left ++ false :: a, right ++ true :: a,
