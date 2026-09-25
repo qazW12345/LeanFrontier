@@ -89,4 +89,34 @@ theorem oddPrime_not_dvd_both_collisionFactors
     exact hp_ne_two (Nat.le_antisymm hle hp.two_le)
   · exact hp_not_dvd_a₁ (Int.Prime.dvd_pow' hp hpSq)
 
+
+/-- Every odd prime divisor of the common Markov coordinate divides exactly one of Srinivasan's
+two collision factors.  This is the prime-by-prime same-root/opposite-root split underlying the
+CRT formulation of a possible composite collision. -/
+theorem oddPrime_dvd_exactly_one_collisionFactor
+    {a₁ b₁ a₂ b₂ c : ℤ} {p : ℕ}
+    (ha₁ : 0 < a₁) (hb₁ : 0 < b₁)
+    (ha₂ : 0 < a₂) (hb₂ : 0 < b₂) (hc : 0 < c)
+    (h₁ : IsSolution a₁ b₁ c)
+    (h₂ : IsSolution a₂ b₂ c)
+    (hp : p.Prime) (hp_ne_two : p ≠ 2)
+    (hpc : (p : ℤ) ∣ c) :
+    (((p : ℤ) ∣ a₁ * a₂ - b₁ * b₂) ∧
+      ¬((p : ℤ) ∣ a₁ * b₂ - b₁ * a₂)) ∨
+    (((p : ℤ) ∣ a₁ * b₂ - b₁ * a₂) ∧
+      ¬((p : ℤ) ∣ a₁ * a₂ - b₁ * b₂)) := by
+  have hnotboth :=
+    oddPrime_not_dvd_both_collisionFactors
+      ha₁ hb₁ ha₂ hb₂ hc h₁ h₂ hp hp_ne_two hpc
+  have hcSq : (p : ℤ) ∣ c ^ 2 := by
+    simpa [pow_two] using hpc.mul_right c
+  have hprod :
+      (p : ℤ) ∣
+        (a₁ * a₂ - b₁ * b₂) * (a₁ * b₂ - b₁ * a₂) := by
+    rw [collision_factorization h₁ h₂]
+    exact hcSq.mul_right (a₁ * b₁ - a₂ * b₂)
+  rcases Int.Prime.dvd_mul' hp hprod with hE | hD
+  · exact Or.inl ⟨hE, fun hD => hnotboth ⟨hE, hD⟩⟩
+  · exact Or.inr ⟨hD, fun hE => hnotboth ⟨hE, hD⟩⟩
+
 end LeanFrontier.MarkovEquation
