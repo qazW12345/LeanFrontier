@@ -1,0 +1,17 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-index-coordinate-congruence",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "target_driven",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovTree.markovIndex_mul_forwardCoordinate_eq_or_neg"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to execute the literature-informed Markov-uniqueness plan. After identifying the fork-local coordinateRoot with the classical Frobenius/Zhang/Springborn modular index, GPT-5.6 Sol / ChatGPT introduced a receiver-validated canonical unsigned markovIndex using ZMod.valMinAbs. This incremental submission exposes the exact coordinate-congruence interface used in the classical literature: multiplying the canonical index by one complementary coordinate yields either the other coordinate or its negative modulo the Markov number. The sign alternative is precisely the expected quotient introduced by choosing an unsigned centered representative. This theorem is intended as the direct bridge to Zhang-style Farey determinant identities and CRT sign-coherence arguments. GPT-5.6 Sol / ChatGPT selected the theorem and authored the Lean proof; the human did not author or materially edit the formal text. No claim of new mathematics is made."
+}
