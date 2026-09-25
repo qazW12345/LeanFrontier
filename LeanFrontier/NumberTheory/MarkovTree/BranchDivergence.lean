@@ -146,22 +146,17 @@ theorem pathsIncomparable_iff_divergesBelow_commonAncestor (p q : List Bool) :
   · exact divergesBelow_commonAncestor_of_incomparable
   · exact incomparable_of_divergesBelow_commonAncestor
 
-/-- Incomparable paths have a strictly shorter common ancestor than the left path. -/
-theorem commonAncestor_length_lt_left_of_incomparable
+/-- Incomparable paths have a strictly shorter common ancestor than both paths. -/
+theorem commonAncestor_length_lt_both_of_incomparable
     {p q : List Bool} (h : PathsIncomparable p q) :
-    (commonAncestor p q).length < p.length := by
+    (commonAncestor p q).length < p.length ∧
+      (commonAncestor p q).length < q.length := by
   obtain ⟨left, right, dp, dq, hdir, hp, hq⟩ :=
     divergesBelow_commonAncestor_of_incomparable h
-  rw [hp]
-  simp
-
-/-- Incomparable paths have a strictly shorter common ancestor than the right path. -/
-theorem commonAncestor_length_lt_right_of_incomparable
-    {p q : List Bool} (h : PathsIncomparable p q) :
-    (commonAncestor p q).length < q.length := by
-  obtain ⟨left, right, dp, dq, hdir, hp, hq⟩ :=
-    divergesBelow_commonAncestor_of_incomparable h
-  rw [hq]
-  simp
+  constructor
+  · rw [hp]
+    simp
+  · rw [hq]
+    simp
 
 end LeanFrontier.MarkovTree
