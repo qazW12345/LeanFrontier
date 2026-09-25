@@ -124,7 +124,7 @@ theorem odd_prime_power_collision_factor_split
   have hpc : (p : ℤ) ∣ c :=
     (dvd_pow_self (p : ℤ) (Nat.ne_of_gt hk)).trans hpkc
   have hsep :=
-    odd_prime_not_dvd_both_collision_factors h₂ hc₁ hc₂ hp hp2 hpc
+    odd_prime_not_dvd_both_collision_factors (b₁ := b₁) h₂ hc₁ hc₂ hp hp2 hpc
 
   have hpk2c2 : (((p : ℤ) ^ k) ^ 2) ∣ c ^ 2 :=
     pow_dvd_pow_of_dvd hpkc 2
