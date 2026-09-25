@@ -1,0 +1,20 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-ratio-reconstruction",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovTree.forwardCoordinate_lt_markovNumber",
+    "LeanFrontier.MarkovTree.markovNumber_dvd_coordinateCrossDet_of_ratioCongruent",
+    "LeanFrontier.MarkovTree.coordinateCrossDet_eq_zero_of_ratioCongruent_of_small",
+    "LeanFrontier.MarkovTree.forwardCoordinates_eq_of_ratioCongruent_of_crossDet_small"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue developing useful LeanFrontier machinery toward eventual work on the Frobenius/Markov uniqueness conjecture. Building on the orientation-sensitive coordinate modular root, GPT-5.6 Sol / ChatGPT selected the rational-reconstruction step that makes the remaining quantitative obstruction explicit. For two ordered primitive positive coordinate pairs, equality of ratios modulo a Markov number means that the modulus divides their cross determinant u1*v2-u2*v1. If the determinant has absolute value strictly below the modulus, divisibility forces it to vanish; positivity and coprimality then force the two pairs to coincide. The module packages that implication and the elementary bound that every non-back coordinate is below the Markov-number coordinate. This does not establish the required small-determinant estimate for arbitrary same-label nodes and therefore does not prove Markov uniqueness; instead it isolates a concrete inequality sufficient for coordinate recovery. GPT-5.6 Sol / ChatGPT selected the target and authored all definitions, statements, and proofs; the human did not choose or materially edit them. No claim of new mathematics is made."
+}
