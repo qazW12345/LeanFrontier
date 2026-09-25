@@ -136,6 +136,25 @@ theorem pathsIncomparable_iff_divergesBelow_commonAncestor (p q : List Bool) :
   · exact divergesBelow_commonAncestor_of_incomparable
   · exact incomparable_of_divergesBelow_commonAncestor
 
+/-- Incomparable Boolean paths can be normalized to the two concrete opposite-child cases.
+
+Thus every incomparable pair is obtained by descending below its deepest common ancestor through
+`false` on one side and `true` on the other, in one of the two possible orders. -/
+theorem exists_opposite_child_decomposition_of_incomparable
+    {p q : List Bool} (h : PathsIncomparable p q) :
+    ∃ left right : List Bool,
+      (p = left ++ false :: commonAncestor p q ∧
+        q = right ++ true :: commonAncestor p q) ∨
+      (p = left ++ true :: commonAncestor p q ∧
+        q = right ++ false :: commonAncestor p q) := by
+  obtain ⟨left, right, dp, dq, hdir, hp, hq⟩ :=
+    divergesBelow_commonAncestor_of_incomparable h
+  cases dp <;> cases dq
+  · exact (hdir rfl).elim
+  · exact ⟨left, right, Or.inl ⟨hp, hq⟩⟩
+  · exact ⟨left, right, Or.inr ⟨hp, hq⟩⟩
+  · exact (hdir rfl).elim
+
 /-- Incomparable paths have a strictly shorter common ancestor than both paths. -/
 theorem commonAncestor_length_lt_both_of_incomparable
     {p q : List Bool} (h : PathsIncomparable p q) :
