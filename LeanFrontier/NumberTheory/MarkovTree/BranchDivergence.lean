@@ -88,16 +88,18 @@ theorem divergesBelow_commonAncestor_of_incomparable
             rw [List.dropLast_append_getLast hright_ne]
       _ = q := hright
 
+  have hchild_left : dp :: commonAncestor p q <:+ p := by
+    exact ⟨left, hleft_split⟩
+  have hchild_right : dq :: commonAncestor p q <:+ q := by
+    exact ⟨right, hright_split⟩
   have hdir : dp ≠ dq := by
     intro heq
-    subst dq
-    have hchild_left : dp :: commonAncestor p q <:+ p := by
-      exact ⟨left, hleft_split⟩
-    have hchild_right : dp :: commonAncestor p q <:+ q := by
-      exact ⟨right, hright_split⟩
+    have hchild_right' : dp :: commonAncestor p q <:+ q := by
+      rw [heq]
+      exact hchild_right
     have htoo_long :
         dp :: commonAncestor p q <:+ commonAncestor p q :=
-      isSuffix_commonAncestor hchild_left hchild_right
+      isSuffix_commonAncestor hchild_left hchild_right'
     have hlen := htoo_long.length_le
     simp at hlen
 
@@ -115,11 +117,13 @@ theorem incomparable_of_divergesBelow_commonAncestor
       (commonAncestor_eq_left_iff p q).2 hpq
     have hlen := congrArg List.length hp
     simp [hca] at hlen
+    omega
   · intro hqp
     have hca : commonAncestor p q = q :=
       (commonAncestor_eq_right_iff p q).2 hqp
     have hlen := congrArg List.length hq
     simp [hca] at hlen
+    omega
 
 /-- Exact first-divergence characterization for canonical Markov/Stern-Brocot paths.
 
@@ -139,10 +143,9 @@ theorem commonAncestor_length_lt_both_of_incomparable
       (commonAncestor p q).length < q.length := by
   obtain ⟨left, right, dp, dq, hdir, hp, hq⟩ :=
     divergesBelow_commonAncestor_of_incomparable h
-  constructor
-  · rw [hp]
-    simp
-  · rw [hq]
-    simp
+  have hplen := congrArg List.length hp
+  have hqlen := congrArg List.length hq
+  simp at hplen hqlen
+  constructor <;> omega
 
 end LeanFrontier.MarkovTree
