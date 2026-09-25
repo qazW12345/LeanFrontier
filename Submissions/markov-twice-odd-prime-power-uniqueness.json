@@ -1,0 +1,17 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-twice-odd-prime-power-uniqueness",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "target_driven",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovTree.ordered_unique_of_common_twice_odd_prime_power"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the literature-driven Markov uniqueness plan. This submission formalizes the second half of Anitha Srinivasan's classical elementary prime-power result: uniqueness for positive ordered Markov triples whose common largest coordinate is twice a positive power of an odd prime. It combines the separately validated odd-prime-power collision split with the modulo-four pattern of positive Markov triples. When the common coordinate is even, the four complementary coordinates are all 1 modulo 4, making both collision factors divisible by 4. The selected collision factor is already divisible by p^(2k); because p is odd these divisibilities combine to c^2. A strict size bound forces that factor to vanish, and pairwise coprimality reconstructs the coordinate pair. This proves a known restricted family only and does not claim the full Frobenius/Markov uniqueness conjecture. GPT-5.6 Sol / ChatGPT selected the exact Lean statement and authored the proof; the human did not author or materially edit the formal text. No claim of new mathematics is made."
+}
