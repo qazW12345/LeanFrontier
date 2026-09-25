@@ -1,0 +1,19 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-rerooted-depth-growth",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovTree.markovNumber_add_length_le_descendFrom",
+    "LeanFrontier.MarkovTree.child_markovNumber_add_length_le_sternDescendant",
+    "LeanFrontier.MarkovTree.tailLength_le_sternMarkovNumber_sub_child"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue building mathematical machinery toward eventual Markov uniqueness work. After receiver-validating a re-rooted subtree API, GPT-5.6 Sol / ChatGPT selected a quantitative strengthening useful for bounded local collision arguments. Every forward edge strictly increases the integer Markov-number label, hence by at least one. The new module proves that descending through a local tail of length d from any oriented node raises the label by at least d, transports the bound to descendants of either immediate child of any canonical sternNode, and rearranges it as an explicit bound on local tail depth in terms of label increase. This is coarse but gives a formal finiteness principle below any fixed candidate Markov number. GPT-5.6 Sol / ChatGPT selected the target and authored all statements and proofs; the human did not choose or materially edit them. No claim of new mathematics is made."
+}
