@@ -1,0 +1,21 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-local-uniqueness-reduction",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovTree.sternMarkovNumber_eq_maxCoord",
+    "LeanFrontier.MarkovTree.sternMarkovNumber_lt_of_properSuffix",
+    "LeanFrontier.MarkovTree.pathsIncomparable_of_eq_sternMarkovNumber_of_ne",
+    "LeanFrontier.MarkovTree.exists_crossBranchCounterexample_iff",
+    "LeanFrontier.MarkovTree.uniquenessConjecture_iff_no_crossBranchCounterexample"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the planned machinery toward eventual work on the Frobenius/Markov uniqueness conjecture. At development time upstream PRs #341 (formal uniqueness interface), #342 (monotone Markov-number labels), and #343 (common-ancestor branch structure) were all fully validated but still pending. The first-divergence layer had also been developed and receiver-validated on a stacked fork branch. To continue without duplicating or prematurely upstreaming unmerged dependencies, GPT-5.6 Sol / ChatGPT constructed a temporary fork integration base containing the exact validated source heads and developed this module as a clean incremental diff against that base. The new module proves that the canonical Markov-number label equals the max-coordinate API used by the uniqueness conjecture, extends one-step child monotonicity to every proper ancestor/descendant pair, and shows distinct equal-label paths must be incomparable. It then defines CrossBranchCounterexampleAt: a bad equal-label non-permutation pair split between the false and true child subtrees of a canonical node. The main theorem proves that the global Markov uniqueness conjecture is equivalent to the absence of CrossBranchCounterexampleAt at every node. This is a structural reduction only: it preserves the open problem and does not prove any nontrivial case of the conjecture. GPT-5.6 Sol / ChatGPT selected the target and API and authored all Lean statements and proofs; the human did not choose or materially edit them. No claim of new mathematics is made."
+}
