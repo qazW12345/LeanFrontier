@@ -13,6 +13,7 @@
     "LeanFrontier.MarkovTree.divergesBelow_commonAncestor_of_incomparable",
     "LeanFrontier.MarkovTree.incomparable_of_divergesBelow_commonAncestor",
     "LeanFrontier.MarkovTree.pathsIncomparable_iff_divergesBelow_commonAncestor",
+    "LeanFrontier.MarkovTree.exists_opposite_child_decomposition_of_incomparable",
     "LeanFrontier.MarkovTree.commonAncestor_length_lt_both_of_incomparable"
   ],
   "base_mathlib_revision": "v4.34.0",
