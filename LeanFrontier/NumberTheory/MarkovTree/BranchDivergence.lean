@@ -37,32 +37,6 @@ def DivergesBelow (a p q : List Bool) : Prop :=
       p = left ++ dp :: a ∧
       q = right ++ dq :: a
 
-private theorem prefix_before_commonAncestor_nonempty_left
-    {p q : List Bool} (hpq : ¬ p <:+ q)
-    {prefix : List Bool}
-    (hprefix : prefix ++ commonAncestor p q = p) :
-    prefix ≠ [] := by
-  intro hnil
-  subst prefix
-  have hca : commonAncestor p q = p := by
-    simpa using hprefix
-  apply hpq
-  rw [← hca]
-  exact commonAncestor_isSuffix_right p q
-
-private theorem prefix_before_commonAncestor_nonempty_right
-    {p q : List Bool} (hqp : ¬ q <:+ p)
-    {prefix : List Bool}
-    (hprefix : prefix ++ commonAncestor p q = q) :
-    prefix ≠ [] := by
-  intro hnil
-  subst prefix
-  have hca : commonAncestor p q = q := by
-    simpa using hprefix
-  apply hqp
-  rw [← hca]
-  exact commonAncestor_isSuffix_left p q
-
 /-- Incomparable paths leave their deepest common ancestor through distinct immediate children. -/
 theorem divergesBelow_commonAncestor_of_incomparable
     {p q : List Bool} (h : PathsIncomparable p q) :
@@ -70,10 +44,22 @@ theorem divergesBelow_commonAncestor_of_incomparable
   rcases h with ⟨hpq, hqp⟩
   rcases commonAncestor_isSuffix_left p q with ⟨leftPrefix, hleft⟩
   rcases commonAncestor_isSuffix_right p q with ⟨rightPrefix, hright⟩
-  have hleft_ne : leftPrefix ≠ [] :=
-    prefix_before_commonAncestor_nonempty_left hpq hleft
-  have hright_ne : rightPrefix ≠ [] :=
-    prefix_before_commonAncestor_nonempty_right hqp hright
+  have hleft_ne : leftPrefix ≠ [] := by
+    intro hnil
+    subst leftPrefix
+    have hca : commonAncestor p q = p := by
+      simpa using hleft
+    apply hpq
+    rw [← hca]
+    exact commonAncestor_isSuffix_right p q
+  have hright_ne : rightPrefix ≠ [] := by
+    intro hnil
+    subst rightPrefix
+    have hca : commonAncestor p q = q := by
+      simpa using hright
+    apply hqp
+    rw [← hca]
+    exact commonAncestor_isSuffix_left p q
 
   let dp : Bool := leftPrefix.getLast hleft_ne
   let dq : Bool := rightPrefix.getLast hright_ne
