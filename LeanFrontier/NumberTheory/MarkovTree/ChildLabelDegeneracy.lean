@@ -38,7 +38,8 @@ private theorem symmetric_descending_solution_eq_one_two
 
   have hprod : m * j = 2 * a ^ 2 := by
     have h := MarkovEquation.mul_jump_eq hsol
-    simpa [j] using h
+    change m * j = a ^ 2 + a ^ 2 at h
+    nlinarith
 
   have hsum : m + j = 3 * a ^ 2 := by
     dsimp [j]
@@ -78,8 +79,8 @@ private theorem symmetric_descending_solution_eq_one_two
 
   have hm2 : m = 2 := by
     rw [hj, ha1] at hsum
-    norm_num at hsum ⊢
-    exact hsum
+    norm_num at hsum
+    omega
 
   exact ⟨ha1, hm2⟩
 
@@ -136,8 +137,8 @@ theorem forwardCoordinate_eq_of_markovNumber_eq_two
     (n : OrientedNode) (hmarkov : n.markovNumber = 2) :
     n.forwardCoordinate false = n.forwardCoordinate true := by
   have hne (dir : Bool) : forwardMove n.back dir ≠ n.back := by
-    cases hback : n.back <;> cases dir <;>
-      simp [forwardMove, hback]
+    cases n.back <;> cases dir <;>
+      simp [forwardMove]
 
   have hlt (dir : Bool) :
       n.forwardCoordinate dir < n.markovNumber := by
@@ -173,7 +174,7 @@ theorem sternMarkovNumber_eq_two_iff (path : List Bool) :
     have hbound := pathLength_add_two_le_sternMarkovNumber path
     rw [hmarkov] at hbound
     have hlen : path.length = 0 := by omega
-    exact List.length_eq_zero.mp hlen
+    exact List.length_eq_zero_iff.mp hlen
   · intro hpath
     subst path
     norm_num [sternMarkovNumber, sternNode, follow, orientedRoot,
