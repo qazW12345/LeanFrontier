@@ -50,12 +50,12 @@ theorem forwardCoordinate_sq_add_sq_eq_zero_mod_markovNumber
   simpa only [Int.cast_add, Int.cast_pow, Int.cast_ofNat] using hcast
 
 /-- The coordinate-defined square root `u / v` of `-1` modulo the Markov number. -/
-def coordinateRoot (n : OrientedNode) : ZMod n.markovNumber.natAbs :=
+def OrientedNode.coordinateRoot (n : OrientedNode) : ZMod n.markovNumber.natAbs :=
   (n.forwardCoordinate false : ZMod n.markovNumber.natAbs) *
     (n.forwardCoordinate true : ZMod n.markovNumber.natAbs)⁻¹
 
 /-- The quotient obtained after swapping the two non-back coordinates. -/
-def swappedCoordinateRoot (n : OrientedNode) : ZMod n.markovNumber.natAbs :=
+def OrientedNode.swappedCoordinateRoot (n : OrientedNode) : ZMod n.markovNumber.natAbs :=
   (n.forwardCoordinate true : ZMod n.markovNumber.natAbs) *
     (n.forwardCoordinate false : ZMod n.markovNumber.natAbs)⁻¹
 
@@ -74,7 +74,7 @@ theorem coordinateRoot_sq (n : OrientedNode) :
       (n.forwardCoordinate false : ZMod n.markovNumber.natAbs) ^ 2 =
         -(n.forwardCoordinate true : ZMod n.markovNumber.natAbs) ^ 2 := by
     exact eq_neg_of_add_eq_zero_left hsum
-  rw [coordinateRoot, mul_pow, huSq]
+  rw [OrientedNode.coordinateRoot, mul_pow, huSq]
   calc
     -(n.forwardCoordinate true : ZMod n.markovNumber.natAbs) ^ 2 *
           ((n.forwardCoordinate true : ZMod n.markovNumber.natAbs)⁻¹) ^ 2 =
@@ -100,7 +100,7 @@ theorem coordinateRoot_mul_swappedCoordinateRoot (n : OrientedNode) :
       (n.forwardCoordinate true : ZMod n.markovNumber.natAbs) *
           (n.forwardCoordinate true : ZMod n.markovNumber.natAbs)⁻¹ = 1 :=
     ZMod.coe_int_mul_inv_eq_one hv
-  rw [coordinateRoot, swappedCoordinateRoot]
+  rw [OrientedNode.coordinateRoot, OrientedNode.swappedCoordinateRoot]
   calc
     (n.forwardCoordinate false : ZMod n.markovNumber.natAbs) *
           (n.forwardCoordinate true : ZMod n.markovNumber.natAbs)⁻¹ *
