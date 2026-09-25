@@ -294,8 +294,8 @@ A computational experiment over a large initial segment of the Markov tree could
 each node:
 
 - its path;
-- `M);
-- factorization of the odd part of `M);
+- `M`;
+- factorization of the odd part of `M`;
 - canonical coordinate root;
 - the root modulo each prime-power factor;
 - parent and first-divergence data.
@@ -451,3 +451,129 @@ So the current frontier can be expressed much more sharply as:
 
 That is a concrete arithmetic/tree interaction problem, and LeanFrontier already contains much
 of the structural machinery needed to attack it.
+
+
+## 11. Derived characterization using Springborn's approximation constant
+
+A further useful consequence emerges by combining Springborn's classification theorem with the
+companion recurrence. I did not find this exact characterization stated in the sources searched,
+so it should be treated as a derived observation rather than attributed as a theorem of
+Springborn.
+
+Springborn proves that a rational number has approximation constant at least `1/3` iff it is
+either a Markov fraction or a companion of a Markov fraction. A Markov fraction `p/q` satisfies
+
+`q | p^2 + 1`.
+
+Now take a genuine companion of a Markov fraction `p/q`. In Springborn's notation it has the
+reduced form
+
+`
+P/Q = (p*u_k +/- u_{k-1}) / (q*u_k),    k >= 2,
+`
+
+where
+
+`
+u_0 = 0,  u_1 = 1,  u_{k+1} = 3*q*u_k - u_{k-1}
+`
+
+and
+
+`
+u_k^2 - 3*q*u_k*u_{k-1} + u_{k-1}^2 = 1.
+`
+
+Modulo `u_k`, the recurrence identity gives
+
+`u_{k-1}^2 ≡ 1 (mod u_k)`.
+
+But `P ≡ +/-u_{k-1} (mod u_k)`, hence
+
+`P^2 + 1 ≡ 2 (mod u_k)`.
+
+For `k >= 2`, `u_k >= u_2 = 3q >= 3`, so `u_k` cannot divide `P^2+1).
+Since `u_k | Q`, no genuine companion can satisfy
+
+`Q | P^2 + 1`.
+
+Consequently, for reduced rationals with denominator `Q>1`, Springborn's results imply the
+characterization
+
+> **Markov fraction = rational with approximation constant at least `1/3` whose numerator is a
+> square root of `-1` modulo its denominator.**
+
+Equivalently, in the centered interval `[0,1/2]`, the classical uniqueness conjecture can be
+viewed as the assertion that for each Markov denominator `Q), at most one canonical root
+`P^2 ≡ -1 (mod Q)` has approximation constant at least `1/3`.
+
+This is another way to see what makes the actual coordinate root special among the many CRT roots
+available for a composite Markov number.
+
+### Formalization feasibility
+
+Mathlib does not appear to package Springborn's rational approximation constant itself, but it
+does contain substantial continued-fraction and Diophantine-approximation infrastructure,
+including
+
+- `Mathlib.NumberTheory.DiophantineApproximation.Basic`;
+- `Mathlib.NumberTheory.DiophantineApproximation.ContinuedFractions`;
+- continued-fraction determinant, convergent, and approximation lemmas.
+
+So this route is technically larger than Srinivasan's elementary collision identity, but it is
+not starting from zero.
+
+A possible future theorem interface is:
+
+`
+def Rat.approximationConstant (x : Rat) : Real := ...
+
+theorem isMarkovFraction_iff_approximationConstant_and_sq_neg_one
+    (x : Rat) (hxden : 1 < x.den) :
+    IsMarkovFraction x <->
+      1 / 3 <= x.approximationConstant /\
+      x.den | x.num^2 + 1 := ...
+`
+
+The exact rational representation and coercions would need redesign for Lean.
+
+## 12. A newer generalized-Pell reformulation
+
+A 2025 note by K. R. Matthews and J. P. Robertson gives another equivalent form of the Markoff
+numbers conjecture in terms of the number of equivalence classes of a generalized Pell equation.
+It also gives another proof of the prime-power/twice-prime-power case using an LMM algorithm and
+bounds for fundamental solutions.
+
+Source:
+K. R. Matthews and J. P. Robertson,
+*A Note on the Markoff Numbers Conjecture* (revised 2025).
+https://www.numbertheory.org/PDFS/markoff.pdf
+
+The paper's generalized-Pell route is relevant because Mathlib already has significant Pell and
+continued-fraction infrastructure. However, relative to the current LeanFrontier state it appears
+less direct than the Srinivasan factorization:
+
+- our current fork already has modular roots, primitive coordinate pairs, and a cross determinant;
+- Srinivasan plugs directly into those objects;
+- the Pell reformulation would require introducing another representation and proving the bridge
+  before it could improve the existing local collision reduction.
+
+Therefore this should remain a backup route unless the elementary CRT-sign attack stalls.
+
+## 13. Refined research priority after the extended review
+
+The highest-value next mathematical experiment is now:
+
+1. formalize Srinivasan's two-triple collision identity;
+2. express its two factors as the `same root` and `opposite root` cases modulo each odd
+   prime-power divisor;
+3. prove the classical prime-power restricted uniqueness theorem end-to-end;
+4. define the canonical integer Markov index and bridge it to `coordinateRoot`;
+5. investigate how the local first-divergence/opposite-subtree structure constrains the CRT sign
+   vector;
+6. keep the approximation-constant characterization as a second, conceptually clean route to
+   recognizing which CRT root is the genuine Markov root.
+
+The key unresolved interaction is therefore not merely a numerical determinant bound. It is the
+relationship between **tree branch data** and the **prime-power sign vector of the canonical
+square root of -1**.
