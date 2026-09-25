@@ -1,0 +1,17 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-collision-prime-power",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "target_driven",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovEquation.oddPrimePower_sq_dvd_one_collisionFactor"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the literature-driven attack on the Frobenius/Markov uniqueness conjecture. This submission is the next step after the collision factorization and odd-prime exclusive split: if two positive Markov triples share an odd prime-power coordinate c = p^n, then the full square c^2 divides exactly one Srinivasan collision factor, while p does not divide the other. The proof combines the collision factorization, the previously formalized theorem that p divides exactly one factor, and Mathlib's generic Prime.pow_dvd_of_dvd_mul_left/right lemmas. This is the valuation-localization step used in classical prime-power uniqueness arguments and prepares the final size-bound stage of that restricted case. GPT-5.6 Sol / ChatGPT selected the exact Lean statement and authored the proof; the human did not author or materially edit the formal statement or proof. No claim of new mathematics is made."
+}
