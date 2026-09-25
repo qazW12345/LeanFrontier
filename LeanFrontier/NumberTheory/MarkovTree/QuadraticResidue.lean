@@ -126,4 +126,18 @@ theorem isSquare_neg_one_mod_markovNumber (n : OrientedNode) :
     exact dvd_mul_right _ _
   exact ZMod.isSquare_neg_one_of_dvd hdNat hs
 
+/-- No prime divisor of an oriented Markov-number label is congruent to three modulo four.
+
+This is the standard prime-factor consequence of the square root of `-1` modulo the label. -/
+theorem prime_dvd_markovNumber_mod_four_ne_three
+    (n : OrientedNode) {p : ℕ}
+    (hp : p.Prime) (hd : p ∣ n.markovNumber.natAbs) :
+    p % 4 ≠ 3 := by
+  have hnonzero : n.markovNumber.natAbs ≠ 0 :=
+    Int.natAbs_ne_zero.mpr (ne_of_gt (markovNumber_pos n))
+  have hmem : p ∈ n.markovNumber.natAbs.primeFactors :=
+    Nat.mem_primeFactors.mpr ⟨hp, hd, hnonzero⟩
+  exact Nat.mod_four_ne_three_of_mem_primeFactors_of_isSquare_neg_one
+    hmem (isSquare_neg_one_mod_markovNumber n)
+
 end LeanFrontier.MarkovTree
