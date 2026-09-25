@@ -577,3 +577,84 @@ The highest-value next mathematical experiment is now:
 The key unresolved interaction is therefore not merely a numerical determinant bound. It is the
 relationship between **tree branch data** and the **prime-power sign vector of the canonical
 square root of -1**.
+
+
+## 14. Zhang determinant identities and the existing oriented-node representation
+
+A closer read of Zhang's elementary prime-power proof gives an exact next algebraic target.
+For every ordered Farey triple `r < t < s`, his Markov index `u_t` satisfies
+
+`
+u_t * m_r - u_r * m_t = m_s,
+u_s * m_t - u_t * m_s = m_r.
+`
+
+Equivalently,
+
+`
+u_t / m_t - u_r / m_r = m_s / (m_r * m_t),
+u_s / m_s - u_t / m_t = m_r / (m_t * m_s).
+`
+
+These identities immediately imply strict monotonicity of the signed index ratio along the
+Farey order.
+
+Source:
+Y. Zhang, *An elementary proof of uniqueness of Markoff numbers which are prime powers*,
+arXiv:math/0606283, Lemmas 2-3.
+https://arxiv.org/abs/math/0606283
+
+### Important LeanFrontier representation observation
+
+We probably do **not** need to build a second Markov/Farey triple representation to formalize
+these identities.
+
+For a canonical `sternNode path`:
+
+- the `back` coordinate is the current Markov number `m_t`;
+- the two non-back / forward coordinates are the neighboring Markov numbers `m_r,m_s`,
+  up to the accepted orientation convention;
+- the accepted `SternBrocot.bounds path` already stores the corresponding Farey boundary
+  fractions;
+- `SternBrocot.mediant_bounds_eq_pair` proves the current rational node is their mediant.
+
+Thus an `OrientedNode` already carries the numerical Markov triple corresponding to the Farey
+interval. The missing theorem is an **orientation bridge** identifying which forward coordinate
+corresponds to which Stern-Brocot boundary at each path.
+
+This is potentially a better next structural target than defining another frame object.
+
+### Signed versus unsigned index
+
+The new canonical `markovIndex = |valMinAbs coordinateRoot|` is the correct
+Springborn/Frobenius-style numerator after quotienting the `r <-> -r` symmetry, but Zhang's
+global monotonicity across all slopes uses a **signed/oriented** choice.
+
+Small examples show why this matters:
+
+- the reciprocal Stern-Brocot positions `1/2` and `2/1` both have Markov number `5`;
+- the unsigned index is `2` in both cases, as it should be after permutation symmetry;
+- Zhang's ordered-slope indexing distinguishes the two representatives by the complementary
+  residues `2` and `3 = -2 mod 5`.
+
+Therefore the clean formal strategy is likely:
+
+1. keep `markovIndex` as the symmetry-quotiented invariant for the uniqueness problem;
+2. define a **signed Farey index** only after the Stern-Brocot boundary/orientation bridge is
+   proved;
+3. prove Zhang's determinant identities for that signed index;
+4. derive monotonicity;
+5. recover the unsigned index on a fundamental half of the rational tree.
+
+This avoids overloading the arithmetic `coordinateRoot` with global Farey-order conventions.
+
+### Computational sanity check
+
+A finite scan of the exact accepted oriented-tree recursion confirms that composite Markov numbers
+with several odd prime factors realize many different CRT sign vectors for their genuine
+canonical roots. For example, already among small nodes the prime-power sign patterns vary across
+`M = 985, 1325, 4181, 6466, 9077,…`.
+
+So a naive invariant such as path parity or a globally fixed sign at every prime factor is not
+plausible. The useful target must relate the sign vector to more refined local branch/Farey data,
+which reinforces the importance of the orientation bridge above.
