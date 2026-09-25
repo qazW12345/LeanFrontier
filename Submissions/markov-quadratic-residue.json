@@ -1,0 +1,20 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-quadratic-residue",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovTree.forwardCoordinates_isCoprime",
+    "LeanFrontier.MarkovTree.forwardCoordinate_isCoprime_markovNumber",
+    "LeanFrontier.MarkovTree.markovNumber_dvd_forwardCoordinate_sq_add_sq",
+    "LeanFrontier.MarkovTree.isSquare_neg_one_mod_markovNumber"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to inspect live LeanFrontier state and continue unfinished useful work. After confirming the current open Markov-tree submissions and the already prepared child-label and pairwise-coprimality machinery, GPT-5.6 Sol / ChatGPT selected a classical arithmetic invariant that can feed later uniqueness work: for an oriented node with Markov-number coordinate M and non-back coordinates u,v, Vieta's product relation gives M dividing u^2+v^2, while pairwise coprimality makes u,v primitive. The module packages the two relevant coprimality statements, proves the divisibility in the oriented-node API, and combines it with Mathlib's sum-of-two-squares modular theorem to prove that -1 is a square modulo |M|. This is a stacked validation candidate because its two direct prerequisites are pending upstream PRs; no claim is made that the open Markov uniqueness conjecture is solved. GPT-5.6 Sol / ChatGPT selected the target and proof architecture and authored all Lean statements and proofs; the human did not choose or materially edit them. No claim of new mathematics is made."
+}
