@@ -40,7 +40,6 @@ argument.  Pairwise coprimality of positive Markov triples supplies them in the 
 application. -/
 theorem odd_prime_not_dvd_both_collision_factors
     {a₁ b₁ a₂ b₂ c : ℤ} {p : ℕ}
-    (h₁ : IsSolution a₁ b₁ c)
     (h₂ : IsSolution a₂ b₂ c)
     (hc₁ : IsCoprime a₁ c)
     (hc₂ : IsCoprime a₂ c)
@@ -125,10 +124,10 @@ theorem odd_prime_power_collision_factor_split
   have hpc : (p : ℤ) ∣ c :=
     (dvd_pow_self (p : ℤ) (Nat.ne_of_gt hk)).trans hpkc
   have hsep :=
-    odd_prime_not_dvd_both_collision_factors h₁ h₂ hc₁ hc₂ hp hp2 hpc
+    odd_prime_not_dvd_both_collision_factors h₂ hc₁ hc₂ hp hp2 hpc
 
   have hpk2c2 : (((p : ℤ) ^ k) ^ 2) ∣ c ^ 2 :=
-    hpkc.pow 2
+    pow_dvd_pow_of_dvd hpkc 2
   have hprod :
       (((p : ℤ) ^ k) ^ 2) ∣
         (a₁ * a₂ - b₁ * b₂) * (a₁ * b₂ - b₁ * a₂) := by
