@@ -64,7 +64,6 @@ private theorem coordMultiset_branchPermState (initial : Move) (s : State) :
       change ({z} : Multiset ℤ) + {x} + {y} = {x} + {y} + {z}
       ac_rfl
   | second =>
-      change ({y} : Multiset ℤ) + {z} = ({x} + {y} + {z}) - {x}
       change ({y} : Multiset ℤ) + {z} + {x} = {x} + {y} + {z}
       ac_rfl
   | third =>
