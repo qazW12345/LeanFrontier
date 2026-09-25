@@ -46,6 +46,7 @@ theorem sternMarkovNumber_lt_of_properSuffix
   | nil =>
       simp at hne
   | cons dir rest =>
+      clear hne
       have hle :
           sternMarkovNumber ancestor ≤
             sternMarkovNumber (rest ++ ancestor) := by
