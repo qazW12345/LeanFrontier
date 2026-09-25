@@ -91,8 +91,9 @@ theorem isPrefix_commonPrefix {r p q : List Bool}
                 obtain ⟨hca', hrq⟩ := List.cons_prefix_cons.mp hq
                 subst c
                 have htail := ih hrp hrq
-                simpa [commonPrefix] using
-                  (List.cons_prefix_cons.mpr ⟨rfl, htail⟩)
+                rcases htail with ⟨rest, hrest⟩
+                refine ⟨rest, ?_⟩
+                simpa [commonPrefix] using congrArg (List.cons a) hrest
           · cases r with
             | nil =>
                 simp [commonPrefix, hab]
@@ -163,7 +164,7 @@ theorem commonAncestor_eq_left_iff (p q : List Bool) :
     have hca : commonAncestor p q <:+ p :=
       commonAncestor_isSuffix_left p q
     have hpca : p <:+ commonAncestor p q :=
-      isSuffix_commonAncestor List.suffix_refl hpq
+      isSuffix_commonAncestor (List.suffix_refl p) hpq
     exact hca.eq_of_length (hca.length_le.antisymm hpca.length_le)
 
 /-- Symmetrically, a path is its own common ancestor with `p` exactly when it is an ancestor
@@ -178,7 +179,7 @@ theorem commonAncestor_eq_right_iff (p q : List Bool) :
     have hca : commonAncestor p q <:+ q :=
       commonAncestor_isSuffix_right p q
     have hqca : q <:+ commonAncestor p q :=
-      isSuffix_commonAncestor hqp List.suffix_refl
+      isSuffix_commonAncestor hqp (List.suffix_refl q)
     exact hca.eq_of_length (hca.length_le.antisymm hqca.length_le)
 
 /-- The canonical common ancestor is symmetric in its two arguments. -/
