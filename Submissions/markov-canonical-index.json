@@ -1,0 +1,19 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-canonical-index",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "target_driven",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovTree.markovIndex_le_half",
+    "LeanFrontier.MarkovTree.markovIndex_cast_eq_coordinateRoot_or_neg",
+    "LeanFrontier.MarkovTree.markovIndex_sq"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to execute a literature-informed attack plan for the Frobenius/Markov uniqueness conjecture. The preceding literature review identified the fork-local coordinateRoot as the same classical modular object that appears as the Frobenius/Zhang index and, up to orientation convention, the numerator of Springborn's Markov fractions. GPT-5.6 Sol / ChatGPT then found that Mathlib's existing ZMod.valMinAbs API gives exactly the canonical representative needed to quotient the sign ambiguity without inventing new residue machinery. This submission therefore defines the unsigned markovIndex as the natural absolute value of the centered coordinateRoot representative, proves it lies in the standard half interval, proves its cast is the coordinate root or its negative, and proves it still squares to -1 modulo the Markov number. This is representation/arithmetic infrastructure toward later Farey-index monotonicity and CRT sign-coherence arguments; it does not prove the open uniqueness conjecture. GPT-5.6 Sol / ChatGPT selected the API and authored all Lean statements and proofs; the human did not author or materially edit the formal text. No claim of new mathematics is made."
+}
