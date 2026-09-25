@@ -1,0 +1,21 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-child-label-degeneracy",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovTree.markovNumber_eq_two_of_forwardCoordinate_eq",
+    "LeanFrontier.MarkovTree.forwardCoordinate_eq_iff_markovNumber_eq_two",
+    "LeanFrontier.MarkovTree.child_markovNumber_eq_iff_markovNumber_eq_two",
+    "LeanFrontier.MarkovTree.sternMarkovNumber_eq_two_iff",
+    "LeanFrontier.MarkovTree.sternNode_child_markovNumber_eq_iff_path_nil"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue building mathematical machinery toward eventual attacks on the Frobenius/Markov uniqueness conjecture. The immediately preceding child-label algebra module had been fully receiver-validated and showed that equality of the two immediate child Markov-number labels is equivalent to equality of the two non-back parent coordinates. GPT-5.6 Sol / ChatGPT selected the remaining degenerate case for formal classification. For a positive Markov solution with equal non-back coordinates a and largest coordinate M, it lets j be the descending Vieta companion of M. Vieta gives M*j=2a^2 and M+j=3a^2, while orientation gives 0<j<M. From these relations the proof derives j^2<2a^2 and a^2(3j-2)=j^2, forcing j=1, then a=1 and M=2. The public theorems conclude that equal non-back coordinates are equivalent to Markov number two, equal immediate child labels are equivalent to Markov number two, and on the canonical Stern-Brocot branch this occurs exactly at the empty/root path. This isolates the only immediate sibling-label degeneracy before future deeper left-subtree/right-subtree analysis. GPT-5.6 Sol / ChatGPT selected the target and API and authored all Lean statements and proofs; the human did not choose or materially edit them. No claim of new mathematics is made."
+}
