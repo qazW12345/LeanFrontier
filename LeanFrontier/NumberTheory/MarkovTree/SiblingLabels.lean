@@ -36,7 +36,6 @@ theorem forwardCoordinates_eq_one_of_eq (n : OrientedNode)
     n.forwardCoordinate false = 1 ∧
       n.forwardCoordinate true = 1 := by
   have hcop := n.pairwiseCoprime
-  have hpos := n.positive
   rcases n with ⟨⟨x, y, z⟩, back, hpositive, hsolution, hdesc⟩
   rcases hpositive with ⟨hx, hy, hz⟩
   change
@@ -48,6 +47,7 @@ theorem forwardCoordinates_eq_one_of_eq (n : OrientedNode)
       have hu : IsUnit y :=
         isCoprime_self.mp hcop.2.2
       have hy1 := eq_one_of_pos_isUnit hy hu
+      change y = 1 at hy1
       simp [OrientedNode.forwardCoordinate, State.coordinate, forwardMove, hy1]
   | second =>
       change x = z at h
@@ -55,6 +55,7 @@ theorem forwardCoordinates_eq_one_of_eq (n : OrientedNode)
       have hu : IsUnit x :=
         isCoprime_self.mp hcop.2.1
       have hx1 := eq_one_of_pos_isUnit hx hu
+      change x = 1 at hx1
       simp [OrientedNode.forwardCoordinate, State.coordinate, forwardMove, hx1]
   | third =>
       change x = y at h
@@ -103,7 +104,7 @@ theorem forwardCoordinate_eq_iff_markovNumber_eq_two (n : OrientedNode) :
     have hfalseLt :
         n.forwardCoordinate false < n.markovNumber := by
       apply coordinate_lt_markovNumber_of_ne_back n
-      cases hback : n.back <;> simp [forwardMove, OrientedNode.forwardCoordinate, hback]
+      cases n.back <;> simp [forwardMove]
     have htrueLt :
         n.forwardCoordinate true < n.markovNumber := by
       apply coordinate_lt_markovNumber_of_ne_back n
