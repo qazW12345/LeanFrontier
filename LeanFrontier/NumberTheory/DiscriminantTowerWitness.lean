@@ -360,14 +360,12 @@ theorem quadraticFields_discr_abs :
             (adjoin_le_integralClosure hint)).isIntegral _)
       have H := Algebra.discr_mul_isIntegral_mem_adjoin ℚ hint h
       rw [hdisc] at H
-      refine
-        Algebra.adjoin_le ?_
-          (mem_adjoin_of_smul_prime_pow_smul_of_minpoly_isEisensteinAt (n := 3)
-            (by norm_num : Prime (2 : ℤ)) hint h
-            (by simpa [Algebra.smul_def, zsmul_eq_mul] using H) ?_)
-      · rw [hminZ]
-        exact quadPlusZ_eisenstein
-      · exact Algebra.self_mem_adjoin_singleton ℤ B.gen
+      exact
+        mem_adjoin_of_smul_prime_pow_smul_of_minpoly_isEisensteinAt (n := 3)
+          (by norm_num : Prime (2 : ℤ)) hint h
+          (by simpa [Algebra.smul_def, zsmul_eq_mul] using H) (by
+            rw [hminZ]
+            exact quadPlusZ_eisenstein)
     letI : IsIntegralClosure
         (Algebra.adjoin ℤ ({B.gen} : Set sqrtTwoField)) ℤ sqrtTwoField := hclosure
     let e :
@@ -415,7 +413,7 @@ theorem quadraticFields_discr_abs :
     have hint : IsIntegral ℤ B.gen := by
       apply IsIntegral.of_pow (n := 2) (by norm_num)
       rw [hgen_sq]
-      exact isIntegral_intCast (-2)
+      exact (isIntegral_natCast 2).neg
     have hminZ : minpoly ℤ B.gen = quadMinusZ := by
       apply Polynomial.map_injective (algebraMap ℤ ℚ) (algebraMap ℤ ℚ).injective_int
       calc
@@ -453,14 +451,12 @@ theorem quadraticFields_discr_abs :
       have H' : (8 : ℚ) • x ∈
           Algebra.adjoin ℤ ({B.gen} : Set sqrtNegTwoField) := by
         simpa using (Algebra.adjoin ℤ ({B.gen} : Set sqrtNegTwoField)).neg_mem H
-      refine
-        Algebra.adjoin_le ?_
-          (mem_adjoin_of_smul_prime_pow_smul_of_minpoly_isEisensteinAt (n := 3)
-            (by norm_num : Prime (2 : ℤ)) hint h
-            (by simpa [Algebra.smul_def, zsmul_eq_mul] using H') ?_)
-      · rw [hminZ]
-        exact quadMinusZ_eisenstein
-      · exact Algebra.self_mem_adjoin_singleton ℤ B.gen
+      exact
+        mem_adjoin_of_smul_prime_pow_smul_of_minpoly_isEisensteinAt (n := 3)
+          (by norm_num : Prime (2 : ℤ)) hint h
+          (by simpa [Algebra.smul_def, zsmul_eq_mul] using H') (by
+            rw [hminZ]
+            exact quadMinusZ_eisenstein)
     letI : IsIntegralClosure
         (Algebra.adjoin ℤ ({B.gen} : Set sqrtNegTwoField)) ℤ sqrtNegTwoField := hclosure
     let e :
