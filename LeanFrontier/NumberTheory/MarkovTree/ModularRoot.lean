@@ -14,7 +14,7 @@ oriented node:
   coordinates;
 * all three coordinates are pairwise coprime.
 
-The generic coprime-sum-of-two-squares lemma therefore applies: either
+The imported generic coprime-sum-of-two-squares lemma therefore applies: either
 non-back coordinate is invertible modulo the Markov number, and their quotient
 squares to `-1`.
 
