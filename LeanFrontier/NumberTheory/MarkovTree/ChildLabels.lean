@@ -37,10 +37,13 @@ theorem markovNumber_pos (n : OrientedNode) :
     0 < n.markovNumber := by
   rcases n with ⟨⟨x, y, z⟩, back, hpos, hsol, hdesc⟩
   rcases hpos with ⟨hx, hy, hz⟩
-  cases back <;>
-    simpa [OrientedNode.markovNumber, State.coordinate] using hx <;>
-    simpa [OrientedNode.markovNumber, State.coordinate] using hy <;>
-    simpa [OrientedNode.markovNumber, State.coordinate] using hz
+  cases back with
+  | first =>
+      simpa [OrientedNode.markovNumber, State.coordinate] using hx
+  | second =>
+      simpa [OrientedNode.markovNumber, State.coordinate] using hy
+  | third =>
+      simpa [OrientedNode.markovNumber, State.coordinate] using hz
 
 /-- Either non-back coordinate of an oriented node is positive. -/
 theorem forwardCoordinate_pos (n : OrientedNode) (dir : Bool) :
@@ -134,6 +137,5 @@ theorem child_markovNumber_eq_iff_forwardCoordinate_eq (n : OrientedNode) :
       child_markovNumber_formula n true]
     simp
     rw [hcoord]
-    ring
 
 end LeanFrontier.MarkovTree
