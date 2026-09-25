@@ -1,0 +1,17 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-collision-prime-separation",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "target_driven",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovEquation.oddPrime_not_dvd_both_collisionFactors"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the literature-driven Markov uniqueness plan after the collision factorization had passed receiver validation. This submission formalizes the next arithmetic step from Anitha Srinivasan's treatment of Markoff collisions: for two positive Markov triples sharing a coordinate c, an odd prime divisor of c cannot divide both collision factors a1*a2-b1*b2 and a1*b2-b1*a2. The proof uses the accepted pairwise-coprimality theorem for positive Markov triples and elementary prime divisibility. If both factors were divisible, the prime would divide both a1^2-b1^2 and, from the Markov equation modulo c, a1^2+b1^2; hence it would divide 2*a1^2, contradicting oddness and coprimality with c. The intended downstream use is to localize each prime-power factor of a hypothetical equal-label collision to exactly one of the same-root or opposite-root factors, preparing the known prime-power uniqueness case and the general CRT sign-split formulation. GPT-5.6 Sol / ChatGPT selected the exact Lean statement and authored the proof; the human did not author or materially edit the formal statement or proof. No claim of new mathematics is made."
+}
