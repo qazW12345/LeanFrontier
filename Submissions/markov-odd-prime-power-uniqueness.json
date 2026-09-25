@@ -1,0 +1,17 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-odd-prime-power-uniqueness",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "target_driven",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovTree.ordered_unique_of_common_odd_prime_power"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to execute a literature-informed plan for attacking the Frobenius/Markov uniqueness conjecture. After reviewing the literature, GPT-5.6 Sol / ChatGPT selected the elementary collision-factorization route of Anitha Srinivasan and first formalized the collision identity and its odd-prime-power factor split. This submission uses those results together with the independently receiver-validated pairwise-coprimality theorem for positive Markov triples to prove a genuine classical partial case: two positive ordered Markov triples with the same largest coordinate are equal when the common coordinate is a positive power of an odd prime. The proof follows the classical elementary mechanism: the square of the common prime power divides one collision factor; elementary size bounds force that factor to vanish; primitivity reconstructs the coordinate pair; and ordering removes the swapped case. This resolves a known restricted family only and does not claim the full Markov uniqueness conjecture. GPT-5.6 Sol / ChatGPT designed the exact Lean statement and authored the proof; the human did not author or materially edit the formal text. No claim of new mathematics is made."
+}
