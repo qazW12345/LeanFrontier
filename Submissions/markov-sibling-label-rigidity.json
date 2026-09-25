@@ -1,0 +1,21 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-sibling-label-rigidity",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovTree.forwardCoordinates_eq_one_of_eq",
+    "LeanFrontier.MarkovTree.forwardCoordinate_eq_iff_markovNumber_eq_two",
+    "LeanFrontier.MarkovTree.child_markovNumber_eq_iff_markovNumber_eq_two",
+    "LeanFrontier.MarkovTree.sternMarkovNumber_eq_two_iff",
+    "LeanFrontier.MarkovTree.sternNode_child_markovNumber_eq_iff"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue building machinery toward eventual attacks on the Frobenius/Markov uniqueness conjecture. GPT-5.6 Sol / ChatGPT combined the independently developed child-label factorization and pairwise-coprimality invariant on a temporary integration base. The resulting module proves a rigidity statement for immediate sibling labels. Equality of the two child Markov-number labels is first reduced to equality of the two non-back parent coordinates. Pairwise coprimality then forces those equal positive coordinates to be 1; substituting into the Markov equation and using the oriented-node descent invariant forces the maximum/back coordinate to be 2. Conversely, parent Markov number 2 forces both smaller positive integer coordinates to be 1. Hence equal sibling labels occur exactly at parent Markov number 2. The accepted depth lower bound then shows that on the canonical sternNode branch this occurs only at the empty path, i.e. the binary root. This is structural machinery and does not solve cross-subtree Markov uniqueness. GPT-5.6 Sol / ChatGPT selected the target and proof architecture and authored all statements and proofs; the human did not choose or materially edit them. No claim of new mathematics is made."
+}
