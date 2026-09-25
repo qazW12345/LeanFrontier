@@ -1,0 +1,18 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-collision-rigidity",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "target_driven",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovEquation.positiveCoprimePair_eq_of_cross_eq_zero",
+    "LeanFrontier.MarkovEquation.positiveOrderedCoprimePair_eq_of_companion_eq_zero"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the literature-driven Markov uniqueness plan. This submission isolates the primitive-pair rigidity steps used in Anitha Srinivasan's elementary proof of the prime-power case. For positive coprime integer pairs, vanishing of the cross determinant forces equality of the pairs. Vanishing of the companion collision factor forces the two pairs to be swapped, and if each pair is ordered a_i <= b_i this again forces equality. The lemmas are independent of the Markov equation itself but are placed with the collision arithmetic because their intended immediate consumer is the Markov prime-power uniqueness theorem. GPT-5.6 Sol / ChatGPT selected the exact Lean statements and authored the proofs; the human did not author or materially edit them. No claim of new mathematics is made."
+}
