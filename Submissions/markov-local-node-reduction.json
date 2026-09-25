@@ -1,0 +1,19 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-local-node-reduction",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovTree.markovNumber_lt_childSubtree",
+    "LeanFrontier.MarkovTree.crossBranchCounterexampleAt_iff_local",
+    "LeanFrontier.MarkovTree.uniquenessConjecture_iff_no_localCrossCounterexample"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the planned machinery toward eventual work on the Frobenius/Markov uniqueness conjecture. At this stage upstream PR #341 had merged, while the Markov-number, common-ancestor, first-divergence, local path reduction, and re-rooted subtree layers had each been developed and receiver-validated on fork stacks. GPT-5.6 Sol / ChatGPT constructed a temporary integration base from those exact validated sources and selected the next abstraction layer: remove global Stern-Brocot path bookkeeping from the local counterexample condition. The new module defines LocalCrossCounterexample directly on an OrientedNode as an equal-Markov-number non-permutation pair obtained by arbitrary re-rooted descent inside its false and true child subtrees. It proves that every member of either child subtree has label strictly above the parent, proves the path-based CrossBranchCounterexampleAt at a canonical path is equivalent to this purely local node condition, and concludes that the global Markov uniqueness conjecture is equivalent to absence of LocalCrossCounterexample at every canonical oriented node. The result is a structural reformulation only and does not prove child-subtree separation or any new case of the open conjecture. GPT-5.6 Sol / ChatGPT selected the target and API and authored all Lean statements and proofs; the human did not choose or materially edit them. No claim of new mathematics is made."
+}
