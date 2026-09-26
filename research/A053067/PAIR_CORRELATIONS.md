@@ -686,7 +686,151 @@ and the sparse cross-order relations between multiplicative orders.
 
 A larger \(d=3001,\ p<3000\) stress test is the next computational check.
 
-## 8. Analytic target
+## 8. Rigorous non-cross-order covariance bound
+
+Assume a prime-width generator regime and distinct local primes \(p<r\) with
+no cross-order relation
+
+\[
+p\nmid\ell_r,
+\qquad
+\ell_s=\operatorname{ord}_s(10).
+\]
+
+Put
+
+\[
+h=\gcd(\ell_p,\ell_r).
+\]
+
+Then
+
+\[
+\gcd(P_p,P_r)=h.
+\]
+
+### Root discrepancy modulo h
+
+For the local prime \(p\), write the exponent class as
+
+\[
+b=n\bmod\ell_p.
+\]
+
+For each \(b\), let \(N_p(b)\in\{0,1,2\}\) be the number of roots in
+\(a=n\bmod p\).
+
+Apart from the degenerate exponent class \(b=0\),
+
+\[
+N_p(b)-1
+=
+\chi_p(\Delta_p(q_p^b)).
+\]
+
+For a residue \(c\bmod h\), the number of local zero classes reducing to \(c\)
+modulo \(h\) is
+
+\[
+\alpha_c
+=
+\sum_{\substack{b\bmod\ell_p\\b\equiv c\pmod h}}
+N_p(b).
+\]
+
+The exponent classes in one residue \(c\bmod h\) make \(q_p^b\) run through a
+coset of the subgroup
+
+\[
+\langle q_p^h\rangle.
+\]
+
+The quadratic discriminant polynomial is nonsquare outside the same finite
+exceptional set already isolated in the one-prime theory.  The standard Weil
+bound over a subgroup coset therefore gives
+
+\[
+\alpha_c-\frac{|R_p|}{h}
+=
+O(\sqrt p)
+\]
+
+uniformly in \(c\) and \(h\mid\ell_p\).
+
+Consequently the discrepancy energy satisfies
+
+\[
+\boxed{
+E_p(h)
+=
+\sum_{c\bmod h}
+\left(\alpha_c-\frac{|R_p|}{h}\right)^2
+\ll hp.
+}
+\]
+
+The same bound holds for \(r\).
+
+### Covariance
+
+Insert these energy estimates into the exact Cauchy covariance identity:
+
+\[
+|\rho_{p,r}-\rho_p\rho_r|
+\le
+\frac{h}{P_pP_r}
+\sqrt{E_p(h)E_r(h)}.
+\]
+
+Since
+
+\[
+P_p=p\ell_p,
+\qquad
+P_r=r\ell_r,
+\]
+
+we obtain
+
+\[
+\boxed{
+|\rho_{p,r}-\rho_p\rho_r|
+\ll
+\frac{h^2}
+{\sqrt{pr}\,\ell_p\ell_r}.
+}
+\]
+
+The exact mod-60 conditioning splits the argument into only a bounded number
+of subgroup cosets, so it changes only the absolute implied constant.
+
+This bound is far weaker than the striking empirical conjecture
+
+\[
+|\rho_{p,r}-\rho_p\rho_r|
+\le
+\frac{h}{2pr},
+\]
+
+but it is unconditional given the same standard subgroup-character estimate
+already used in the one-prime theory.
+
+### Why it is useful
+
+For almost all primes, Erdős--Murty gives very large multiplicative order.
+When both \(\ell_p\) and \(\ell_r\) are large and their gcd \(h\) is modest,
+the bound above is extremely small.
+
+Thus the remaining second-moment problem splits naturally into:
+
+1. controlling averages of \(\gcd(\ell_p,\ell_r)^2\);
+2. handling the sparse cross-order pairs \(p\mid\ell_r\);
+3. absorbing the exceptional small-order primes separately.
+
+This is substantially more structured than a general two-prime character-sum
+problem.
+
+## 9. Analytic target
 
 For generator-regime local primes, seek a bound of the schematic form
 
