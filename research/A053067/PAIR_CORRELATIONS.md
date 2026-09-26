@@ -867,7 +867,129 @@ What remains is to exploit:
 This is a significantly simpler second-moment problem than the earlier
 character-sum formulation suggested.
 
-## 9. Analytic target
+## 9. Sparse cross-order family and correlation tails
+
+For \(p<r\) in the generator regime, a cross-order pair satisfies
+
+\[
+p\mid\ell_r
+\quad\Longrightarrow\quad
+p\mid r-1,
+\]
+
+because
+
+\[
+\ell_r\mid r-1.
+\]
+
+Hence
+
+\[
+\boxed{r\equiv1\pmod p.}
+\]
+
+For each fixed \(r\), the number of possible cross-order primes is at most
+
+\[
+\omega(r-1)\le \log_2 r.
+\]
+
+Therefore the number of cross-order pairs with \(p<r\le B\) is at most
+
+\[
+\sum_{\substack{r\le B\\r\ {\rm prime}}}\omega(r-1)
+\ll \pi(B)\log B
+\ll B.
+\]
+
+The total number of prime pairs is of order
+
+\[
+\pi(B)^2\asymp\frac{B^2}{(\log B)^2},
+\]
+
+so the cross-order proportion satisfies the elementary bound
+
+\[
+\boxed{
+\frac{\#\{\text{cross-order pairs}\}}
+{\#\{\text{all prime pairs}\}}
+\ll
+\frac{(\log B)^2}{B}
+\to0.
+}
+\]
+
+Thus the exceptional family is asymptotically sparse without requiring any
+deep multiplicative-order theorem.
+
+### d = 3001, primes through 3000
+
+Hosted run 36278994159 tested
+
+\[
+427
+\]
+
+local primes and
+
+\[
+90951
+\]
+
+pairs.
+
+It found only
+
+\[
+456
+\]
+
+cross-order pairs, about \(0.501\%\) of the total.
+
+Exactly
+
+\[
+38213
+\]
+
+pairs, about \(42.015\%\), had coprime local periods and hence exact zero
+covariance.
+
+The mean absolute log survival deviation over all pairs was
+
+\[
+1.02998\times10^{-6}.
+\]
+
+The large-prime tail is dramatically smaller.  Restricting both local primes
+to at least 211 leaves 73536 pairs but total absolute log-correlation only
+
+\[
+\boxed{4.16696\times10^{-4}}.
+\]
+
+Restricting both primes to at least 1009 leaves 34191 pairs and total absolute
+log-correlation only
+
+\[
+\boxed{2.13010\times10^{-5}}.
+\]
+
+For local primes at least 2000, the total over 8001 pairs is only
+
+\[
+\boxed{1.95373\times10^{-6}}.
+\]
+
+This suggests that, after finitely many small local primes are separated off,
+the full pair-correlation tail may be absolutely summable.
+
+That stronger statement is not yet proved, but it is now a concrete
+second-moment target.
+
+## 10. Analytic target
 
 For generator-regime local primes, seek a bound of the schematic form
 
