@@ -272,6 +272,22 @@ The simplest useful example is \(p=11\), for which
 
 is divisible by 11.
 
+
+Another useful example is \(p=53\), with
+\(\operatorname{ord}_{53}(10)=13\).  Hence
+
+\[
+689=53\cdot13\mid n
+\quad\Longrightarrow\quad
+53\mid A(n)
+\]
+
+for every fixed-width block.  Since \(\gcd(689,60)=1\), these multiples
+run through every residue class modulo 60.  In particular, every one of the
+12 classes surviving the elementary 2/3/5 sieve still contains infinitely
+many indices belonging to this width-independent composite family (apart
+from the sparse mixed-width exceptions).
+
 More generally this produces infinitely many provably composite A053067 terms
 without fixing the decimal width.  It is a natural reusable Lean lemma even if
 it is not sufficient for a complete covering proof.
