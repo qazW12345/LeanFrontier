@@ -252,4 +252,27 @@ theorem fixedConcat_natTriangular_eq_one_of_pow_eq_self
   exact fixedConcat_eq_one_of_pow_eq_self q (triangularStart (n : R)) n
     (triangularStart_eq_one_of_eq_one (n : R) hn) hn hpow
 
+/-- Prime-modulus specialization of the general residue-one mechanism.
+
+For an odd prime `p`, if the natural block length is `1 mod p` and the
+positional base satisfies `q^n = q` in `ZMod p`, then the actual natural
+triangular-start fixed-width concatenation is `1 mod p`. -/
+theorem zmod_fixedConcat_natTriangular_eq_one
+    (p q n : ℕ) [Fact p.Prime] (hp2 : p ≠ 2)
+    (hnmod : n ≡ 1 [MOD p])
+    (hpow : (q : ZMod p) ^ n = (q : ZMod p)) :
+    fixedConcat (q : ZMod p)
+      (((natTriangularStart n : ℕ) : ZMod p)) n = 1 := by
+  have h2ne : (2 : ZMod p) ≠ 0 := by
+    intro hzero
+    have hd : p ∣ 2 := (ZMod.natCast_eq_zero_iff 2 p).mp hzero
+    have hp_le : p ≤ 2 := Nat.le_of_dvd (by norm_num) hd
+    have htwo_le : 2 ≤ p := (Fact.out : p.Prime).two_le
+    exact hp2 (Nat.le_antisymm hp_le htwo_le)
+  letI : NeZero (2 : ZMod p) := ⟨h2ne⟩
+  have hn : (n : ZMod p) = 1 := by
+    exact (ZMod.natCast_eq_natCast_iff n 1 p).2 hnmod
+  exact fixedConcat_natTriangular_eq_one_of_pow_eq_self
+    (q : ZMod p) n hn hpow
+
 end LeanFrontier.A053067Research
