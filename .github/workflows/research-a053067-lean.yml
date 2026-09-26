@@ -37,4 +37,4 @@ jobs:
           -v "$GITHUB_WORKSPACE:/workspace"
           -w /workspace
           leanfrontier-a053067:ci
-          sh -c 'lake update && lake exe cache get && lake env lean research/A053067/ResidueOne.lean'
+          sh -c 'lake update && lake exe cache get && lake build Mathlib && lake env lean research/A053067/ResidueOne.lean'
