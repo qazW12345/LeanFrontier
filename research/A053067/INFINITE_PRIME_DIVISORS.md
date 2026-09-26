@@ -222,6 +222,40 @@ Hence
 }
 \]
 
+## Corollary: arbitrarily large least prime factor
+
+Let \(y\ge2\), and let
+
+\[
+m_y=\prod_{p\le y}p
+\]
+
+be the primorial through \(y\).
+
+The universal residue-one theorem gives infinitely many genuine terms with
+
+\[
+A(n)\equiv1\pmod{m_y}.
+\]
+
+Therefore no prime \(p\le y\) divides such a term.  Writing \(P^-(N)\) for
+the least prime factor of \(N>1\),
+
+\[
+\boxed{
+P^-(A(n))>y
+}
+\]
+
+for infinitely many \(n\).
+
+Hence A053067 contains a subsequence whose least prime factor tends to
+infinity.
+
+This is a useful strengthening of "infinitely many distinct prime divisors":
+not only must new primes appear, but one can force **all** prime factors of a
+chosen term to lie beyond any prescribed bound.
+
 ## Corollary: an infinite pairwise-coprime subsequence
 
 After choosing \(n_1,\ldots,n_j\), let
