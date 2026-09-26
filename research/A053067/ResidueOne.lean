@@ -176,4 +176,29 @@ theorem fixedConcat_triangular_eq_one {R : Type*} [Field R]
   · exact hn
   · exact h2ne
 
+/-- Natural-number A053067 block start, written with `Nat.choose` so its cast
+to a field is clean.  By `Nat.choose_two_right` this is exactly
+`n * (n - 1) / 2 + 1`. -/
+def natTriangularStart (n : ℕ) : ℕ :=
+  n.choose 2 + 1
+
+/-- Casting the natural A053067 block start agrees with the algebraic
+`triangularStart`. -/
+theorem cast_natTriangularStart {R : Type*} [Field R] [NeZero (2 : R)]
+    (n : ℕ) :
+    ((natTriangularStart n : ℕ) : R) = triangularStart (n : R) := by
+  simp [natTriangularStart, triangularStart, Nat.cast_choose_two]
+
+/-- Natural A053067 specialization of the residue-one lemma.
+
+If the fixed append base is 1 and the natural block length casts to 1, then
+the concatenation beginning at the actual natural triangular block start is
+1 in the target field. -/
+theorem fixedConcat_natTriangular_eq_one {R : Type*} [Field R]
+    [NeZero (2 : R)] (q : R) (n : ℕ)
+    (hq : q = 1) (hn : (n : R) = 1) :
+    fixedConcat q (((natTriangularStart n : ℕ) : R)) n = 1 := by
+  rw [cast_natTriangularStart]
+  exact fixedConcat_triangular_eq_one q n hq hn (NeZero.ne (2 : R))
+
 end LeanFrontier.A053067Research
