@@ -6,15 +6,15 @@ on:
       start:
         description: First n to test
         required: true
-        default: "1001"
+        default: "3001"
       end:
         description: Last n to test
         required: true
-        default: "10000"
+        default: "5000"
       sieve_bound:
         description: Trial-prime sieve bound
         required: true
-        default: "200000"
+        default: "1000000"
       prp_reps:
         description: GMP probable-prime repetitions
         required: true
@@ -27,22 +27,29 @@ on:
         description: Total number of shards
         required: true
         default: "1"
+      threads:
+        description: Worker threads; 0 means hardware concurrency
+        required: true
+        default: "0"
   push:
     branches:
       - research/a053067
     paths:
       - research/A053067/run-request.env
+      - research/A053067/search.cpp
+      - research/A053067/verify.py
+      - .github/workflows/research-a053067.yml
 
 permissions:
   contents: read
 
 concurrency:
-  group: a053067-${{ github.ref }}
+  group: a053067-research
   cancel-in-progress: false
 
 jobs:
   scan:
-    if: github.ref == 'refs/heads/research/a053067'
+    if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
     runs-on: [self-hosted, linux, x64]
     timeout-minutes: 1440
 
@@ -52,49 +59,66 @@ jobs:
         with:
           ref: ${{ github.sha }}
 
-      - name: Resolve run configuration
+      - name: Resolve and validate run configuration
         shell: bash
         run: |
           set -euo pipefail
+
+          write_uint() {
+            local key="$1"
+            local value="$2"
+            if [[ ! "$value" =~ ^[0-9]+$ ]]; then
+              echo "Invalid numeric value for $key: $value" >&2
+              exit 2
+            fi
+            printf '%s=%s\n' "$key" "$value" >> "$GITHUB_ENV"
+          }
+
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            {
-              echo "START=${{ inputs.start }}"
-              echo "END=${{ inputs.end }}"
-              echo "SIEVE_BOUND=${{ inputs.sieve_bound }}"
-              echo "PRP_REPS=${{ inputs.prp_reps }}"
-              echo "SHARD_INDEX=${{ inputs.shard_index }}"
-              echo "SHARD_COUNT=${{ inputs.shard_count }}"
-            } >> "$GITHUB_ENV"
+            write_uint START "${{ inputs.start }}"
+            write_uint END "${{ inputs.end }}"
+            write_uint SIEVE_BOUND "${{ inputs.sieve_bound }}"
+            write_uint PRP_REPS "${{ inputs.prp_reps }}"
+            write_uint SHARD_INDEX "${{ inputs.shard_index }}"
+            write_uint SHARD_COUNT "${{ inputs.shard_count }}"
+            write_uint THREADS "${{ inputs.threads }}"
           else
-            set -a
-            source research/A053067/run-request.env
-            set +a
-            for name in START END SIEVE_BOUND PRP_REPS SHARD_INDEX SHARD_COUNT; do
-              value="${!name:-}"
-              test -n "$value" || { echo "Missing $name in run-request.env" >&2; exit 2; }
-              echo "$name=$value" >> "$GITHUB_ENV"
-            done
+            request=research/A053067/run-request.env
+            read_uint() {
+              local key="$1"
+              local value
+              value="$(awk -F= -v key="$key" '$1 == key {print $2}' "$request" | tail -n 1 | tr -d '[:space:]')"
+              write_uint "$key" "$value"
+            }
+            read_uint START
+            read_uint END
+            read_uint SIEVE_BOUND
+            read_uint PRP_REPS
+            read_uint SHARD_INDEX
+            read_uint SHARD_COUNT
+            read_uint THREADS
           fi
 
       - name: Check runner dependencies
         shell: bash
         run: |
           set -euo pipefail
-          command -v g++ >/dev/null
-          command -v python3 >/dev/null
-          test -f /usr/include/gmpxx.h || {
-            echo "Missing GMP C++ development headers (install libgmp-dev)." >&2
-            exit 2
-          }
+          g++ --version
+          python3 --version
+          printf '#include <gmpxx.h>\nint main(){ mpz_class x = 23; return x == 23 ? 0 : 1; }\n' \
+            | g++ -x c++ -std=c++20 - -lgmpxx -lgmp -o /tmp/a053067-gmp-check
+          /tmp/a053067-gmp-check
 
       - name: Build searcher
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p research/A053067/build
-          g++ -O3 -march=native -std=c++20 -pthread             research/A053067/search.cpp -lgmpxx -lgmp             -o research/A053067/build/a053067-search
+          mkdir -p research/A053067/run
+          g++ -O3 -march=native -std=c++20 -pthread \
+            research/A053067/search.cpp -lgmpxx -lgmp \
+            -o research/A053067/run/a053067-search
 
-      - name: Verify implementation and checked-in pilot
+      - name: Verify implementation and checked-in evidence
         shell: bash
         run: |
           set -euo pipefail
@@ -104,38 +128,77 @@ jobs:
         id: scan
         shell: bash
         run: |
-          set -uo pipefail
-          mkdir -p research/A053067/run
+          set -euo pipefail
           OUT="research/A053067/run/scan-${START}-${END}-shard-${SHARD_INDEX}-of-${SHARD_COUNT}.csv"
           LOG="research/A053067/run/scan-${START}-${END}-shard-${SHARD_INDEX}-of-${SHARD_COUNT}.log"
 
           set +e
-          research/A053067/build/a053067-search             --start "$START"             --end "$END"             --sieve-bound "$SIEVE_BOUND"             --prp-reps "$PRP_REPS"             --shard-index "$SHARD_INDEX"             --shard-count "$SHARD_COUNT"             --output "$OUT" 2>"$LOG"
+          research/A053067/run/a053067-search \
+            --start "$START" \
+            --end "$END" \
+            --sieve-bound "$SIEVE_BOUND" \
+            --prp-reps "$PRP_REPS" \
+            --shard-index "$SHARD_INDEX" \
+            --shard-count "$SHARD_COUNT" \
+            --threads "$THREADS" \
+            --output "$OUT" \
+            2> >(tee "$LOG" >&2)
           RC=$?
           set -e
-
-          cat "$LOG"
 
           if [ "$RC" -eq 10 ]; then
             echo "candidate=true" >> "$GITHUB_OUTPUT"
             echo "::warning::A053067 probable-prime candidate found; inspect the artifact."
+            {
+              echo "### Probable-prime candidate detected"
+              grep ',probable_prime,' "$OUT" || true
+            } >> "$GITHUB_STEP_SUMMARY"
           elif [ "$RC" -ne 0 ]; then
             exit "$RC"
           else
             echo "candidate=false" >> "$GITHUB_OUTPUT"
+            echo "### No probable-prime candidate in this shard" >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Summarize
+          tail -n 1 "$LOG" >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Record reproducibility metadata
+        if: always()
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p research/A053067/run
+          {
+            echo "repository=$GITHUB_REPOSITORY"
+            echo "commit=$GITHUB_SHA"
+            echo "runner=$RUNNER_NAME"
+            echo "runner_os=$RUNNER_OS"
+            echo "runner_arch=$RUNNER_ARCH"
+            echo "start=${START:-unset}"
+            echo "end=${END:-unset}"
+            echo "sieve_bound=${SIEVE_BOUND:-unset}"
+            echo "prp_reps=${PRP_REPS:-unset}"
+            echo "shard_index=${SHARD_INDEX:-unset}"
+            echo "shard_count=${SHARD_COUNT:-unset}"
+            echo "threads=${THREADS:-unset}"
+            echo "candidate=${{ steps.scan.outputs.candidate }}"
+            echo
+            uname -a || true
+            g++ --version | head -n 1 || true
+            python3 --version || true
+            sha256sum research/A053067/search.cpp research/A053067/verify.py research/A053067/run-request.env || true
+          } > research/A053067/run/metadata.txt
+
+      - name: Summarize result classes
+        if: always()
+        shell: bash
+        run: |
           python3 - <<'PY'
           import csv
           from collections import Counter
           from pathlib import Path
 
-          files = sorted(Path("research/A053067/run").glob("scan-*.csv"))
-          for path in files:
+          for path in sorted(Path("research/A053067/run").glob("scan-*.csv")):
               rows = list(csv.DictReader(path.open()))
               counts = Counter(row["status"] for row in rows)
               print(path.name, dict(counts))
@@ -145,9 +208,10 @@ jobs:
           PY
 
       - name: Upload scan evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: a053067-${{ github.run_id }}
+          name: a053067-${{ github.run_id }}-${{ github.run_attempt }}
           path: research/A053067/run/
           if-no-files-found: error
           retention-days: 90
