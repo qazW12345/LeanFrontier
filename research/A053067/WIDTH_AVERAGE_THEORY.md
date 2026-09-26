@@ -553,7 +553,208 @@ correction is remarkably stable.  This is strong numerical support for
 convergence of the width-averaged local factor, though it does not by itself
 prove the double-character-sum estimate proposed above.
 
-## 10. Desired analytic conclusion
+## 10. Bilinear-character reformulation
+
+For \(q,t\ne1\), recall
+
+\[
+\chi(\Delta_q(t))
+=
+\chi(X(t)-8Y(q)),
+\]
+
+where
+
+\[
+X(t)=\left(\frac{t+1}{t-1}\right)^2,
+\qquad
+Y(q)=\frac{q}{q-1}.
+\]
+
+Define
+
+\[
+a=X(t),
+\qquad
+b=(8Y(q))^{-1}=\frac{q-1}{8q}.
+\]
+
+Then
+
+\[
+X(t)-8Y(q)=8Y(q)(ab-1),
+\]
+
+so
+
+\[
+\boxed{
+\chi(\Delta_q(t))
+=
+\chi(8Y(q))\,\chi(ab-1).
+}
+\]
+
+Thus the difficult double subgroup sum is a weighted bilinear
+multiplicative-character sum of Karatsuba/Vinogradov type.
+
+The maps have useful low-multiplicity structure:
+
+- \(q\mapsto(q-1)/(8q)=(1-q^{-1})/8\) is injective away from \(q=0\);
+- \(t\mapsto((t+1)/(t-1))^2\) has multiplicity at most two away from its
+  pole, because \(t\) and \(t^{-1}\) have the same image and are the only
+  generic pair with that image.
+
+Therefore standard weighted bilinear character-sum estimates apply without a
+large multiplicity loss.
+
+This creates a direct bridge to Karatsuba's high-moment bounds, Vinogradov's
+bilinear estimate, and recent work on shifted multiplicative subgroups.
+
+## 11. Divisor-scale width-bias conjecture
+
+Let
+
+\[
+\ell_p=\operatorname{ord}_p(10)
+\]
+
+and let \(\overline{\rho}^{\,S}_p\) be the exact mod-60-conditioned local
+density averaged over one full decimal-width period.
+
+The computations through \(p\le5000\) suggest the much sharper bound
+
+\[
+\boxed{
+\left|
+p\ell_p
+\left(\overline{\rho}^{\,S}_p-\frac1p\right)
+\right|
+\ll \tau(\ell_p).
+}
+\]
+
+In fact, for every tested prime \(p\le5000\),
+
+\[
+\left|
+p\ell_p
+\left(\overline{\rho}^{\,S}_p-\frac1p\right)
+\right|
+<
+2\tau(\ell_p).
+\]
+
+The largest observed ratio is approximately
+
+\[
+1.75410
+\]
+
+at \(p=733\), where \(\ell_p=61\).
+
+The same phenomenon is present before conditioning on the elementary mod-60
+classes.
+
+### Why the divisor function is natural
+
+For every divisor \(r\mid\ell_p\), let \(K_r\) be the unique subgroup of
+\(H_p=\langle10\rangle\) of order \(r\), let \(G_r\) be its set of generators,
+and put
+
+\[
+T_r=
+\sum_{q\in G_r}
+\sum_{t\in K_r}
+\chi(\Delta_q(t)).
+\]
+
+For \(r>1\), every generator \(q\) is different from 1 and
+
+\[
+\Delta_q(1)=4(q-1)^2,
+\]
+
+hence
+
+\[
+\chi(\Delta_q(1))=1.
+\]
+
+Therefore the \(t=1\) slice contributes **exactly**
+
+\[
+\varphi(r)
+\]
+
+to \(T_r\). The width bias decomposes into the centered quantities
+
+\[
+\boxed{
+\frac{T_r-\varphi(r)}{r},
+\qquad r\mid\ell_p,\ r>1,
+}
+\]
+
+plus the explicit \(q=1\) term.
+
+Thus a uniform estimate
+
+\[
+|T_r-\varphi(r)|\ll r
+\]
+
+would immediately prove the divisor-scale conjecture after summing over
+\(r\mid\ell_p\).
+
+This is now the sharpest finite-field subproblem produced by the A053067
+analysis.
+
+## 12. Consequence of the divisor-scale conjecture
+
+Suppose
+
+\[
+\left|
+\overline{\rho}^{\,S}_p-\frac1p
+\right|
+\ll
+\frac{\tau(\ell_p)}{p\ell_p}.
+\]
+
+Since \(p\mid10^{\ell_p}-1\),
+
+\[
+\ell_p\gg\log p.
+\]
+
+Also, for every fixed \(\varepsilon>0\),
+
+\[
+\tau(n)\ll_\varepsilon n^\varepsilon.
+\]
+
+Taking any \(\varepsilon<1\) gives
+
+\[
+\frac{\tau(\ell_p)}{p\ell_p}
+\ll_\varepsilon
+\frac1{p(\log p)^{1-\varepsilon}}.
+\]
+
+The prime sum on the right converges. Hence the averaged first-order local
+bias would be absolutely summable over primes.
+
+Because each local density is \(O(1/p)\), the quadratic and higher terms in
+the logarithmic Euler factor are automatically summable. The divisor-scale
+conjecture would therefore imply convergence to a positive width-averaged
+singular correction.
+
+In particular it would close the remaining **local-density** gap in
+PRIME_TERM_STRATEGY.md. The only unresolved step toward infinitely many
+prime terms would then be the genuine prime-values/parity barrier.
+
+## 13. Desired analytic conclusion
 
 A bound even somewhat weaker than the numerically suggested
 
