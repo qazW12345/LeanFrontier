@@ -24,6 +24,58 @@ from pathlib import Path
 from congruence_families import multiplicative_order, primes_up_to, zero_family
 from local_product import conditioned_zero_density
 
+S60 = (1, 2, 13, 17, 22, 26, 37, 38, 41, 46, 53, 58)
+
+
+def legendre(a: int, p: int) -> int:
+    a %= p
+    if a == 0:
+        return 0
+    x = pow(a, (p - 1) // 2, p)
+    return 1 if x == 1 else -1
+
+
+def fast_local_densities(d: int, p: int) -> tuple[float, float]:
+    """Exact conditioned and unconditioned zero densities without root solving."""
+    q = pow(10, d, p)
+
+    if q == 1:
+        roots = 3 if p % 4 == 1 else 1
+        rho = roots / p
+        return rho, rho
+
+    r = multiplicative_order(q, p)
+    g = math.gcd(r, 60)
+    weights = [0] * g
+    for s in S60:
+        weights[s % g] += 1
+
+    weighted_roots = 0
+    total_roots = 0
+    t = 1
+
+    for b in range(r):
+        if b == 0:
+            root_count = 1
+        else:
+            disc = (
+                (q - 1)
+                * (
+                    -(7 * q + 1) * t * t
+                    + (18 * q - 2) * t
+                    - (7 * q + 1)
+                )
+            ) % p
+            root_count = 1 + legendre(disc, p)
+
+        total_roots += root_count
+        weighted_roots += weights[b % g] * root_count
+        t = t * q % p
+
+    conditioned = weighted_roots / (len(S60) * p * (r // g))
+    unconditioned = total_roots / (p * r)
+    return conditioned, unconditioned
+
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
@@ -58,9 +110,7 @@ def main() -> int:
             factors = []
 
             for d in range(1, ell + 1):
-                period, roots = zero_family(d, p)
-                rho = conditioned_zero_density(period, roots)
-                rho_unconditioned = len(roots) / period
+                rho, rho_unconditioned = fast_local_densities(d, p)
                 factor = (1.0 - rho) / (1.0 - 1.0 / p)
                 rhos.append(rho)
                 rhos_unconditioned.append(rho_unconditioned)
