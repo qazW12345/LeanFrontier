@@ -286,19 +286,43 @@ def word_matrix(word: str) -> Matrix:
     return out
 
 
-def zhang_candidate_matrix(modulus: int, root: int) -> Matrix:
-    """Transpose of Zhang's Proposition-8 matrix, in our A/B convention."""
+def root_core_matrix(modulus: int, root: int) -> Matrix:
+    """Symmetric determinant-one core attached to a modular root.
+
+    Put v=(u^2+1)/M. Then
+      P(M,u) = [[M-2u+v, u-v], [u-v, v]]
+    has determinant one, and A * P(M,u) * B is exactly the transposed
+    Zhang candidate matrix used below.
+    """
     if modulus <= 0:
         raise ValueError("modulus must be positive")
     root %= modulus
     if (root * root + 1) % modulus:
         raise ValueError("root must satisfy root^2 == -1 mod modulus")
     v = (root * root + 1) // modulus
-    zhang = (
-        (2 * modulus - root, 2 * modulus + root - v),
-        (modulus, modulus + root),
+    core = (
+        (modulus - 2 * root + v, root - v),
+        (root - v, v),
     )
-    return matrix_transpose(zhang)
+    if core[0][0] * core[1][1] - core[0][1] * core[1][0] != 1:
+        raise AssertionError("root core must have determinant one")
+    return core
+
+
+def zhang_candidate_matrix(modulus: int, root: int) -> Matrix:
+    """Transpose of Zhang's Proposition-8 matrix, in our A/B convention."""
+    core = root_core_matrix(modulus, root)
+    candidate = matrix_mul(matrix_mul(A, core), B)
+
+    root %= modulus
+    v = (root * root + 1) // modulus
+    expected = (
+        (2 * modulus - root, modulus),
+        (2 * modulus + root - v, modulus + root),
+    )
+    if candidate != expected:
+        raise AssertionError("A * root_core * B must equal Zhang candidate")
+    return candidate
 
 
 def matrix_nonnegative(x: Matrix) -> bool:
@@ -394,15 +418,21 @@ def recognize_root(modulus: int, root: int) -> None:
         if (representative * representative + 1) % modulus:
             print(f"  {representative}: not a square root of -1")
             continue
+        core = root_core_matrix(modulus, representative)
         candidate = zhang_candidate_matrix(modulus, representative)
+        core_word = recognize_cohn_word(core)
         word = recognize_cohn_word(candidate)
         if word is None:
-            print(f"  {representative}: candidate does not lie in <A,B>")
+            print(
+                f"  {representative}: candidate does not lie in <A,B>; "
+                f"core={core} core_word={core_word}"
+            )
             continue
         inner = word[1:-1] if len(word) >= 2 and word[0] == "a" and word[-1] == "b" else None
         central = inner is not None and is_central_palindrome(inner)
         print(
-            f"  {representative}: word={word} palindrome_inner="
+            f"  {representative}: core={core} core_word={core_word} "
+            f"word={word} palindrome_inner="
             f"{inner is not None and inner == inner[::-1]} central={central}"
         )
 
