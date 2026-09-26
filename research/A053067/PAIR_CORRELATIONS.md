@@ -242,13 +242,66 @@ Thus pairwise dependence became slightly smaller rather than larger.
 
 ### Width d = 1009, primes through 1000
 
-A third exact experiment is running.  Here every tested local prime satisfies
+Hosted run 36278637510 tested all
 
 \[
-p<d,
+\binom{165}{2}=13530
 \]
 
-so every one is in the full-order generator regime.
+pairs of the 165 local primes through 1000.  Since
+
+\[
+p<d=1009
+\]
+
+for every tested prime, the entire experiment lies in the full-order
+generator regime.
+
+The global statistics improved again:
+
+\[
+\boxed{
+\operatorname{mean}|\log R_{p,r;d}|
+=
+4.80390\times10^{-6},
+}
+\]
+
+and
+
+\[
+\boxed{
+\operatorname{RMS\ phi}
+=
+0.00182964.
+}
+\]
+
+More importantly, stratifying by the smaller local prime shows a sharp
+small-prime concentration:
+
+| lower bound on both primes | pairs | mean \(|\log R|\) | RMS phi | maximum \(|\log R|\) |
+| ---: | ---: | ---: | ---: | ---: |
+| 13 | 13203 | \(1.20983\times10^{-6}\) | \(7.03185\times10^{-4}\) | \(1.15808\times10^{-3}\) |
+| 29 | 12561 | \(3.52846\times10^{-7}\) | \(2.96191\times10^{-4}\) | \(1.38879\times10^{-4}\) |
+| 53 | 11628 | \(2.52592\times10^{-7}\) | \(2.61938\times10^{-4}\) | \(1.38879\times10^{-4}\) |
+| 101 | 10153 | \(9.14759\times10^{-8}\) | \(1.28618\times10^{-4}\) | \(2.36180\times10^{-5}\) |
+| 211 | 7381 | \(3.08540\times10^{-8}\) | \(5.90840\times10^{-5}\) | \(4.94607\times10^{-6}\) |
+
+Thus the average correlation tail falls by more than two orders of magnitude
+once the smallest local primes are removed, while thousands of pairs remain
+in each sample.
+
+This strongly suggests a more precise analytic decomposition:
+
+1. handle a finite set of small local primes explicitly;
+2. seek a uniform or average bound for the discrepancy energy when
+   \(\min(p,r)\) is large;
+3. prove that the resulting tail is summable over prime pairs.
+
+The data do not yet identify the optimal decay exponent, but they make this a
+substantially sharper target than an undifferentiated two-prime correlation
+bound.
 
 ## 5. Sieve-theoretic significance
 
