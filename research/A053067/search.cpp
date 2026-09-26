@@ -1,15 +1,18 @@
 #include <gmpxx.h>
 
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
+#include <mutex>
 #include <numeric>
 #include <optional>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <thread>
 #include <vector>
 
 using u64 = std::uint64_t;
@@ -33,7 +36,10 @@ struct Transform {
 // Composition for state (x,m):
 //   x' = A*x + B*m + C (mod modulus)
 //   m' = m + K.
-static Transform compose(const Transform& after, const Transform& before, u64 modulus) {
+static Transform compose(
+    const Transform& after,
+    const Transform& before,
+    u64 modulus) {
   Transform r;
   r.A = mul_mod(after.A, before.A, modulus);
   r.B = add_mod(mul_mod(after.A, before.B, modulus), after.B, modulus);
@@ -225,6 +231,7 @@ struct Config {
   int prp_reps = 25;
   u64 shard_index = 0;
   u64 shard_count = 1;
+  unsigned threads = 0;
   std::string output;
 };
 
@@ -257,6 +264,8 @@ static Config parse_args(int argc, char** argv) {
       need(cfg.shard_index);
     } else if (arg == "--shard-count") {
       need(cfg.shard_count);
+    } else if (arg == "--threads") {
+      need(cfg.threads);
     } else if (arg == "--output") {
       if (++i >= argc) {
         throw std::runtime_error("missing value after --output");
@@ -266,7 +275,7 @@ static Config parse_args(int argc, char** argv) {
       std::cout
           << "A053067 search\n"
           << "  --start N --end N --sieve-bound P --prp-reps R\n"
-          << "  --shard-index I --shard-count C --output FILE\n";
+          << "  --shard-index I --shard-count C --threads T --output FILE\n";
       std::exit(0);
     } else {
       throw std::runtime_error("unknown argument: " + arg);
@@ -282,12 +291,108 @@ static Config parse_args(int argc, char** argv) {
   return cfg;
 }
 
+struct Result {
+  u64 n = 0;
+  std::string status;
+  std::string witness;
+  std::size_t digits = 0;
+};
+
+static Result evaluate(
+    u64 n,
+    const Config& cfg,
+    const std::vector<Batch>& batches) {
+  Result result;
+  result.n = n;
+
+  if (auto factor = small_factor(n, batches)) {
+    result.status = "small_factor";
+    result.witness = std::to_string(*factor);
+    return result;
+  }
+
+  std::string decimal = build_decimal(n);
+  result.digits = decimal.size();
+
+  mpz_class value;
+  if (mpz_set_str(value.get_mpz_t(), decimal.c_str(), 10) != 0) {
+    throw std::runtime_error("mpz_set_str failed");
+  }
+
+  int primality = mpz_probab_prime_p(value.get_mpz_t(), cfg.prp_reps);
+  if (primality == 0) {
+    result.status = "composite_prp";
+  } else {
+    result.status = "probable_prime";
+    result.witness = std::to_string(primality);
+  }
+  return result;
+}
+
 int main(int argc, char** argv) {
   try {
     Config cfg = parse_args(argc, argv);
+    if (cfg.threads == 0) {
+      cfg.threads = std::max(1u, std::thread::hardware_concurrency());
+    }
 
     auto primes = primes_up_to(cfg.sieve_bound);
     auto batches = make_batches(primes);
+
+    std::vector<u64> candidates;
+    for (u64 n = cfg.start; n <= cfg.end; ++n) {
+      if ((n - cfg.start) % cfg.shard_count != cfg.shard_index) {
+        continue;
+      }
+      if (elementary_candidate(n)) {
+        candidates.push_back(n);
+      }
+    }
+
+    std::vector<Result> results(candidates.size());
+    std::atomic<std::size_t> next{0};
+    std::atomic<bool> failed{false};
+    std::string failure;
+    std::mutex failure_mutex;
+
+    auto started = std::chrono::steady_clock::now();
+
+    auto worker = [&]() {
+      while (!failed.load(std::memory_order_relaxed)) {
+        std::size_t i = next.fetch_add(1);
+        if (i >= candidates.size()) {
+          return;
+        }
+
+        try {
+          results[i] = evaluate(candidates[i], cfg, batches);
+        } catch (const std::exception& e) {
+          failed.store(true);
+          std::lock_guard<std::mutex> lock(failure_mutex);
+          if (failure.empty()) {
+            failure = e.what();
+          }
+          return;
+        }
+      }
+    };
+
+    unsigned worker_count = std::min<unsigned>(
+        cfg.threads,
+        std::max<std::size_t>(1, candidates.size()));
+
+    std::vector<std::thread> workers;
+    workers.reserve(worker_count);
+    for (unsigned i = 0; i < worker_count; ++i) {
+      workers.emplace_back(worker);
+    }
+    for (auto& thread : workers) {
+      thread.join();
+    }
+
+    if (failed) {
+      throw std::runtime_error(failure);
+    }
 
     std::ostream* output = &std::cout;
     std::ofstream file;
@@ -298,48 +403,34 @@ int main(int argc, char** argv) {
       }
       output = &file;
     }
+
     auto& os = *output;
     os << "n,status,witness,digits\n";
 
-    u64 elementary = 0;
     u64 factored = 0;
     u64 prp_composite = 0;
     u64 probable_prime = 0;
 
-    auto started = std::chrono::steady_clock::now();
-
-    for (u64 n = cfg.start; n <= cfg.end; ++n) {
-      if ((n - cfg.start) % cfg.shard_count != cfg.shard_index) {
-        continue;
-      }
-      if (!elementary_candidate(n)) {
-        continue;
-      }
-      ++elementary;
-
-      if (auto factor = small_factor(n, batches)) {
+    for (const auto& result : results) {
+      if (result.status == "small_factor") {
         ++factored;
-        os << n << ",small_factor," << *factor << ",\n";
-        continue;
-      }
-
-      std::string decimal = build_decimal(n);
-      mpz_class value;
-      if (mpz_set_str(value.get_mpz_t(), decimal.c_str(), 10) != 0) {
-        throw std::runtime_error("mpz_set_str failed");
-      }
-
-      int primality = mpz_probab_prime_p(value.get_mpz_t(), cfg.prp_reps);
-      if (primality == 0) {
+      } else if (result.status == "composite_prp") {
         ++prp_composite;
-        os << n << ",composite_prp,," << decimal.size() << "\n";
-      } else {
+      } else if (result.status == "probable_prime") {
         ++probable_prime;
-        os << n << ",probable_prime," << primality << "," << decimal.size() << "\n";
         std::cerr
-            << "PRP CANDIDATE n=" << n
-            << " digits=" << decimal.size() << "\n";
+            << "PRP CANDIDATE n=" << result.n
+            << " digits=" << result.digits << "\n";
       }
+
+      os
+          << result.n << ","
+          << result.status << ","
+          << result.witness << ",";
+      if (result.digits) {
+        os << result.digits;
+      }
+      os << "\n";
     }
 
     double seconds = std::chrono::duration<double>(
@@ -349,7 +440,8 @@ int main(int argc, char** argv) {
         << "A053067 summary"
         << " range=" << cfg.start << ".." << cfg.end
         << " shard=" << cfg.shard_index << "/" << cfg.shard_count
-        << " elementary=" << elementary
+        << " threads=" << worker_count
+        << " elementary=" << candidates.size()
         << " small_factor=" << factored
         << " composite_prp=" << prp_composite
         << " probable_prime=" << probable_prime
