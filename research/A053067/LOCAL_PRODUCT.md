@@ -165,6 +165,60 @@ The relative prediction error is only
 Equivalently, the model predicts about 1919.9 survivors and observes 1896,
 a discrepancy of roughly 24 terms.
 
+## Consequence for the prime-value heuristic
+
+A fixed-width (d)-digit block has approximately (dn) decimal digits, hence
+
+[
+log A(n)sim d nlog 10.
+]
+
+Conditional on the term having already escaped divisibility by (2,3,5), the
+usual random-prime density is boosted by
+
+[
+rac{1}{(1-rac12)(1-rac13)(1-rac15)}
+=
+rac{15}{4}.
+]
+
+Exactly (12/60=1/5) of the indices survive the elementary (2,3,5)
+conditions.  Applying the local singular correction (C_d), the average prime
+hazard per index in a fixed-width (d) band is therefore heuristically
+
+[
+rac15cdotrac{15}{4}cdot
+rac{C_d}{d nlog10}
+=
+rac{3C_d}{4d,nlog10}.
+]
+
+The fixed-width (d)-band has (n)-endpoints whose ratio tends to
+(sqrt{10}).  Consequently
+
+[
+sum_{	ext{one }d	ext{-band}}rac1n
+simlogsqrt{10}
+=
+rac12log10.
+]
+
+So the expected number of prime terms contributed by the entire width band is
+
+[
+oxed{
+E_dsimrac{3}{8}rac{C_d}{d}.
+}
+]
+
+Thus, provided the local correction factors (C_d) do not systematically
+decay to zero, the predicted total number of prime terms behaves like a
+harmonic sum over decimal widths and therefore diverges.
+
+The observed width corrections (C_d(1000)) for (d=6,ldots,12) oscillate
+substantially but show no monotone decay.  This strengthens the heuristic case
+for infinitely many prime terms, while remaining far short of a proof.
+
 ## Interpretation
 
 This is strong empirical evidence for the following picture:
