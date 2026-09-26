@@ -135,7 +135,9 @@ def main() -> int:
                     raise SystemExit(f"n={n} should have been removed by the exact 2/3/5 sieve")
 
                 status = row["status"]
-                if status not in {"small_factor", "composite_prp", "probable_prime"}:
+                if status not in {
+                    "small_factor", "sieve_survivor", "composite_prp", "probable_prime"
+                }:
                     raise SystemExit(f"n={n}: unknown status {status!r}")
 
                 if status == "small_factor":
@@ -193,6 +195,7 @@ def main() -> int:
         "probable_prime_candidates": probable,
         "evidence_boundary": {
             "small_factor": "explicit prime divisor independently rechecked",
+            "sieve_survivor": "no prime divisor at or below the configured sieve bound; primality unresolved",
             "composite_prp": "GMP reported composite; no standalone certificate stored",
             "probable_prime": "candidate only; requires independent rigorous certification",
         },
