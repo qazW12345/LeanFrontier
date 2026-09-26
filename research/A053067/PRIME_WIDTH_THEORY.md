@@ -349,7 +349,7 @@ only the generator width classes
 a\in(\mathbb Z/\ell_p\mathbb Z)^\times,
 \]
 
-gives the finite-cutoff generator product
+gave
 
 \[
 \boxed{
@@ -357,15 +357,29 @@ C_{\mathrm{gen}}(1000)\approx1.124861734.
 }
 \]
 
-This is noticeably larger than the corresponding all-width geometric
-correction
+Hosted run 36275541603 extended the exact generator average through
+\(p\le5000\) and found
 
 \[
-1.034795187.
+\boxed{
+C_{\mathrm{gen}}(5000)=1.125368461.
+}
 \]
 
-The result is consistent with the direct prime-width \(B=5000\) experiment,
-whose harmonic-weighted correction through prime widths \(d\le1000\) is
+The change from the \(p\le1000\) value is only about \(4.5\times10^{-4}\)
+relative, strong numerical evidence that the generator Euler product is
+already close to its limiting constant.
+
+For comparison, the corresponding all-width geometric correction through
+\(p\le5000\) is
+
+\[
+1.034377319.
+\]
+
+The result is also consistent with the direct prime-width \(B=5000\)
+experiment, whose harmonic-weighted correction through prime widths
+\(d\le1000\) is
 
 \[
 1.094852374.
@@ -373,9 +387,6 @@ whose harmonic-weighted correction through prime widths \(d\le1000\) is
 
 Thus the analytically privileged generator classes are also empirically among
 the more prime-friendly width classes.
-
-A hosted exact generator computation through \(p\le5000\) is running under
-the prime-width-average workflow and will provide the higher-cutoff comparison.
 
 ## 8. Remaining interchange problem
 
