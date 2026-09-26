@@ -1155,3 +1155,157 @@ attack surface because it exposes an explicit decreasing parameter
 at every step.
 
 The research script now implements this as the `descent-root` command.
+
+
+## 23. The Cohn cone test is exactly a quotient-two Euclidean step
+
+The arithmetic descent from Section 22 simplifies further.
+
+Let ((M,u)) be a centered root,
+
+[
+0<ule M/2,qquad u^2equiv-1pmod M,
+]
+
+and put
+
+[
+v=rac{u^2+1}{M},qquad
+h=-M+5u-6v.
+]
+
+A direct calculation gives the exact identity
+
+[
+v h=(u-2v)(3v-u)-1.
+]
+
+Because all quantities are integral, for every non-base strip this implies
+
+[
+hge0
+quadLongleftrightarrowquad
+2v<u<3v.
+]
+
+Thus the positive-cone test is not a mysterious matrix inequality at all:
+it says that the Euclidean quotient of (u) by (v) is exactly (2).
+
+Write
+
+[
+u=2v+r,qquad 0<r<v.
+]
+
+Since (vmid u^2+1), also (vmid r^2+1).  Define
+
+[
+w=rac{r^2+1}{v}.
+]
+
+Then the root equation collapses to
+
+[
+M=4v+4r+w
+]
+
+and the cone defect becomes simply
+
+[
+h=r-w.
+]
+
+The stripped parent matrix from Section 22 therefore has the normal form
+
+[
+Q=
+egin{pmatrix}
+w & r-w\
+r-w & v-2r+w
+end{pmatrix}.
+]
+
+The next centered root is
+
+[
+u'=min(r,v-r),
+]
+
+and (u'^2equiv-1pmod v).  Which of (r) and (v-r) is chosen is exactly
+the generator-exchange/orientation bit already recorded by the descent.
+
+So Cohn-admissibility can be viewed as a **folded Euclidean algorithm**:
+
+1. form (v=(u^2+1)/M);
+2. require the quotient condition (2v<u<3v);
+3. take the remainder (r=u-2v);
+4. fold it into ((0,v/2]) by (u'=min(r,v-r));
+5. repeat with ((v,u')).
+
+The research script now checks these identities exhaustively with
+`verify-descent-normal-form`.  A local run through (Mle20{,}000) checked
+4,780 centered modular roots, of which 1,607 satisfy a quotient-two strip, with
+no failure of the normal-form identities.
+
+### Why this matters
+
+This strips away another representation layer.
+
+The current open-core candidate no longer needs to be phrased as:
+
+> Which modular roots produce positive Cohn matrices?
+
+It can instead be phrased as:
+
+> Which roots of (-1) survive a recursively folded quotient-two Euclidean
+> algorithm, and among those, which survive the additional
+> Christoffel/central-word constraints?
+
+That is a much smaller arithmetic state space and should interact more
+directly with the earlier CRT sign-splitting work.
+
+## 24. Reutenauer's finite Markoff characterization explains why local filters stop short
+
+Christophe Reutenauer's 2021 paper *Christoffel words and weak Markoff theory*
+gives a useful conceptual warning for the current attack.
+
+For words in the continuant model, he defines a numerical defect
+
+[
+
+u(w)=operatorname{tr}(P(w))-3,P(w)_{21}.
+]
+
+His Theorem 4.2 characterizes Christoffel conjugacy classes by requiring the
+appropriate sign condition on (
+u) for **every conjugate** of the word
+(with a strict parity refinement).
+
+Source:
+
+C. Reutenauer, *Christoffel words and weak Markoff theory*,
+Advances in Applied Mathematics 127 (2021), 102179.
+
+This is highly relevant to the experiments above.  The arithmetic
+root/Cohn tests are fundamentally local: they recognize whether one
+trace-shaped matrix can be represented by a positive palindromic Cohn word.
+Reutenauer's theorem says that being genuinely Christoffel is controlled by a
+whole cyclic family of inequalities.
+
+That helps explain several empirical facts:
+
+- a simple interval for (u/M) is insufficient;
+- single-matrix inequalities are insufficient;
+- positive Cohn-monoid membership is insufficient;
+- arbitrary palindromes exhibit genuine repeated (m)-values;
+- central/Christoffel examples remain much more rigid.
+
+The next serious arithmetic goal should therefore not be another one-step
+filter.  It should try to transport Reutenauer-style cyclic inequalities
+through the folded Euclidean descent, ideally obtaining a recursively
+checkable condition directly on ((M,u)).
+
+If such a condition can be expressed using the denominator/root descent and
+the CRT sign partition, it would finally put the word-theoretic
+"centrality" requirement and the earlier number-theoretic collision
+factorization into the same language.
