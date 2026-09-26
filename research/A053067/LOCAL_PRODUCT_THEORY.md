@@ -439,6 +439,60 @@ So through 500 decimal widths there is no evidence of a downward drift in the
 finite-cutoff singular correction; the harmonic mass is slightly larger than
 the uncorrected baseline.
 
+A second run, 36266146082, extended the same \(B=1000\) calculation through
+
+\[
+1\le d\le5000.
+\]
+
+It found
+
+\[
+\min C_d(1000)=0.486569337\quad(d=672),
+\]
+
+\[
+\max C_d(1000)=1.443758197\quad(d=2566),
+\]
+
+with arithmetic mean
+
+\[
+1.050424999,
+\]
+
+geometric mean
+
+\[
+1.034882931,
+\]
+
+and harmonic-weighted mean
+
+\[
+1.060316723.
+\]
+
+Moreover,
+
+\[
+\sum_{d\le5000}\frac{C_d(1000)}d
+=
+9.643059820,
+\]
+
+while
+
+\[
+\sum_{d\le5000}\frac1d
+=
+9.094508853.
+\]
+
+Increasing the width range by an order of magnitude therefore leaves both the
+ordinary and harmonic-weighted averages essentially unchanged.
+
+
 ## 10. What remains
 
 The missing step is global in the decimal width.
