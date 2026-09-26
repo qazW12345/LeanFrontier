@@ -515,7 +515,43 @@ This is almost identical to the geometric mean
 observed directly over decimal widths \(1\le d\le5000\) at the same prime
 cutoff.
 
-A larger \(p\le5000\) experiment is in progress.
+A larger hosted run, 36271857873, completed the same exact calculation
+through \(p\le5000\).  It found
+
+\[
+\max_{p\le5000}
+\left|
+p\,\operatorname{ord}_p(10)
+\left(\overline{\rho}_p-\frac1p\right)
+\right|
+=
+15.505319149,
+\]
+
+while the cumulative mean logarithmic correction is
+
+\[
+0.033799621
+\]
+
+and hence the aggregate geometric correction is
+
+\[
+\boxed{1.034377319}.
+\]
+
+For comparison, the \(p\le1000\) aggregate was \(1.034795187\).  The entire
+additional prime range \(1000<p\le5000\) changes the summed mean logarithmic
+correction by only about
+
+\[
+-4.04\times10^{-4}.
+\]
+
+The largest individual normalized bias grows slowly, but the aggregate local
+correction is remarkably stable.  This is strong numerical support for
+convergence of the width-averaged local factor, though it does not by itself
+prove the double-character-sum estimate proposed above.
 
 ## 10. Desired analytic conclusion
 
