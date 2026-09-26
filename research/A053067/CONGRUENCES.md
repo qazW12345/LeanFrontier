@@ -48,7 +48,7 @@ L_n<q\le U_n.
 Put
 
 \[
-a=q-L_n,qquad b=U_n-q+1,
+a=q-L_n,\qquad b=U_n-q+1,
 \]
 
 so that \(a+b=n\).  The first \(a\) integers
@@ -401,6 +401,146 @@ p\,\operatorname{ord}_p(q).
 When \(q\equiv1\pmod p\), the simpler \(10^d-1\) formula has period \(p\).
 
 The tool \`congruence_families.py\` enumerates these exact zero residue classes.
+
+## Exact quadratic reduction and divisor density for one prime
+
+Fix a decimal width \(d\), put \(q=10^d\), and let \(p\) be an odd
+prime with \(p\nmid 10\).  Assume first that \(q\not\equiv1\pmod p\),
+and write
+
+\[
+r=\operatorname{ord}_p(q),\qquad H=\langle q\rangle\subseteq\mathbb F_p^*.
+\]
+
+Because \(r\mid p-1\), the residues \(n\bmod p\) and \(n\bmod r\)
+are independent by the Chinese remainder theorem.  Write
+
+\[
+a=n\bmod p,\qquad b=n\bmod r,\qquad t=q^b\in H.
+\]
+
+Twice the numerator of the fixed-width closed form modulo \(p\) is
+
+\[
+\boxed{
+(q-1)(t-1)a^2-(q-1)(t+1)a+2q(t-1).
+}
+\]
+
+Thus for each fixed exponent class \(b\), divisibility by \(p\) is a
+quadratic congruence in \(a\).
+
+When \(t=1\), the congruence reduces to
+
+\[
+-2(q-1)a\equiv0\pmod p,
+\]
+
+so it has exactly one root, \(a=0\).
+
+When \(t\ne1\), the discriminant is
+
+\[
+\Delta_q(t)
+=(q-1)\left((q-1)(t+1)^2-8q(t-1)^2\right).
+\]
+
+Equivalently,
+
+\[
+\Delta_q(t)
+=(q-1)\left(-(7q+1)t^2+(18q-2)t-(7q+1)\right).
+\]
+
+The quadratic polynomial in \(t\) occurring here has discriminant
+
+\[
+128q(q-1),
+\]
+
+which is nonzero modulo \(p\) under the present hypotheses.
+
+Let \(\chi\) be the quadratic character modulo \(p\), with
+\(\chi(0)=0\).  For \(t\ne1\), the number of roots in \(a\) is
+
+\[
+1+\chi(\Delta_q(t)).
+\]
+
+Hence the exact number \(Z_{p,d}\) of zero classes of \(A(n)\) in one
+full period \(pr\) is
+
+\[
+\boxed{
+Z_{p,d}
+=
+r-1+\sum_{t\in H}\chi(\Delta_q(t)).
+}
+\]
+
+In particular, the crude bound is
+
+\[
+Z_{p,d}\le 2r-1,
+\]
+
+so a single prime covers fewer than \(2/p\) of all index classes.
+
+There is also a standard character-sum refinement.  Put
+\(m=(p-1)/r\), so every element of \(H\) has exactly \(m\) preimages
+under \(x\mapsto x^m\).  Therefore
+
+\[
+\sum_{t\in H}\chi(\Delta_q(t))
+=
+\frac1m
+\sum_{x\in\mathbb F_p^*}
+\chi(\Delta_q(x^m)).
+\]
+
+The polynomial \(\Delta_q(x^m)\) is not a square in
+\(\overline{\mathbb F}_p[x]\).  Applying the usual Weil bound for a
+quadratic-character sum gives, safely,
+
+\[
+\left|
+\sum_{t\in H}\chi(\Delta_q(t))
+\right|
+\le 2\sqrt p+1.
+\]
+
+Consequently
+
+\[
+\boxed{
+Z_{p,d}=r-1+O(\sqrt p),
+}
+\]
+
+and whenever \(r\gg\sqrt p\), the density of indices killed by \(p\)
+is
+
+\[
+\frac{Z_{p,d}}{pr}
+=
+\frac1p+O\!\left(\frac{1}{r\sqrt p}\right).
+\]
+
+So large-order prime factors behave, at the level of zero-class density,
+almost exactly like random divisibility by \(p\).  This gives a theoretical
+explanation for the near-random small-prime survival rates observed in the
+large sieves.
+
+If \(q\equiv1\pmod p\), the earlier identity
+\[
+2A(n)\equiv n(n^2+1)\pmod p
+\]
+shows instead that the zero density is exactly \(1/p\) when
+\(-1\) is a nonsquare modulo \(p\), and \(3/p\) when \(-1\) is a
+square.
+
+This reduction is also the natural point of contact with the literature on
+exponential congruences and character sums over multiplicative subgroups.
 
 ## Search consequence
 
