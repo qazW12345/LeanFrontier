@@ -647,6 +647,69 @@ def arithmetic_cohn_descent(modulus: int, root: int):
     }
 
 
+
+def verify_arithmetic_descent_normal_form(max_modulus: int) -> None:
+    """Verify the exact quotient-2 normal form for centered modular roots.
+
+    For v=(u^2+1)/M and h=-M+5u-6v, one has the identity
+        v*h = (u-2v)*(3v-u) - 1.
+    Hence h>=0 is equivalent (away from the explicitly accepted tiny bases)
+    to the Euclidean quotient condition 2v < u < 3v.
+
+    Writing r=u-2v then gives
+        w=(r^2+1)/v,
+        M=4v+4r+w,
+        h=r-w,
+    and the stripped symmetric core is
+        [[w, r-w], [r-w, v-2r+w]].
+    """
+    checked = 0
+    successful = 0
+    for M in range(2, max_modulus + 1):
+        for u in range(1, M // 2 + 1):
+            if (u * u + 1) % M:
+                continue
+            checked += 1
+            v = (u * u + 1) // M
+            h = -M + 5 * u - 6 * v
+            if v * h != (u - 2 * v) * (3 * v - u) - 1:
+                raise AssertionError(("vh identity", M, u, v, h))
+
+            quotient_two = 2 * v < u < 3 * v
+            if (M, u) not in ((2, 1), (5, 2)) and (h >= 0) != quotient_two:
+                raise AssertionError(("cone/quotient mismatch", M, u, v, h))
+
+            if not quotient_two:
+                continue
+            successful += 1
+            r = u - 2 * v
+            if not (0 < r < v):
+                raise AssertionError(("bad remainder range", M, u, v, r))
+            if (r * r + 1) % v:
+                raise AssertionError(("remainder lost sqrt(-1)", M, u, v, r))
+            w = (r * r + 1) // v
+            if M != 4 * v + 4 * r + w:
+                raise AssertionError(("M normal form", M, u, v, r, w))
+            if h != r - w:
+                raise AssertionError(("h normal form", M, u, v, r, w, h))
+
+            q = (
+                (M - 4 * u + 4 * v, h),
+                (h, M - 6 * u + 9 * v),
+            )
+            expected = ((w, r - w), (r - w, v - 2 * r + w))
+            if q != expected:
+                raise AssertionError(("parent matrix normal form", M, u, q, expected))
+
+            parent_u = min(r, v - r)
+            if parent_u <= 0 or (parent_u * parent_u + 1) % v:
+                raise AssertionError(("bad centered parent root", M, u, v, r, parent_u))
+
+    print(
+        f"verified arithmetic descent normal form for M<= {max_modulus}: "
+        f"centered_roots={checked} quotient_two_steps={successful}"
+    )
+
 def recognize_root(modulus: int, root: int) -> None:
     centered = min(root % modulus, (-root) % modulus)
     cf = continued_fraction(modulus, centered)
@@ -791,6 +854,9 @@ def main() -> None:
     bridges = sub.add_parser("verify-root-bridges")
     bridges.add_argument("--max-modulus", type=int, default=5000)
 
+    normal = sub.add_parser("verify-descent-normal-form")
+    normal.add_argument("--max-modulus", type=int, default=20000)
+
     args = parser.parse_args()
     if args.command == "verify-orientation":
         verify_orientation(args.depth)
@@ -805,6 +871,8 @@ def main() -> None:
         print(result)
     elif args.command == "verify-root-bridges":
         verify_root_bridges(args.max_modulus)
+    elif args.command == "verify-descent-normal-form":
+        verify_arithmetic_descent_normal_form(args.max_modulus)
 
 
 if __name__ == "__main__":
