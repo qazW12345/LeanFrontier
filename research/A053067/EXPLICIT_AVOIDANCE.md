@@ -304,7 +304,100 @@ n_k=10^k+1.
 At each stage choose the next \(k\) divisible by the decimal orders of all
 prime divisors seen previously.
 
-## 7. Formalization advantage
+## 7. Completely explicit rough terms
+
+The residue-5 congruence gives a particularly clean contrapositive.
+
+Let \(k\ge2\) and let \(p\mid A(10^k+1)\) be prime.  The final digit excludes
+\(p=2,5\).
+
+If
+
+\[
+\operatorname{ord}_p(10)\mid k,
+\]
+
+then Section 3 would give
+
+\[
+A(10^k+1)\equiv5\pmod p,
+\]
+
+contradicting \(p\mid A(10^k+1)\).
+
+Therefore every prime divisor satisfies
+
+\[
+\boxed{
+\operatorname{ord}_p(10)\nmid k.
+}
+\]
+
+Now define
+
+\[
+K_R=\operatorname{lcm}(1,2,\ldots,R)
+\]
+
+for \(R\ge2\), and take
+
+\[
+n_R=10^{K_R}+1.
+\]
+
+Every integer \(1\le j\le R\) divides \(K_R\). Hence if a prime
+\(p\mid A(n_R)\) had
+
+\[
+\operatorname{ord}_p(10)\le R,
+\]
+
+then its order would divide \(K_R\), contradiction.
+
+Thus
+
+\[
+\boxed{
+p\mid A(n_R)
+\quad\Longrightarrow\quad
+\operatorname{ord}_p(10)>R.
+}
+\]
+
+Since
+
+\[
+\operatorname{ord}_p(10)\le p-1,
+\]
+
+we also get
+
+\[
+\boxed{
+p>R+1.
+}
+\]
+
+Consequently
+
+\[
+\boxed{
+P^-\!\left(A(10^{K_R}+1)\right)>R+1,
+}
+\]
+
+where \(P^-\) denotes the least prime factor.
+
+This is an explicit, nonrecursive sequence of A053067 terms whose least prime
+factor and the decimal multiplicative order of every prime factor both tend
+to infinity.
+
+It is stronger constructively than the earlier abstract primorial-avoidance
+corollary.
+
+## 8. Formalization advantage
+
+
 
 This construction is substantially easier to formalize than the earlier
 "choose n near \(10^{d/2}\)" argument.
