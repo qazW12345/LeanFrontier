@@ -99,6 +99,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--start", type=int)
     p.add_argument("--end", type=int)
     p.add_argument("--allow-partial", action="store_true")
+    p.add_argument("--shard-index", type=int, default=0)
+    p.add_argument("--shard-count", type=int, default=1)
     p.add_argument("--json-out", type=Path)
     return p.parse_args()
 
@@ -109,6 +111,8 @@ def main() -> int:
         raise SystemExit("--start and --end must be supplied together")
     if args.start is not None and args.start > args.end:
         raise SystemExit("--start must not exceed --end")
+    if args.shard_count <= 0 or not (0 <= args.shard_index < args.shard_count):
+        raise SystemExit("invalid shard index/count")
 
     rows_by_n: dict[int, dict[str, str]] = {}
     files = []
@@ -154,7 +158,8 @@ def main() -> int:
     if args.start is not None:
         expected = {
             n for n in range(args.start, args.end + 1)
-            if elementary_candidate(n)
+            if (n - args.start) % args.shard_count == args.shard_index
+            and elementary_candidate(n)
         }
         actual = set(rows_by_n)
         missing = sorted(expected - actual)
@@ -162,6 +167,8 @@ def main() -> int:
         coverage = {
             "start": args.start,
             "end": args.end,
+            "shard_index": args.shard_index,
+            "shard_count": args.shard_count,
             "expected_candidates": len(expected),
             "actual_rows": len(actual),
             "missing": missing,
