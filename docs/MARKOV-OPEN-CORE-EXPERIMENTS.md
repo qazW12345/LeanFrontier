@@ -744,3 +744,206 @@ The current exact question is:
 > For palindromic positive Cohn words, does the scalar m-value determine the abelianization (letter counts) up to swapping the two generators?
 
 A proof would be major progress; a counterexample would be equally valuable because it would kill an overstrong route before formalization.
+
+
+## 19. Endpoint-count scan pushed to inner length 44
+
+A faster exact scanner is now recorded as
+`tools/research_markov_palindrome_scan.cpp`.
+
+It exploits symmetry of the Cohn generators. If the inner palindrome has even
+length and half-word matrix (H), then its matrix is (H H^T); the analogous
+odd-length formula uses the middle generator between a half-word and its
+transpose. This reduces each palindrome to half-word work.
+
+The exact exhaustive scan through inner length 44 covers
+
+- **16,777,213** palindromic candidates;
+- **8,388,169** distinct candidate (m)-values;
+- **zero** (m)-values shared by two different unordered endpoint-count pairs.
+
+This substantially extends the earlier length-42 check. It remains finite
+evidence only.
+
+## 20. Same-count collisions: cyclic trace symmetry is real but not the whole story
+
+The first broad collision (M=1130) has an elementary explanation.
+
+Two witnesses are
+
+[
+	exttt{aaababaab},qquad 	exttt{aabaaabab}.
+]
+
+They are cyclic rotations of one another. Since every word of the form
+(a p b) with (p) palindromic satisfies
+
+[
+operatorname{tr}(M_w)=3m(w),
+]
+
+cyclic conjugacy preserves the trace and therefore preserves the (m)-value.
+It also automatically preserves letter counts.
+
+This extends to an infinite visible family. For (kge1), the two words with
+inner palindromes
+
+[
+a^k b a^{k+2} b a^k
+quad	ext{and}quad
+a^{k+1} b a^k b a^{k+1}
+]
+
+give cyclic rotations after restoring the outer (a,b), explaining the
+collisions
+
+[
+1130, 19786, 353770, 6344810,ldots
+]
+
+inside endpoint pairs ((3,6),(3,9),(3,12),(3,15),ldots).
+
+However cyclic/dihedral symmetry does not explain all collisions. The first
+non-dihedral example in the scan occurs at
+
+[
+M=57,204,005,
+]
+
+with distinct words of ordered counts ((14,7)).
+
+The next tempting explanation was universal free-group trace equivalence.
+That also fails eventually: at inner length 26, the scan finds for example
+
+[
+M=14,775,266,410
+]
+
+with two palindrome words of ordered counts ((15,12)) whose traces differ
+under generic (SL_2) generator pairs.
+
+This is another useful falsification: equal Cohn (m)-value does not imply
+universal trace-equivalence.
+
+## 21. Equal-trace character slice: a much sharper surviving pattern
+
+Although the inner-length-26 example is not universally trace-equivalent, its
+two trace functions agree exactly whenever the two free generators have equal
+trace.
+
+For the first pair this was checked symbolically using
+
+[
+A=egin{pmatrix}t&-1\\1&0end{pmatrix},qquad
+B=egin{pmatrix}0&-lambda\\lambda^{-1}&tend{pmatrix},
+]
+
+for which
+
+[
+operatorname{tr}A=operatorname{tr}B=t.
+]
+
+The difference of the two word traces simplifies identically to zero as a
+Laurent polynomial in (t,lambda).
+
+This suggests the following stronger experimental statement.
+
+### Equal-trace-slice conjecture for palindrome candidates
+
+Let (w_1=a p_1 b) and (w_2=a p_2 b), with (p_1,p_2) palindromes. If
+
+[
+m(w_1)=m(w_2)
+]
+
+for the standard Cohn matrices
+
+[
+A=egin{pmatrix}1&1\\1&2end{pmatrix},qquad
+B=egin{pmatrix}2&1\\1&1end{pmatrix},
+]
+
+then the Fricke trace polynomials agree after restriction to
+
+[
+x=operatorname{tr}A=operatorname{tr}B=y.
+]
+
+Equivalently, the two words should have the same trace for every (SL_2)
+representation with equal generator traces.
+
+This has been stress-tested with several exact symmetric equal-trace
+representations through inner length 42:
+
+- **8,388,605** palindrome candidates;
+- **4,194,039** distinct Cohn (m)-values;
+- no same-(m) fiber split by the equal-trace fingerprints.
+
+The test points include several values of the common generator trace and
+several different values of (operatorname{tr}(AB)), so this is much
+stronger than merely rechecking the Cohn point. It is still not a proof of
+polynomial equality.
+
+### Why this would force endpoint counts
+
+This conjecture has a clean exact consequence.
+
+Suppose the two words contain (p_i) copies of (a) and (q_i) copies of
+(b).
+
+On the equal-trace character slice we may specialize to (B=A). Then
+
+[
+operatorname{tr}(w_i(A,A))
+ = operatorname{tr}(A^{p_i+q_i}).
+]
+
+Equality as a trace function therefore forces
+
+[
+p_1+q_1=p_2+q_2
+]
+
+(for a generic hyperbolic (A)).
+
+We may also specialize to (B=A^{-1}). Since
+(operatorname{tr}(A^{-1})=operatorname{tr}(A)),
+
+[
+operatorname{tr}(w_i(A,A^{-1}))
+ = operatorname{tr}(A^{p_i-q_i}).
+]
+
+Thus equality forces
+
+[
+|p_1-q_1|=|p_2-q_2|.
+]
+
+The sum and absolute difference determine the unordered pair, hence
+
+[
+{p_1,q_1}={p_2,q_2}.
+]
+
+So the equal-trace-slice conjecture would imply the endpoint-rigidity
+phenomenon directly, and therefore imply Frobenius uniqueness on the
+central/Christoffel subclass.
+
+This is currently the most precise research target on the branch.
+
+### Relation to the 2021 path work
+
+Lagisquet--Pelantová--Tavenas--Vuillon already show that generalized
+Christoffel paths minimize (m) at fixed endpoint and formulate a stronger
+global uniqueness conjecture for the generalized minima. Their flip calculus
+also exhibits nontrivial equal-(m) word identities.
+
+The present slice conjecture is different and stronger: it concerns arbitrary
+palindromic trace-shaped Cohn words, not only endpoint minima. Its advantage is
+that the surviving empirical equality has a natural character-variety
+interpretation and immediately explains why letter counts should be preserved.
+
+Before any Lean formalization, the next task is to seek an algebraic proof (or
+counterexample) of this slice statement.
