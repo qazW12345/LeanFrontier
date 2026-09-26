@@ -36,6 +36,47 @@ This is useful for a possible global compositeness proof: a periodic covering
 argument only has to handle fixed-width blocks; the one exceptional index
 \(b_d\) per width can be treated by a separate recurrence or congruence family.
 
+## Exact decomposition of the mixed-width boundary block
+
+Let \(q=10^d\), and suppose the A053067 block for \(n\) is the unique block
+that crosses the boundary \(q\):
+
+\[
+L_n<q\le U_n.
+\]
+
+Put
+
+\[
+a=q-L_n,qquad b=U_n-q+1,
+\]
+
+so that \(a+b=n\).  The first \(a\) integers
+\(L_n,\ldots,q-1\) have \(d\) digits, while the remaining \(b\)
+integers \(q,\ldots,U_n\) have \(d+1\) digits.
+
+For the generic fixed-base concatenation recurrence
+
+\[
+F(Q,L,0)=0,qquad
+F(Q,L,k+1)=QF(Q,L,k)+(L+k),
+\]
+
+the mixed block is therefore exactly
+
+\[
+\boxed{
+A_{\mathrm{mix}}(n)
+=
+(10q)^b F(q,L_n,a)+F(10q,q,b).
+}
+\]
+
+Thus the exceptional boundary subsequence still reduces to the same algebraic
+object used for fixed-width blocks; it merely composes two different bases.
+This is the natural starting point for a separate modular analysis of the
+mixed-width terms.
+
 ## Fixed-width representation
 
 Assume every integer in the block has the same decimal width \(d\), and put
