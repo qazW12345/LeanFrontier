@@ -1,0 +1,85 @@
+name: A053067 mixed-boundary sieve
+
+on:
+  push:
+    branches:
+      - research/a053067
+    paths:
+      - research/A053067/mixed-request.env
+      - research/A053067/mixed_boundary.py
+      - .github/workflows/research-a053067-mixed.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a053067-mixed-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Check out triggering revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Parse request
+        shell: bash
+        run: |
+          set -euo pipefail
+          request=research/A053067/mixed-request.env
+          read_uint() {
+            local key="$1"
+            local value
+            value="$(awk -F= -v key="$key" '$1 == key {print $2}' "$request" | tail -n 1 | tr -d '[:space:]')"
+            if [[ ! "$value" =~ ^[0-9]+$ ]]; then
+              echo "Invalid or missing $key" >&2
+              exit 2
+            fi
+            printf '%s=%s\n' "$key" "$value" >> "$GITHUB_ENV"
+          }
+          read_uint MIN_D
+          read_uint MAX_D
+          read_uint PRIME_BOUND
+
+      - name: Run mixed-boundary sieve
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p research/A053067/mixed-run
+          python3 research/A053067/mixed_boundary.py \
+            --min-d "$MIN_D" \
+            --max-d "$MAX_D" \
+            --prime-bound "$PRIME_BOUND" \
+            --output research/A053067/mixed-run/results.csv \
+            | tee research/A053067/mixed-run/summary.txt
+
+      - name: Record metadata
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "repository=$GITHUB_REPOSITORY"
+            echo "commit=$GITHUB_SHA"
+            echo "min_d=${MIN_D:-unset}"
+            echo "max_d=${MAX_D:-unset}"
+            echo "prime_bound=${PRIME_BOUND:-unset}"
+            echo
+            python3 --version || true
+            sha256sum research/A053067/mixed_boundary.py research/A053067/mixed-request.env || true
+          } > research/A053067/mixed-run/metadata.txt
+
+      - name: Upload mixed-boundary evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a053067-mixed-${{ github.run_id }}-${{ github.run_attempt }}
+          path: research/A053067/mixed-run/
+          if-no-files-found: error
+          retention-days: 90
