@@ -161,3 +161,42 @@ The remaining mechanism is the exponential-rational intersection
 with p, n and d all varying.
 
 This is the equation to target with further structural arguments.
+
+
+## Small-order q^n resultants
+
+Let t=q^n and suppose a hard factor p makes t have multiplicative order k.
+Since t=Y/X modulo p, p must divide the homogenized cyclotomic polynomial
+
+  H_k(X,Y) = X^phi(k) Phi_k(Y/X).
+
+The first cases are
+
+  H_2 = X + Y,
+  H_3 = X^2 + X Y + Y^2,
+  H_4 = X^2 + Y^2,
+  H_6 = X^2 - X Y + Y^2.
+
+This is useful computationally because X and Y are only polynomial-sized in
+n and q, whereas A has n decimal blocks.
+
+After clearing powers of 2 and writing s=n^2, the degree-two cases become
+quadratics in s. Their discriminants factor very simply:
+
+  discr_s(4 H_3) = (q-1)^3 (25q-1),
+
+  discr_s(2 H_4) = (q-1)^3 (9q-1),
+
+  discr_s(4 H_6) = 3 (q-1)^3 (11q-3).
+
+Therefore, away from degenerate leading coefficients, a prime in one of these
+small-order families must also satisfy the corresponding quadratic-residue
+condition modulo p.  For example an order-3 hard factor requires
+
+  (q-1)(25q-1)
+
+to be a quadratic residue modulo p.
+
+The research tool root_order_probe.py searches these families by intersecting
+H_k(X,Y) with Phi_k(q^n) and then independently verifying any common factor
+against A modulo that factor.
