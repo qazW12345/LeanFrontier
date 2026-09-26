@@ -2390,3 +2390,321 @@ rotation.
 At present this does not by itself contradict the two Markov short-vector
 conditions; it is a new exact constraint to combine with the recursive
 cofactor geometry.
+
+
+## 31. Odd-M gcd collapse and the missing packet compatibility
+
+Return to the collision-gap notation
+
+[
+r=gx,qquad s=gy,qquad gcd(x,y)=1,
+]
+
+and define
+
+[
+L=x^2+y^2+3Mxy,qquad T=y^2-x^2,
+qquad Q=gcd(L,T).
+]
+
+The integer-line parameterization also uses
+
+[
+U_0=3Mx+2y,qquad V_0=3My+2x.
+]
+
+For odd (M) there is an exact gcd collapse:
+
+[
+oxed{gcd(U_0,V_0)=Q.}
+]
+
+Proof.  Since (Qmid L,T) and (gcd(Q,x)=gcd(Q,y)=1),
+
+[
+L+T=yU_0,qquad L-T=xV_0
+]
+
+imply (Qmid U_0,V_0).  Conversely a common divisor of (U_0,V_0)
+divides both
+
+[
+yU_0-xV_0=2T
+]
+
+and
+
+[
+yV_0-xU_0=3MT.
+]
+
+Because (M) is odd, (gcd(2,3M)=1), so it divides (T), and then also
+(L).  Hence equality.
+
+Thus the gcd called (d) in the collision-line parameterization is simply
+
+[
+d=gQ.
+]
+
+In the surviving unitary split
+
+[
+M=DE,qquad L=E^2Q,qquad B=E^2H,
+]
+
+the identity (B=jK/d), with (K=g^2L), immediately gives
+
+[
+oxed{H=jg.}
+]
+
+This is the common scale forgotten when the two defect equations are viewed
+as independent Diophantine packets.
+
+### Canonical discriminant divisor from the scale packet
+
+The scale defect equation is
+
+[
+n^2+3MHn+H^2=D^4.
+]
+
+Set
+
+[
+R=3MH+2n-2D^2,qquad Z=9M^2-4.
+]
+
+Direct expansion gives
+
+[
+R(R+4D^2)=ZH^2.
+]
+
+For an actual collision, the original gap construction gives
+
+[
+R=g^2Q.
+]
+
+Conversely, valuation analysis of the displayed product equation shows that
+for an odd packet with (gcd(D,H)=1),
+
+[
+Q_{m scale}:=gcd(R,Z)
+]
+
+satisfies
+
+[
+R=Q_{m scale},g^2
+]
+
+for an integer (g), and (gmid H).
+
+### Canonical discriminant divisor from the slope packet
+
+The slope defect equation is
+
+[
+m^2+3MWm+W^2=E^4.
+]
+
+Put
+
+[
+alpha=gcd(m,E^2+W),qquad
+x=rac malpha,qquad
+y=rac{E^2+W}{alpha}.
+]
+
+Then (gcd(x,y)=1), and the packet equation gives the complementary
+factorization
+
+[
+m=xalpha,qquad E^2+W=yalpha,
+]
+
+[
+E^2-W=xeta,qquad 3MW+m=yeta
+]
+
+for an integer (eta).  In particular
+
+[
+Q_{m slope}
+  =rac{y^2-x^2}{W}
+  =rac{2(E^2+W)+3Mm}{alpha^2}.
+]
+
+For an actual collision the two independently reconstructed divisors must
+coincide:
+
+[
+oxed{Q_{m scale}=Q_{m slope}.}
+]
+
+This compatibility is invisible if one merely enumerates the two defect
+equations independently.
+
+## 32. Factorization of the common discriminant divisor
+
+For odd (M),
+
+[
+Z=9M^2-4=(3M-2)(3M+2),
+]
+
+and the two factors on the right are coprime.
+
+Using
+
+[
+U_0+V_0=(3M+2)(x+y),
+]
+
+[
+V_0-U_0=(3M-2)(y-x),
+]
+
+together with (gcd(x+y,y-x)mid2), the common gcd (Q) has the exact
+factorization
+
+[
+oxed{
+Q=
+gcd(3M-2,x+y),
+gcd(3M+2,y-x).
+}
+]
+
+Define
+
+[
+F=gcd(3M-2,x+y),qquad
+G=gcd(3M+2,y-x),
+]
+
+and complementary factors (A,B) by
+
+[
+3M-2=FA,qquad
+3M+2=GB.
+]
+
+Then
+
+[
+Q=FG
+]
+
+and, crucially,
+
+[
+oxed{GB-FA=4.}
+]
+
+Write
+
+[
+x+y=Fho,qquad
+y-x=Gsigma.
+]
+
+Then
+
+[
+x=rac{Fho-Gsigma}{2},
+qquad
+y=rac{Fho+Gsigma}{2},
+]
+
+and
+
+[
+oxed{W=hosigma.}
+]
+
+The transformed slope coefficients are
+
+[
+alpha=rac{Bho-Asigma}{2},
+qquad
+eta=rac{Bho+Asigma}{2},
+]
+
+so
+
+[
+oxed{
+m=rac{(Fho-Gsigma)(Bho-Asigma)}4.
+}
+]
+
+The identity (E^2=L/Q) becomes the binary quadratic equation
+
+[
+oxed{
+BFho^2-AGsigma^2=4E^2.
+}
+]
+
+On the scale side, (R=Qg^2) and (H=gj).  Substituting
+(Q=FG) and
+
+[
+Z=QAB
+]
+
+into
+
+[
+Zj^2=Q(Qg^2+4D^2)
+]
+
+gives the perfectly symmetric companion equation
+
+[
+oxed{
+ABj^2-FGg^2=4D^2.
+}
+]
+
+Moreover
+
+[
+oxed{
+n=rac{(Aj-Gg)(Bj-Fg)}4.
+}
+]
+
+Thus the two-block root-switch problem can be written as the integer system
+
+[
+GB-FA=4,
+]
+
+[
+BFho^2-AGsigma^2=4E^2,
+]
+
+[
+ABj^2-FGg^2=4D^2,
+]
+
+[
+M=DE,qquad
+3M-2=FA,qquad
+3M+2=GB,
+]
+
+together with
+
+[
+oxed{C=WH=hosigma gj<rac{DE}{3}.}
+]
+
+This is a much more symmetric normal form than the separated quartic defect
+equations.  It makes explicit that both packets are tied to the same
+determinant-four factor rectangle ((F,A;G,B)).
