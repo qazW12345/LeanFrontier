@@ -1,0 +1,116 @@
+name: A053067 structural resultant probe
+
+on:
+  push:
+    branches:
+      - research/a053067
+    paths:
+      - research/A053067/structural-request.env
+      - research/A053067/search.cpp
+      - research/A053067/root_order_probe.py
+      - .github/workflows/research-a053067-structural.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a053067-structural-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Check out triggering revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Install GMP
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y libgmp-dev
+
+      - name: Parse request
+        shell: bash
+        run: |
+          set -euo pipefail
+          request=research/A053067/structural-request.env
+          read_uint() {
+            local key="$1"
+            local value
+            value="$(awk -F= -v key="$key" '$1 == key {print $2}' "$request" | tail -n 1 | tr -d '[:space:]')"
+            if [[ ! "$value" =~ ^[0-9]+$ ]]; then
+              echo "Invalid or missing $key" >&2
+              exit 2
+            fi
+            printf '%s=%s\n' "$key" "$value" >> "$GITHUB_ENV"
+          }
+          read_uint START
+          read_uint END
+          read_uint SIEVE_BOUND
+          read_uint THREADS
+          read_uint KMAX
+
+      - name: Build searcher
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p research/A053067/structural-run
+          g++ -O3 -march=native -std=c++20 -pthread \
+            research/A053067/search.cpp -lgmpxx -lgmp \
+            -o research/A053067/structural-run/a053067-search
+
+      - name: Regenerate sieve survivors
+        shell: bash
+        run: |
+          set -euo pipefail
+          research/A053067/structural-run/a053067-search \
+            --start "$START" --end "$END" \
+            --sieve-bound "$SIEVE_BOUND" \
+            --prp-reps 1 --mode sieve \
+            --threads "$THREADS" \
+            --output research/A053067/structural-run/sieve.csv \
+            2> >(tee research/A053067/structural-run/sieve.log >&2)
+
+      - name: Probe small orders of q^n
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 research/A053067/root_order_probe.py \
+            research/A053067/structural-run/sieve.csv \
+            --kmax "$KMAX" \
+            --output research/A053067/structural-run/resultant-factors.csv \
+            | tee research/A053067/structural-run/resultant-summary.txt
+
+      - name: Record metadata
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "repository=$GITHUB_REPOSITORY"
+            echo "commit=$GITHUB_SHA"
+            echo "start=${START:-unset}"
+            echo "end=${END:-unset}"
+            echo "sieve_bound=${SIEVE_BOUND:-unset}"
+            echo "kmax=${KMAX:-unset}"
+            echo
+            python3 --version || true
+            g++ --version | head -n 1 || true
+            sha256sum research/A053067/search.cpp research/A053067/root_order_probe.py research/A053067/structural-request.env || true
+          } > research/A053067/structural-run/metadata.txt
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a053067-structural-${{ github.run_id }}-${{ github.run_attempt }}
+          path: research/A053067/structural-run/
+          if-no-files-found: error
+          retention-days: 90
