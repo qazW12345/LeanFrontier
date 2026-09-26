@@ -1309,3 +1309,109 @@ If such a condition can be expressed using the denominator/root descent and
 the CRT sign partition, it would finally put the word-theoretic
 "centrality" requirement and the earlier number-theoretic collision
 factorization into the same language.
+
+
+## 25. All observed palindrome collisions are imprimitive
+
+A new exhaustive diagnostic was added to
+`tools/research_markov_palindrome_scan.cpp`.
+
+For a trace-shaped palindrome candidate
+
+[
+w=a p b,
+]
+
+the scanner now records not only its (m)-value and centered modular root,
+but also the endpoint-count pair
+
+[
+(#a,#b).
+]
+
+The scan was repeated through inner palindrome length (44):
+
+- **16,777,213** palindrome candidates;
+- **8,388,169** distinct (m)-values;
+- **876 repeated-root collision events**;
+- **0 collisions involving a primitive endpoint pair**
+  (gcd(#a,#b)=1).
+
+Every repeated (m)-value found in this much larger palindromic class lies
+entirely in the imprimitive/generalized sector.
+
+Examples include the previously observed families with count pairs
+
+[
+(3,6), (3,9), (6,9), (5,10), (7,14), (12,15),ldots
+]
+
+and in every case the common gcd exceeds (1).
+
+This is stronger experimentally than merely observing that colliding
+palindromes have the same endpoint counts.  A genuine lower Christoffel word
+has coprime endpoint counts, so the following stronger statement would imply
+Frobenius uniqueness immediately:
+
+> **Primitive palindrome-collision conjecture.**
+> If (p_1,p_2) are palindromes and
+> (m(a p_1 b)=m(a p_2 b)), with at least one of the two endpoint-count
+> pairs primitive, then the two candidates have the same centered modular
+> root (equivalently, no genuine distinct root collision occurs).
+
+No proof is claimed.  The statement is deliberately stronger than Frobenius
+because the second palindrome is not assumed central/Christoffel.
+
+### Relation to Fisac's integral-necklace reformulation
+
+David Fisac's 2025 paper *Markov's conjecture on integral necklaces* gives a
+different but highly relevant primitive/imprimitive separation.
+
+He parametrizes the simple length spectrum of the modular torus by
+**primitive small-variation necklaces** and proves that the classical Markov
+uniqueness conjecture is equivalent to injectivity of an explicit function on
+that primitive necklace set.  In his parametrization, a small-variation
+necklace is primitive exactly when the two multiplicities of its consecutive
+entries are coprime.
+
+Source:
+
+D. Fisac, *Markov's conjecture on integral necklaces*,
+Bull. London Math. Soc. 57 (2025), 4122--4131.
+
+The present experiment is not the same statement:
+
+- Fisac restricts to the small-variation/Christoffel geometry but keeps all
+  primitive necklaces;
+- our scan allows arbitrary palindromic Cohn candidates, far outside the
+  Christoffel class, and asks whether collisions can touch the primitive
+  endpoint sector at all.
+
+The absence of primitive collisions in the larger palindrome class therefore
+looks like a potentially useful strengthening rather than merely a numerical
+restatement of Fisac's equivalence.
+
+The next question is whether the gcd obstruction can be seen directly from
+two distinct symmetric determinant-one matrices
+
+[
+P_i=
+egin{pmatrix}
+x_i&y_i\
+y_i&z_i
+end{pmatrix}
+]
+
+with the same linear value
+
+[
+x_i+2y_i+z_i=M
+]
+
+and both lying in the positive Cohn palindrome monoid.
+
+A proof that every such distinct pair forces a common divisor in the
+reconstructed generator-count vector would rule out primitive collisions and
+therefore settle the original conjecture.  Because this is stronger than the
+known problem, it should first be attacked algebraically and computationally,
+not formalized in Lean.
