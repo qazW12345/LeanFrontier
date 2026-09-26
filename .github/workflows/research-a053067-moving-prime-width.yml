@@ -1,0 +1,52 @@
+name: A053067 moving prime-width correction
+
+on:
+  push:
+    branches:
+      - research/a053067
+    paths:
+      - research/A053067/moving-prime-width-request.env
+      - research/A053067/moving_prime_width.py
+      - research/A053067/congruence_families.py
+      - research/A053067/local_product.py
+      - .github/workflows/research-a053067-moving-prime-width.yml
+
+permissions:
+  contents: read
+
+jobs:
+  moving:
+    if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Parse request
+        shell: bash
+        run: |
+          set -euo pipefail
+          value="$(awk -F= '$1 == "MAX_WIDTH" {print $2}' research/A053067/moving-prime-width-request.env | tail -n 1 | tr -d '[:space:]')"
+          [[ "$value" =~ ^[0-9]+$ ]]
+          echo "MAX_WIDTH=$value" >> "$GITHUB_ENV"
+
+      - name: Compute moving prime-width correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p research/A053067/moving-prime-width-run
+          python3 research/A053067/moving_prime_width.py \
+            --max-width "$MAX_WIDTH" \
+            --output research/A053067/moving-prime-width-run/corrections.csv \
+            | tee research/A053067/moving-prime-width-run/summary.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: a053067-moving-prime-width-${{ github.run_id }}
+          path: research/A053067/moving-prime-width-run/
+          if-no-files-found: error
+          retention-days: 90
