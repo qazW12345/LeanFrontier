@@ -125,17 +125,55 @@ def clause_for(p: int, d: int, n: int) -> Clause:
     return Clause(p, d_period, d_residue, n_period, n_residue)
 
 
-def smt_problem(clauses: list[Clause], min_d: int, timeout_ms: int) -> str:
+def block_bounds(n: int) -> tuple[int, int]:
+    return n * (n - 1) // 2 + 1, n * (n + 1) // 2
+
+
+def fixed_width_interval(d: int) -> tuple[int, int]:
+    low = 10 ** (d - 1)
+    high = 10**d - 1
+
+    lo = math.isqrt(2 * low)
+    while block_bounds(lo)[0] < low:
+        lo += 1
+    while lo > 1 and block_bounds(lo - 1)[0] >= low:
+        lo -= 1
+
+    hi = math.isqrt(2 * high)
+    while block_bounds(hi)[1] > high:
+        hi -= 1
+    while block_bounds(hi + 1)[1] <= high:
+        hi += 1
+    return lo, hi
+
+
+def smt_problem(
+    clauses: list[Clause],
+    min_d: int,
+    max_d: int | None,
+    timeout_ms: int,
+) -> str:
     allowed = " ".join(f"(= (mod n 60) {r})" for r in ADMISSIBLE_MOD_60)
     lines = [
         f"(set-option :timeout {timeout_ms})",
         "(set-option :produce-models true)",
         "(declare-const d Int)",
         "(declare-const n Int)",
-        f"(assert (>= d {min_d}))",
         "(assert (> n 2))",
         f"(assert (or {allowed}))",
     ]
+
+    if max_d is None:
+        lines.append(f"(assert (>= d {min_d}))")
+    else:
+        states = []
+        for width in range(min_d, max_d + 1):
+            lo, hi = fixed_width_interval(width)
+            states.append(
+                f"(and (= d {width}) (>= n {lo}) (<= n {hi}))"
+            )
+        lines.append("(assert (or " + " ".join(states) + "))")
+
     for c in clauses:
         lines.append(
             "(assert (not (and "
@@ -196,6 +234,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--prime-bound", type=int, default=100000)
     p.add_argument("--iterations", type=int, default=200)
     p.add_argument("--min-d", type=int, default=3)
+    p.add_argument("--max-d", type=int)
     p.add_argument("--z3", default="z3")
     p.add_argument("--timeout-ms", type=int, default=10000)
     p.add_argument("--csv-out", type=Path, required=True)
@@ -218,7 +257,7 @@ def main() -> int:
         ])
 
         for iteration in range(args.iterations + 1):
-            smt = smt_problem(clauses, args.min_d, args.timeout_ms)
+            smt = smt_problem(clauses, args.min_d, args.max_d, args.timeout_ms)
             if args.smt_out:
                 args.smt_out.parent.mkdir(parents=True, exist_ok=True)
                 args.smt_out.write_text(smt)
