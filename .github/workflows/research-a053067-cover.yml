@@ -1,0 +1,109 @@
+name: A053067 covering proof search
+
+on:
+  push:
+    branches:
+      - research/a053067
+    paths:
+      - research/A053067/cover-request.env
+      - research/A053067/cover_cegar.py
+      - .github/workflows/research-a053067-cover.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a053067-cover-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cover:
+    if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Check out triggering revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Install Z3
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y z3
+          z3 --version
+
+      - name: Parse bounded request
+        shell: bash
+        run: |
+          set -euo pipefail
+          request=research/A053067/cover-request.env
+          read_uint() {
+            local key="$1"
+            local value
+            value="$(awk -F= -v key="$key" '$1 == key {print $2}' "$request" | tail -n 1 | tr -d '[:space:]')"
+            if [[ ! "$value" =~ ^[0-9]+$ ]]; then
+              echo "Invalid or missing $key in $request" >&2
+              exit 2
+            fi
+            printf '%s=%s\n' "$key" "$value" >> "$GITHUB_ENV"
+          }
+          read_uint PRIME_BOUND
+          read_uint ITERATIONS
+          read_uint MIN_D
+          read_uint TIMEOUT_MS
+
+      - name: Run counterexample-guided covering search
+        id: cover
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p research/A053067/cover-run
+          set +e
+          python3 research/A053067/cover_cegar.py \
+            --prime-bound "$PRIME_BOUND" \
+            --iterations "$ITERATIONS" \
+            --min-d "$MIN_D" \
+            --timeout-ms "$TIMEOUT_MS" \
+            --csv-out research/A053067/cover-run/clauses.csv \
+            --smt-out research/A053067/cover-run/final.smt2 \
+            | tee research/A053067/cover-run/search.log
+          rc=${PIPESTATUS[0]}
+          set -e
+          echo "exit_code=$rc" >> "$GITHUB_OUTPUT"
+          # 0 = universal cover found; 3 = uncovered by current prime pool;
+          # 4 = iteration limit.  All are research outcomes, not workflow failures.
+          if [[ "$rc" -ne 0 && "$rc" -ne 3 && "$rc" -ne 4 ]]; then
+            exit "$rc"
+          fi
+
+      - name: Record metadata
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "repository=$GITHUB_REPOSITORY"
+            echo "commit=$GITHUB_SHA"
+            echo "prime_bound=${PRIME_BOUND:-unset}"
+            echo "iterations=${ITERATIONS:-unset}"
+            echo "min_d=${MIN_D:-unset}"
+            echo "timeout_ms=${TIMEOUT_MS:-unset}"
+            echo "exit_code=${{ steps.cover.outputs.exit_code }}"
+            echo
+            z3 --version || true
+            python3 --version || true
+            sha256sum research/A053067/cover_cegar.py research/A053067/cover-request.env || true
+          } > research/A053067/cover-run/metadata.txt
+
+      - name: Upload covering-search evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a053067-cover-${{ github.run_id }}-${{ github.run_attempt }}
+          path: research/A053067/cover-run/
+          if-no-files-found: error
+          retention-days: 90
