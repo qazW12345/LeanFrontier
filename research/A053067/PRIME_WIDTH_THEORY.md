@@ -508,7 +508,66 @@ tends to infinity with the decimal width.
 It proves that **all local primes below the width scale** preserve divergent
 prime mass along prime decimal widths.
 
-## 9. Remaining full-product problem
+## 9. Moving-cutoff numerical check
+
+Hosted run 36278136877 computed the exact moving correction
+
+\[
+C_d^{<d}
+=
+\prod_{5<p<d}
+\frac{1-\rho_{p,d}}{1-1/p}
+\]
+
+for every prime width \(d\le1000\).
+
+Among the 165 prime widths \(7\le d\le1000\), it found
+
+\[
+\boxed{
+0.976742016
+\le
+C_d^{<d}
+\le
+1.300545580.
+}
+\]
+
+The minimum occurs at \(d=307\), the maximum at \(d=269\).
+
+The harmonic-weighted arithmetic mean is
+
+\[
+\boxed{1.089671878},
+\]
+
+and the harmonic-weighted geometric mean is
+
+\[
+\boxed{1.087070212}.
+\]
+
+The accumulated moving-cutoff harmonic mass is
+
+\[
+\sum_{\substack{7\le d\le1000\\d\ {\rm prime}}}
+\frac{C_d^{<d}}d
+=
+1.269191826,
+\]
+
+compared with the uncorrected baseline
+
+\[
+\sum_{\substack{7\le d\le1000\\d\ {\rm prime}}}\frac1d
+=
+1.164746794.
+\]
+
+Thus the exact growing sieve controlled by the moving-cutoff theorem not only
+remains positive but enhances the harmonic mass over this range.
+
+## 10. Remaining full-product problem
 
 The theorem above controls the iterated limit
 
@@ -538,7 +597,7 @@ prime-width average.  Controlling these exceptional pairs uniformly in both
 
 This is substantially narrower than the original width-uniform problem.
 
-## 10. Implication for the prime-term programme
+## 11. Implication for the prime-term programme
 
 Prime widths provide a natural infinite subsequence on which:
 
