@@ -256,6 +256,57 @@ This is a useful strengthening of "infinitely many distinct prime divisors":
 not only must new primes appear, but one can force **all** prime factors of a
 chosen term to lie beyond any prescribed bound.
 
+## Corollary: prime divisors with unbounded decimal order
+
+Fix \(R\ge1\).  Consider the set
+
+\[
+S_R=
+\{p\text{ prime}:p\nmid10,\ \operatorname{ord}_p(10)\le R\}.
+\]
+
+This set is finite. Indeed, if \(\operatorname{ord}_p(10)=r\le R\), then
+
+\[
+p\mid10^r-1,
+\]
+
+so every such prime divides the fixed integer
+
+\[
+\prod_{r=1}^R(10^r-1).
+\]
+
+Apply the finite-prime avoidance theorem to
+
+\[
+S_R\cup\{2,5\}.
+\]
+
+It gives infinitely many genuine A053067 terms \(A(n)>1\) with no prime
+factor in that set. Therefore every prime divisor \(p\mid A(n)\) satisfies
+
+\[
+\boxed{
+\operatorname{ord}_p(10)>R.
+}
+\]
+
+As \(R\) is arbitrary, the set of prime divisors of A053067 contains primes
+for which the multiplicative order of 10 tends to infinity.
+
+Combining this with the primorial avoidance corollary, for every pair
+\(y,R\) there are genuine terms all of whose prime factors satisfy
+
+\[
+p>y
+\qquad\text{and}\qquad
+\operatorname{ord}_p(10)>R.
+\]
+
+Thus the sequence cannot be explained by repeatedly recycling primes with
+bounded size or bounded decimal order.
+
 ## Corollary: an infinite pairwise-coprime subsequence
 
 After choosing \(n_1,\ldots,n_j\), let
