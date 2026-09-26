@@ -210,6 +210,43 @@ evidence: the natural random model predicts infinitely many prime terms,
 not eventual compositeness, while also predicting that the next prime can be
 extremely far away because \(\log\log n\) grows so slowly.
 
+## 8. Period-corrected prime heuristics for exponential sequences
+
+**J. Grantham, A. Granville,
+"Fibonacci primes, primes of the form \(2^n-k\) and beyond",
+J. Number Theory 261 (2024), 190--219.**
+arXiv:2307.07894, DOI 10.1016/j.jnt.2024.02.002.
+
+They develop prime-value heuristics for exponentially growing recurrence
+sequences and emphasize a point directly relevant to A053067: the local Euler
+factors should be organized by the period of the sequence modulo a prime,
+rather than merely by prime size.
+
+For fixed decimal width \(d\), A053067 now has exactly the local datum needed
+for an analogous calculation:
+
+\[
+\rho_{p,d}
+=
+\frac{Z_{p,d}}{p\,\operatorname{ord}_p(10^d)},
+\]
+
+where \(Z_{p,d}\) is the exact number of zero classes in the full period and
+
+\[
+Z_{p,d}
+=
+r-1+
+\sum_{t\in\langle10^d\rangle}\chi(\Delta_q(t)).
+\]
+
+Thus a refined A053067 prime heuristic can be built from exact local
+divisibility densities instead of assuming independent random divisibility.
+
+This is a promising computational/theoretical project in its own right:
+estimate the local correction product for successive width classes and compare
+its prediction with the actual small-factor survival rates.
+
 ## Current interpretation
 
 The literature and our computations now line up:
