@@ -130,7 +130,88 @@ A SAT/SMT/set-cover search may discover a finite family, but its output must be
 converted into ordinary arithmetic lemmas. The SAT solver would be a discovery
 tool, not part of the trusted Lean proof.
 
-## 7. Intermediate formal work worth keeping
+## 7. New unconditional theorems worth formalizing
+
+The research branch now contains two results that are mathematically useful
+even if the original prime-term question remains open.
+
+### Universal residue-one theorem
+
+For every integer modulus \(m\ge1\), there are infinitely many genuine
+fixed-width indices \(n\) such that
+
+\[
+A(n)\equiv1\pmod m.
+\]
+
+A formal proof can avoid asymptotic language entirely.  Given \(m\), split off
+its \(2\)- and \(5\)-parts, choose a decimal width divisible by the
+multiplicative order of 10 modulo the coprime part, and choose \(n\) in the
+residue class \(1\) modulo a suitable finite modulus near \(10^{d/2}\).
+Elementary inequalities then verify the fixed-width condition.
+
+Immediate corollaries are:
+
+- infinitely many distinct primes divide A053067 terms;
+- A053067 has an infinite pairwise-coprime subsequence;
+- no finite set of prime divisors can cover all terms.
+
+These are especially attractive Lean targets because the proof is elementary:
+orders modulo a finite modulus, CRT/congruences, triangular-number bounds and
+unique factorization.
+
+### Irreducibility of the coefficient polynomial
+
+Define
+
+\[
+P_n(x)=
+L_nx^{n-1}+(L_n+1)x^{n-2}+\cdots+U_n.
+\]
+
+Kakuma's 2026 arithmetic-progression coefficient criterion applies with
+
+\[
+m=n-1,\qquad a=L_n,\qquad \delta=1,
+\]
+
+because
+
+\[
+8L_n-(n-1)^2=(n-1)(3n+1)+8>0.
+\]
+
+Hence \(P_n(x)\) is irreducible over \(\mathbb Z[x]\) for every \(n\ge3\).
+
+Formalizing the full external irreducibility criterion would be a larger
+project, but the A053067 specialization is unusually simple and may admit a
+shorter dedicated proof.
+
+## 8. Analytic local-product theorem
+
+For each fixed decimal width \(d\), the exact local densities
+\(\rho_{p,d}\) satisfy
+
+\[
+\sum_p\left|\rho_{p,d}-\frac1p\right|<\infty,
+\]
+
+using the quadratic-character reduction together with Pappalardi's reciprocal
+multiplicative-order estimate.  Therefore the normalized correction
+
+\[
+C_d=
+\prod_{p>5}
+\frac{1-\rho_{p,d}}{1-1/p}
+\]
+
+converges to a finite positive constant.
+
+This theorem is analytically heavier than the residue-one theorem and is not
+the first Lean target.  Its role is to certify that the numerically observed
+singular factor is a genuine fixed-width object.
+
+## 9. Intermediate formal work worth keeping
 
 Even before the open problem is settled, the following are stable reusable
 lemmas rather than bounded computational facts:
