@@ -362,4 +362,23 @@ theorem prime_not_dvd_natFixedA_decimal
   rw [hone] at hzero
   exact one_ne_zero hzero
 
+
+
+/-- Finite-set modular core of the Euclid-style avoidance theorem.
+
+If one natural block length n and one decimal width d satisfy the residue-one
+conditions simultaneously for every odd prime in a finite set S, then none of
+those primes divides the natural fixed-width A053067 recurrence value. -/
+theorem finset_prime_avoidance
+    (S : Finset ℕ) (d n : ℕ)
+    (hprime : ∀ p ∈ S, p.Prime)
+    (hodd : ∀ p ∈ S, p ≠ 2)
+    (hnmod : ∀ p ∈ S, n ≡ 1 [MOD p])
+    (hqmod : ∀ p ∈ S, 10 ^ d ≡ 1 [MOD p]) :
+    ∀ p ∈ S, ¬ p ∣ natFixedA (10 ^ d) n := by
+  intro p hp
+  letI : Fact p.Prime := ⟨hprime p hp⟩
+  exact prime_not_dvd_natFixedA_decimal
+    p d n (hodd p hp) (hnmod p hp) (hqmod p hp)
+
 end LeanFrontier.A053067Research
