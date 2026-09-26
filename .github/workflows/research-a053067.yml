@@ -47,10 +47,10 @@ jobs:
     timeout-minutes: 1440
 
     steps:
-      - name: Check out research branch
+      - name: Check out triggering revision
         uses: actions/checkout@v4
         with:
-          ref: research/a053067
+          ref: ${{ github.sha }}
 
       - name: Resolve run configuration
         shell: bash
@@ -92,7 +92,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p research/A053067/build
-          g++ -O3 -march=native -std=c++20             research/A053067/search.cpp -lgmpxx -lgmp             -o research/A053067/build/a053067-search
+          g++ -O3 -march=native -std=c++20 -pthread             research/A053067/search.cpp -lgmpxx -lgmp             -o research/A053067/build/a053067-search
 
       - name: Verify implementation and checked-in pilot
         shell: bash
