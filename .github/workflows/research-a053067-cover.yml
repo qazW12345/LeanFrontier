@@ -54,6 +54,7 @@ jobs:
           read_uint PRIME_BOUND
           read_uint ITERATIONS
           read_uint MIN_D
+          read_uint MAX_D
           read_uint TIMEOUT_MS
 
       - name: Run counterexample-guided covering search
@@ -67,6 +68,7 @@ jobs:
             --prime-bound "$PRIME_BOUND" \
             --iterations "$ITERATIONS" \
             --min-d "$MIN_D" \
+            --max-d "$MAX_D" \
             --timeout-ms "$TIMEOUT_MS" \
             --csv-out research/A053067/cover-run/clauses.csv \
             --smt-out research/A053067/cover-run/final.smt2 \
@@ -91,6 +93,7 @@ jobs:
             echo "prime_bound=${PRIME_BOUND:-unset}"
             echo "iterations=${ITERATIONS:-unset}"
             echo "min_d=${MIN_D:-unset}"
+            echo "max_d=${MAX_D:-unset}"
             echo "timeout_ms=${TIMEOUT_MS:-unset}"
             echo "exit_code=${{ steps.cover.outputs.exit_code }}"
             echo
