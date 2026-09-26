@@ -55,7 +55,7 @@ concurrency:
 jobs:
   scan:
     if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
-    runs-on: [self-hosted, linux, x64]
+    runs-on: [self-hosted]
     timeout-minutes: 1440
 
     steps:
