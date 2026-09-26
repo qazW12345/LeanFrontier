@@ -407,3 +407,138 @@ The literature and our computations now line up:
 The proof program should therefore focus on rigorous structural statements
 about the zero-class density and on ruling out classes of universal covering
 mechanisms, while the computation program searches for an actual later prime.
+
+
+## 12. Sparse-sequence sieve obstruction and composite-modulus correlations
+
+A second literature pass after the prime-width moving-cutoff theorem changes
+the emphasis of the project.
+
+### Grantham--Granville: the period function is not a sieve density
+
+Grantham and Granville, *Fibonacci primes, primes of the form \(2^n-k\) and
+beyond*, J. Number Theory 261 (2024), Section 7, explain why ordinary sieve
+theory does not directly apply to shifted exponentials.  Divisibility is
+periodic, but the relevant period \(m_d\) is not multiplicative in the
+squarefree modulus \(d\).  Their proposed workaround is to order local
+conditions by period rather than only by prime size.
+
+This is directly analogous to A053067.  We have excellent one-prime
+information, but for a composite modulus the joint period is an lcm of local
+periods, so shared factors can create correlations.
+
+### Browning--Verzobio: the same obstruction for strong divisibility sequences
+
+Browning and Verzobio, *Strong divisibility sequences and sieve methods*,
+Mathematika 70 (2024), explicitly identify two major obstacles for sparse
+recurrence sequences: the nonmultiplicativity of the divisor-density function
+and exponential growth.  Their positive sieve results use strong divisibility
+structure that A053067 does not possess.
+
+The useful lesson for this project is methodological: after local densities
+have been controlled, the next invariant is not another Euler factor but the
+joint density for several primes.
+
+### Friedlander--Iwaniec: what would actually break parity
+
+Friedlander and Iwaniec's *Asymptotic sieve for primes* adds a bilinear axiom
+to the classical sieve framework and thereby breaks the parity barrier.
+
+This suggests a concrete hierarchy for A053067:
+
+1. exact two-prime correlations;
+2. averaged correlation bounds over local primes;
+3. squarefree composite-modulus density estimates;
+4. a genuine Type-II/bilinear estimate for centered divisibility errors.
+
+Only the last stage is plausibly strong enough to convert local admissibility
+into actual prime detection.
+
+### Järviniemi--Teräväinen: even shifted exponentials remain very hard
+
+Järviniemi and Teräväinen, *Composite values of shifted exponentials*,
+Adv. Math. 429 (2023), show under GRH plus a Brun--Titchmarsh/Chebotarev-type
+hypothesis that \(a^n-b\) is composite for density one of the exponents and
+that fixed-\(k\) almost-prime values have density zero.
+
+Their introduction stresses that infinitude of prime values for admissible
+shifted exponentials is beyond present methods.  This is an important reality
+check: A053067's positive singular series is substantial progress, but it does
+not by itself place prime infinitude within known unconditional technology.
+
+### Grantham--Pappalardi 2026: finite coverings remain the natural obstruction
+
+Grantham and Pappalardi, *Two dimensional covering systems and possible prime
+producing \(a^m-b^n\)*, arXiv:2601.10296v2 (2026), construct finite-prime
+covering obstructions in a two-exponent exponential family and conjecture
+that such coverings are the essential obstruction to infinitely many prime
+values in their setting.
+
+For A053067 the universal residue-one theorem already rules out an analogous
+finite set of primes covering all genuine fixed-width terms.  This makes the
+new paper especially relevant conceptually: it reinforces the conclusion that
+the finite-covering direction has been pushed about as far as it can go here.
+
+### Fixed-width recurrence bridge
+
+For fixed decimal width \(d\), with \(q=10^d\), the closed form gives
+
+\[
+(q-1)^2A_d(n)=q^nP_2(n)+Q_2(n),
+\]
+
+where \(P_2,Q_2\) are quadratic polynomials in \(n\).  Hence the fixed-width
+extrapolation is a constant-coefficient linear recurrence with characteristic
+polynomial dividing
+
+\[
+(T-q)^3(T-1)^3.
+\]
+
+This gives a precise bridge to the linear-recurrence literature, but also
+shows why generic recurrence theorems do not apply: the characteristic
+polynomial is highly reducible and has repeated rational roots.
+
+### New experimental target
+
+The new script `pair_correlation_probe.py` computes the exact
+conditioned joint density
+
+\[
+\rho_{p,r;d}
+=
+\Pr(p\mid A(n),\,r\mid A(n)\mid n\bmod60\in S)
+\]
+
+by generalized CRT and compares it with
+\(\rho_{p,d}\rho_{r,d}\).
+
+For prime width \(d=101\) and all \(92\) primes \(7\le p\le500\), the first
+hosted run covered \(4186\) prime pairs and found
+
+\[
+\operatorname{mean}_{p<r}
+|\log R_{p,r;d}|
+=
+1.2929393\times10^{-5},
+\]
+
+where
+
+\[
+R_{p,r;d}
+=
+\frac{1-\rho_p-\rho_r+\rho_{p,r}}
+{(1-\rho_p)(1-\rho_r)}.
+\]
+
+The RMS binary \(\phi\)-correlation was \(0.00308886\).  The largest observed
+survival distortion was associated with the smallest local primes, especially
+pairs involving \(7\) and \(11\).
+
+This is only one width and one finite cutoff, so it is not a theorem.
+Nevertheless it is the first direct evidence on the composite-modulus
+question, and it is encouraging: the failure of multiplicativity appears
+small on average and strongly localized in this range.
+
+The detailed next-step programme is recorded in `SIEVE_TYPE_II.md`.
