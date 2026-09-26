@@ -388,7 +388,127 @@ experiment, whose harmonic-weighted correction through prime widths
 Thus the analytically privileged generator classes are also empirically among
 the more prime-friendly width classes.
 
-## 8. Remaining interchange problem
+## 8. Moving-cutoff theorem along prime widths
+
+There is an unconditional way to avoid the exceptional-pair interchange
+problem for an ever-growing local sieve.
+
+For a prime decimal width \(d\), define
+
+\[
+C_d^{<d}
+=
+\prod_{\substack{5<p<d\\p\ {\rm prime}}}
+\frac{1-\rho_{p,d}}{1-1/p}.
+\]
+
+Because \(d\) is prime and \(p<d\),
+
+\[
+\gcd(d,\ell_p)=1,
+\qquad
+\ell_p=\operatorname{ord}_p(10),
+\]
+
+so **every factor in this product is a generator-class factor**.
+
+Write
+
+\[
+\lambda_p(d)
+=
+\log
+\frac{1-\rho_{p,d}}{1-1/p}.
+\]
+
+Uniformly whenever \(\gcd(d,\ell_p)=1\),
+
+\[
+|\lambda_p(d)|
+\ll
+\frac1{\ell_p\sqrt p}+\frac1{p^2}.
+\]
+
+The majorant is summable over \(p\), by Pappalardi plus
+\(\sum p^{-2}<\infty\).
+
+For a fixed local prime \(p\), prime widths \(d\) are equidistributed in the
+reduced residue classes modulo \(\ell_p\). Therefore their harmonic average
+satisfies
+
+\[
+\frac{
+\sum_{d\le D,\ d\ {\rm prime}}
+\lambda_p(d)/d
+}{
+\sum_{d\le D,\ d\ {\rm prime}}1/d
+}
+\longrightarrow
+\overline{\lambda}^{\,\mathrm{gen}}_p.
+\]
+
+Since the absolute majorant is summable, dominated convergence gives the
+moving-cutoff identity
+
+\[
+\boxed{
+\frac{
+\sum_{d\le D,\ d\ {\rm prime}}
+\log C_d^{<d}/d
+}{
+\sum_{d\le D,\ d\ {\rm prime}}1/d
+}
+\longrightarrow
+\log C_{\mathrm{gen}}.
+}
+\]
+
+In particular,
+
+\[
+\boxed{
+0<C_{\mathrm{gen}}<\infty
+}
+\]
+
+is the exact harmonic-geometric limiting correction for the sieve by all local
+primes smaller than the prime decimal width.
+
+By Jensen's inequality,
+
+\[
+\liminf_{D\to\infty}
+\frac{
+\sum_{d\le D,\ d\ {\rm prime}}
+C_d^{<d}/d
+}{
+\sum_{d\le D,\ d\ {\rm prime}}1/d
+}
+\ge
+C_{\mathrm{gen}}>0.
+\]
+
+Euler's divergence
+
+\[
+\sum_{d\ {\rm prime}}\frac1d=\infty
+\]
+
+then implies
+
+\[
+\boxed{
+\sum_{d\ {\rm prime}}\frac{C_d^{<d}}d=\infty.
+}
+\]
+
+This is a genuine growing-sieve theorem: the prime cutoff is not fixed, but
+tends to infinity with the decimal width.
+
+It proves that **all local primes below the width scale** preserve divergent
+prime mass along prime decimal widths.
+
+## 9. Remaining full-product problem
 
 The theorem above controls the iterated limit
 
@@ -418,7 +538,7 @@ prime-width average.  Controlling these exceptional pairs uniformly in both
 
 This is substantially narrower than the original width-uniform problem.
 
-## 9. Implication for the prime-term programme
+## 10. Implication for the prime-term programme
 
 Prime widths provide a natural infinite subsequence on which:
 
