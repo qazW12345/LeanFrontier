@@ -148,4 +148,32 @@ theorem fixedConcat_eq_one_of_cast_eq_one {R : Type*} [CommRing R]
   exact fixedConcat_eq_one_of_residue_data q L n hq hL hn
     (sum_range_cast_eq_zero_of_cast_eq_one n hn h2ne)
 
+/-- The algebraic triangular-block start used by A053067 after passing to a
+field in which 2 is invertible. -/
+def triangularStart {R : Type*} [Field R] (x : R) : R :=
+  x * (x - 1) / 2 + 1
+
+/-- If the block length is 1 in the target field, its triangular A053067
+start is also 1. -/
+theorem triangularStart_eq_one_of_eq_one {R : Type*} [Field R]
+    (x : R) (hx : x = 1) :
+    triangularStart x = 1 := by
+  rw [hx]
+  simp [triangularStart]
+
+/-- Residue-one specialization for the algebraic A053067 triangular start.
+
+In a field of characteristic different from 2, if the fixed append base is
+1 and the natural block length casts to 1, then the corresponding fixed-width
+A053067 concatenation residue is 1. -/
+theorem fixedConcat_triangular_eq_one {R : Type*} [Field R]
+    (q : R) (n : ℕ)
+    (hq : q = 1) (hn : (n : R) = 1) (h2ne : (2 : R) ≠ 0) :
+    fixedConcat q (triangularStart (n : R)) n = 1 := by
+  apply fixedConcat_eq_one_of_cast_eq_one q (triangularStart (n : R)) n
+  · exact hq
+  · exact triangularStart_eq_one_of_eq_one (n : R) hn
+  · exact hn
+  · exact h2ne
+
 end LeanFrontier.A053067Research
