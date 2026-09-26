@@ -171,6 +171,96 @@ multiplicative-character equidistribution problem over subgroup cosets.
 Thus the pairwise-independence question reduces naturally to the same
 finite-field machinery that controls the one-prime local density.
 
+## 3a. Exact shared-period decomposition
+
+Write the local orders
+
+\[
+\ell_p=\operatorname{ord}_p(10^d),
+\qquad
+\ell_r=\operatorname{ord}_r(10^d),
+\]
+
+so that
+
+\[
+P_p=p\ell_p,\qquad P_r=r\ell_r.
+\]
+
+For distinct local primes \(p<r\), one has
+
+\[
+\ell_p\mid p-1<r,
+\]
+
+so \(r\nmid P_p\). Therefore
+
+\[
+\gcd(P_p,P_r)
+=
+\gcd(p\ell_p,\ell_r).
+\]
+
+Since \(p\nmid\ell_p\),
+
+\[
+\boxed{
+\gcd(P_p,P_r)
+=
+\gcd(\ell_p,\ell_r)
+\begin{cases}
+p,&p\mid\ell_r,\\
+1,&p\nmid\ell_r.
+\end{cases}
+}
+\]
+
+Thus the shared period has two mathematically distinct sources.
+
+First, the **common-order part**
+
+\[
+h=\gcd(\ell_p,\ell_r)
+\]
+
+satisfies
+
+\[
+h\mid p-1,\qquad h\mid r-1.
+\]
+
+Hence both primes lie in the residue class \(1\bmod h\).
+
+Second, the **cross-order resonance**
+
+\[
+p\mid\ell_r
+\]
+
+forces
+
+\[
+\boxed{r\equiv1\pmod p.}
+\]
+
+This gives an immediate analytic route to counting resonant pairs:
+Brun--Titchmarsh controls the containing arithmetic progression, while the
+more precise literature of Wiertelak--Moree gives natural densities for
+primes \(r\) satisfying a prescribed divisibility condition
+
+\[
+m\mid\operatorname{ord}_r(10).
+\]
+
+Consequently the pair-correlation problem should be split into:
+
+1. a sparse cross-order family \(p\mid\ell_r\);
+2. a common-order family governed by divisors of
+   \(\gcd(p-1,r-1)\);
+3. discrepancy-energy bounds inside each shared-period class.
+
+This is more precise than treating \(\gcd(P_p,P_r)\) as an opaque parameter.
+
 ## 4. Exact numerical experiments
 
 ### Width d = 101, primes through 500
@@ -302,6 +392,63 @@ This strongly suggests a more precise analytic decomposition:
 The data do not yet identify the optimal decay exponent, but they make this a
 substantially sharper target than an undifferentiated two-prime correlation
 bound.
+
+
+The same run also separated the exact cross-order family.  Among all 13530
+pairs,
+
+\[
+143
+\]
+
+satisfied
+
+\[
+p\mid\ell_r.
+\]
+
+For these pairs,
+
+\[
+\boxed{
+\operatorname{mean}|\log R|
+=
+6.61669\times10^{-5},
+}
+\]
+
+with RMS phi
+
+\[
+0.00661601.
+\]
+
+For the remaining 13387 pairs,
+
+\[
+\boxed{
+\operatorname{mean}|\log R|
+=
+4.14842\times10^{-6},
+}
+\]
+
+with RMS phi
+
+\[
+0.00170756.
+\]
+
+Thus cross-order pairs comprise only about one percent of the tested pairs but
+have roughly sixteen times the mean log-survival deviation of the
+non-cross-order family.
+
+The largest non-cross-order deviation is still caused by the very smallest
+local primes, so this is consistent with a two-stage decomposition:
+
+1. remove or handle finitely many small primes exactly;
+2. isolate the sparse cross-order family;
+3. prove a summable tail estimate for the remaining common-order correlations.
 
 ## 5. Sieve-theoretic significance
 
