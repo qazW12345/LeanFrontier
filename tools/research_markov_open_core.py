@@ -711,6 +711,108 @@ def verify_arithmetic_descent_normal_form(max_modulus: int) -> None:
     )
 
 
+
+def scan_markov_fake_roots(max_label: int) -> None:
+    """Scan genuine Markov labels for non-genuine modular roots.
+
+    Research-only optional dependency: SymPy is imported only by this command
+    to factor the modulus and enumerate square roots of -1.
+
+    For every distinct unordered positive Markov triple below max_label,
+    compare the coordinate-defined genuine centered root with every other
+    centered square root of -1 modulo the maximal coordinate.  Record how many
+    quotient-two strips each fake root survives.
+    """
+    try:
+        import sympy as sp
+    except ImportError as exc:
+        raise SystemExit(
+            "scan-markov-fakes requires the optional research dependency sympy"
+        ) from exc
+
+    def genuine_root(node: PlanarNode) -> int:
+        M = node.centre
+        left = node.left % M
+        right = node.right % M
+        value = (left * pow(right, -1, M)) % M
+        return min(value, (-value) % M)
+
+    def survival_depth(M: int, root: int) -> tuple[int, bool, list[tuple[int,int,int]]]:
+        u = centered_mod_root(root, M)
+        depth = 0
+        chain: list[tuple[int,int,int]] = []
+        while True:
+            if (M, u) in ((2, 1), (5, 2)):
+                return depth, True, chain
+            if M <= 1 or u <= 0 or 2 * u > M or (u * u + 1) % M:
+                return depth, False, chain
+            v = (u * u + 1) // M
+            chain.append((M, u, v))
+            if not (2 * v < u < 3 * v):
+                return depth, False, chain
+            r = u - 2 * v
+            M, u = v, min(r, v - r)
+            depth += 1
+
+    stack: list[tuple[str, PlanarNode]] = [("", PLANAR_ROOT)]
+    seen_triples: set[tuple[int,int,int]] = set()
+    fake_count = 0
+    full_survivors: list[tuple[int,int,int,str]] = []
+    depth_histogram: dict[int,int] = {}
+    longest: tuple[int,int,int,str,list[tuple[int,int,int]]] | None = None
+
+    while stack:
+        path, node = stack.pop()
+        if node.centre > max_label:
+            continue
+
+        triple = tuple(sorted((node.left, node.centre, node.right)))
+        if triple not in seen_triples:
+            seen_triples.add(triple)
+            M = node.centre
+            if M > 2:
+                genuine = genuine_root(node)
+                all_roots = sp.sqrt_mod(-1, M, all_roots=True)
+                centered = sorted(
+                    {
+                        min(int(root), M - int(root))
+                        for root in all_roots
+                        if int(root) not in (0, M)
+                    }
+                )
+                for root in centered:
+                    if root == genuine:
+                        continue
+                    fake_count += 1
+                    depth, accepted, chain = survival_depth(M, root)
+                    depth_histogram[depth] = depth_histogram.get(depth, 0) + 1
+                    if accepted:
+                        full_survivors.append((M, genuine, root, path))
+                    if longest is None or depth > longest[0]:
+                        longest = (depth, M, root, path, chain)
+
+        for direction in "LR":
+            child_node = planar_child(node, direction)
+            if child_node.centre <= max_label:
+                stack.append((path + direction, child_node))
+
+    print(
+        f"Markov fake-root scan M<= {max_label}: "
+        f"distinct_triples={len(seen_triples)} fake_roots={fake_count} "
+        f"full_survivors={len(full_survivors)}"
+    )
+    print("survival-depth histogram:", dict(sorted(depth_histogram.items())))
+    if longest is not None:
+        depth, M, root, path, chain = longest
+        print(
+            f"longest fake survivor: depth={depth} M={M} root={root} "
+            f"path={path} chain={chain}"
+        )
+    if full_survivors:
+        print("WARNING: fully Cohn-admissible non-genuine roots found:")
+        for item in full_survivors[:20]:
+            print(" ", item)
+
 def compare_root_pair(modulus: int, root1: int, root2: int) -> None:
     """Inspect the exact pair dynamics for two centered roots of -1 mod M."""
     M = modulus
@@ -926,6 +1028,9 @@ def main() -> None:
     pair.add_argument("root1", type=int)
     pair.add_argument("root2", type=int)
 
+    fake = sub.add_parser("scan-markov-fakes")
+    fake.add_argument("--max-label", type=int, default=10**12)
+
     args = parser.parse_args()
     if args.command == "verify-orientation":
         verify_orientation(args.depth)
@@ -944,6 +1049,8 @@ def main() -> None:
         verify_arithmetic_descent_normal_form(args.max_modulus)
     elif args.command == "compare-roots":
         compare_root_pair(args.modulus, args.root1, args.root2)
+    elif args.command == "scan-markov-fakes":
+        scan_markov_fake_roots(args.max_label)
 
 
 if __name__ == "__main__":
