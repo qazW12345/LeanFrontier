@@ -143,6 +143,37 @@ n\equiv0\pmod{p\,\operatorname{ord}_p(10)}
 is a width-independent composite family (apart from the one mixed-width block
 at each decimal boundary, where the fixed-width representation does not apply).
 
+The same identity gives an exact classification of prime factors inherited
+from the index itself.  Let \(p\) be an odd prime with \(p\nmid10\) and
+\(p\mid n\).  Then modulo \(p\),
+
+\[
+L_n\equiv1,qquad X_n(q)=(q-1)L_n+1\equiv q\not\equiv0.
+\]
+
+Thus the repunit identity implies
+
+\[
+p\mid A(n)\quad\Longleftrightarrow\quad p\mid R_n(q).
+\]
+
+Since \(q=10^d\), this is equivalent to
+
+\[
+\boxed{
+p\mid n
+\quad\Longrightarrow\quad
+\bigl(p\mid A(n)\iff \operatorname{ord}_p(10)\mid dn\bigr).
+}
+\]
+
+The forward and reverse directions also include the case \(q\equiv1\pmod p\):
+then the order condition is automatic and the direct sum formula gives
+\(p\mid A(n)\).
+
+So all odd prime divisors shared by \(n\) and \(A(n)\) are completely
+described by a single multiplicative-order condition.
+
 A second immediate consequence is a strong restriction on cyclotomic
 factorizations.  If a prime \(p\) divides both \(A(n)\) and \(R_n(q)\),
 then the repunit identity gives
