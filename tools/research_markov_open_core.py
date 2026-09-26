@@ -710,6 +710,70 @@ def verify_arithmetic_descent_normal_form(max_modulus: int) -> None:
         f"centered_roots={checked} quotient_two_steps={successful}"
     )
 
+
+def compare_root_pair(modulus: int, root1: int, root2: int) -> None:
+    """Inspect the exact pair dynamics for two centered roots of -1 mod M."""
+    M = modulus
+    u1 = centered_mod_root(root1, M)
+    u2 = centered_mod_root(root2, M)
+    if not (0 < u1 < u2 <= M // 2):
+        if u1 == u2:
+            raise ValueError("roots have the same centered representative")
+        u1, u2 = sorted((u1, u2))
+    for u in (u1, u2):
+        if (u * u + 1) % M:
+            raise ValueError(f"{u} is not a root of -1 modulo {M}")
+
+    v1 = (u1 * u1 + 1) // M
+    v2 = (u2 * u2 + 1) // M
+    d = u2 - u1
+    s = u1 + u2
+    delta = v2 - v1
+    if delta * M != d * s:
+        raise AssertionError("pair factorization failed")
+
+    r1 = u1 - 2 * v1
+    r2 = u2 - 2 * v2
+
+    from math import gcd
+    split_d = gcd(M, d)
+    split_s = M // split_d
+    print(f"M={M} roots=({u1},{u2})")
+    print(
+        f"  d=u2-u1={d} s=u1+u2={s} "
+        f"v=({v1},{v2}) delta={delta}"
+    )
+    print(
+        f"  exact: delta*M=d*s -> {delta}*{M}={d}*{s}; "
+        f"delta/d={delta/d:.12f}"
+    )
+    print(
+        f"  CRT split proxy: gcd(M,d)={split_d}, complementary={split_s}, "
+        f"d/s quotients=({d//split_d if split_d else 0},"
+        f"{s//split_s if split_s and s % split_s == 0 else 'nonintegral'})"
+    )
+    print(
+        f"  raw quotient-two remainders r=({r1},{r2}); "
+        f"r1-r2={r1-r2}=2*delta-d={2*delta-d}"
+    )
+
+    admissible1 = 2 * v1 < u1 < 3 * v1
+    admissible2 = 2 * v2 < u2 < 3 * v2
+    print(f"  quotient-two admissible=({admissible1},{admissible2})")
+    if admissible1 and admissible2:
+        if not (2 * d < 3 * delta and delta < d):
+            raise AssertionError("expected two-thirds contraction bound")
+        print("  proven interval consequence: 2d/3 < delta < d")
+        print("  therefore raw remainders strictly reverse order: r1 > r2")
+
+    for label, u in (("root1", u1), ("root2", u2)):
+        result = arithmetic_cohn_descent(M, u)
+        print(
+            f"  {label} descent accepted={result['accepted']} "
+            f"counts={result.get('whole_counts')} "
+            f"steps={[(x['M'], x['u'], x['v']) for x in result['steps']]}"
+        )
+
 def recognize_root(modulus: int, root: int) -> None:
     centered = min(root % modulus, (-root) % modulus)
     cf = continued_fraction(modulus, centered)
@@ -857,6 +921,11 @@ def main() -> None:
     normal = sub.add_parser("verify-descent-normal-form")
     normal.add_argument("--max-modulus", type=int, default=20000)
 
+    pair = sub.add_parser("compare-roots")
+    pair.add_argument("modulus", type=int)
+    pair.add_argument("root1", type=int)
+    pair.add_argument("root2", type=int)
+
     args = parser.parse_args()
     if args.command == "verify-orientation":
         verify_orientation(args.depth)
@@ -873,6 +942,8 @@ def main() -> None:
         verify_root_bridges(args.max_modulus)
     elif args.command == "verify-descent-normal-form":
         verify_arithmetic_descent_normal_form(args.max_modulus)
+    elif args.command == "compare-roots":
+        compare_root_pair(args.modulus, args.root1, args.root2)
 
 
 if __name__ == "__main__":
