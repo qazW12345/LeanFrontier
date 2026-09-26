@@ -104,3 +104,45 @@ The fixed-width problem is periodic modulo a prime once d is fixed.  The
 mixed-width boundary residues additionally inherit the decimal digit dynamics
 of sqrt(2) and 2*sqrt(5), so they should be studied as a separate sparse
 subsequence rather than assumed to obey a simple periodic-in-d covering.
+
+
+## Finite-state reduction modulo a prime
+
+Fix an odd prime p not dividing 10 and let
+
+r = ord_p(10).
+
+For the mixed decomposition
+
+A_mix(d) = (10q)^b F(q,L,a) + F(10q,q,b),
+
+the residue modulo p is determined by:
+
+- q=10^d modulo p, hence by d modulo r;
+- L modulo p, hence by n modulo p;
+- the exponents a=n-delta-1 and b=delta+1 modulo the orders of q and 10q,
+  both of which divide r.
+
+Since gcd(p,r)=1, it is therefore enough to know
+
+d mod r,
+n mod (p r),
+delta mod (p r).
+
+Thus divisibility by p is a predicate on a finite state space.
+
+The exact two-step recurrence
+
+n' = 10 n + e,
+
+delta' = 100 delta + (10e-45)n + e(e+1)/2
+
+updates this finite state once the balanced digit e in {-5,...,5} is known.
+
+Consequently the mixed-width divisibility problem for any fixed finite prime
+set can be represented as a finite automaton driven by the two balanced-decimal
+streams associated with sqrt(2) and 2*sqrt(5).
+
+This is a useful reduction, but not by itself a global proof: controlling the
+infinite driver stream requires information about the decimal expansions of
+those algebraic irrationals beyond mere irrationality.
