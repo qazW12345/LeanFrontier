@@ -28,6 +28,7 @@ import argparse
 from dataclasses import dataclass
 from enum import IntEnum
 from itertools import product
+from math import gcd, isqrt
 
 
 class Move(IntEnum):
@@ -418,8 +419,6 @@ def is_period(word: str, period: int) -> bool:
 
 def is_central_palindrome(word: str) -> bool:
     """Classical central-word criterion: coprime periods p,q, |w|=p+q-2."""
-    from math import gcd
-
     if word != word[::-1]:
         return False
     n = len(word)
@@ -452,14 +451,114 @@ def continued_fraction(numerator: int, denominator: int) -> list[int]:
     return out
 
 
+def continued_fraction_has_cohn_phase(digits: list[int]) -> bool:
+    """Exact phase condition predicted by the L/R pairing A=RL, B=LR.
+
+    For a centered modular-root core, the Euclidean L/R run lengths are the
+    continued-fraction digits of M/u, except that the first and last runs are
+    one shorter.  Pairability into RL/LR therefore becomes:
+      * first and last continued-fraction digits are 2;
+      * every digit is 1 or 2;
+      * every maximal block of 1s has even length.
+    """
+    if not digits or digits[0] != 2 or digits[-1] != 2:
+        return False
+    if any(digit not in (1, 2) for digit in digits):
+        return False
+    index = 0
+    while index < len(digits):
+        if digits[index] != 1:
+            index += 1
+            continue
+        end = index
+        while end < len(digits) and digits[end] == 1:
+            end += 1
+        if (end - index) % 2:
+            return False
+        index = end
+    return True
+
+
+def root_to_sum_squares(modulus: int, root: int) -> tuple[int, int] | None:
+    """Cornacchia descent attached to a square root of -1 modulo M.
+
+    The centered root chooses one primitive Gaussian factor of M.  Euclidean
+    descent from (M,u) stops at a <= sqrt(M); if M-a^2 is a square, the
+    resulting pair (a,b) satisfies M=a^2+b^2.  For every root tested here the
+    descent succeeds, as expected for roots of -1.
+    """
+    if modulus <= 0:
+        raise ValueError("modulus must be positive")
+    root %= modulus
+    centered = min(root, (-root) % modulus)
+    if centered == 0 or (centered * centered + 1) % modulus:
+        return None
+
+    r0, r1 = modulus, centered
+    while r1 * r1 > modulus:
+        r0, r1 = r1, r0 % r1
+
+    a = r1
+    b_squared = modulus - a * a
+    if b_squared < 0:
+        return None
+    b = isqrt(b_squared)
+    if b * b != b_squared:
+        return None
+    pair = tuple(sorted((a, b)))
+    if gcd(pair[0], pair[1]) != 1:
+        raise AssertionError("root of -1 should yield a primitive sum-of-two-squares pair")
+    return pair
+
+
+def verify_root_bridges(max_modulus: int) -> None:
+    """Adversarial finite check of the exact root/matrix/CF/Gaussian bridges."""
+    roots = 0
+    cohn_roots = 0
+    for modulus in range(3, max_modulus + 1):
+        for root in range(1, modulus // 2 + 1):
+            if (root * root + 1) % modulus:
+                continue
+            roots += 1
+            core = root_core_matrix(modulus, root)
+            lr_word = recognize_lr_word(core)
+            if lr_word is None:
+                raise AssertionError(f"missing L/R word for M={modulus}, u={root}")
+            paired = lr_word_to_cohn_word(lr_word)
+            phase = continued_fraction_has_cohn_phase(
+                continued_fraction(modulus, root)
+            )
+            if (paired is not None) != phase:
+                raise AssertionError(
+                    f"CF/Cohn phase mismatch for M={modulus}, u={root}: "
+                    f"cf={continued_fraction(modulus, root)} lr={lr_word} "
+                    f"paired={paired}"
+                )
+            if paired is not None:
+                cohn_roots += 1
+
+            squares = root_to_sum_squares(modulus, root)
+            if squares is None or squares[0] ** 2 + squares[1] ** 2 != modulus:
+                raise AssertionError(
+                    f"Cornacchia bridge failed for M={modulus}, u={root}"
+                )
+
+    print(
+        f"verified root bridges for M<= {max_modulus}: "
+        f"centered_roots={roots} cohn_phase_roots={cohn_roots}"
+    )
+
+
 def recognize_root(modulus: int, root: int) -> None:
     centered = min(root % modulus, (-root) % modulus)
     cf = continued_fraction(modulus, centered)
     first_bad = next((i for i, digit in enumerate(cf) if digit not in (1, 2)), None)
     print(f"M={modulus} centered_root={centered}")
+    squares = root_to_sum_squares(modulus, centered)
     print(
         f"  M/u continued fraction={cf} all_1_or_2={first_bad is None} "
-        f"first_non_12_index={first_bad}"
+        f"cohn_cf_phase={continued_fraction_has_cohn_phase(cf)} "
+        f"first_non_12_index={first_bad} sum_squares={squares}"
     )
     for representative in sorted({centered, (-centered) % modulus}):
         if (representative * representative + 1) % modulus:
@@ -587,6 +686,9 @@ def main() -> None:
     pal = sub.add_parser("scan-palindromes")
     pal.add_argument("--inner", type=int, default=30)
 
+    bridges = sub.add_parser("verify-root-bridges")
+    bridges.add_argument("--max-modulus", type=int, default=5000)
+
     args = parser.parse_args()
     if args.command == "verify-orientation":
         verify_orientation(args.depth)
@@ -596,6 +698,8 @@ def main() -> None:
         recognize_root(args.modulus, args.root)
     elif args.command == "scan-palindromes":
         scan_palindromes(args.inner)
+    elif args.command == "verify-root-bridges":
+        verify_root_bridges(args.max_modulus)
 
 
 if __name__ == "__main__":
