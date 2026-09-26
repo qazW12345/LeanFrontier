@@ -130,6 +130,68 @@ For \(k\ge2\), both nonconstant terms are divisible by 10, hence
 
 Thus \(A(n_k)\) is odd and not divisible by 5.
 
+## 3. The explicit subsequence is always composite
+
+The same construction has an exact growing divisor.
+
+For
+
+\[
+n_k=10^k+1
+\]
+
+and fixed-width base
+
+\[
+q=10^{2k},
+\]
+
+we have
+
+\[
+10^k\equiv-1\pmod{n_k},
+\]
+
+hence
+
+\[
+q=10^{2k}\equiv1\pmod{n_k}.
+\]
+
+Therefore the decimal concatenation reduces modulo \(n_k\) to the ordinary
+sum of the \(n_k\) consecutive block entries.
+
+That sum is
+
+\[
+\frac{n_k(L_{n_k}+U_{n_k})}{2}
+=
+\frac{n_k(n_k^2+1)}2.
+\]
+
+Since \(n_k\) is odd, \(n_k^2+1\) is even, so this is an integer multiple of
+\(n_k\).
+
+Thus
+
+\[
+\boxed{
+10^k+1\mid A(10^k+1).
+}
+\]
+
+Consequently every term of this explicit subsequence is composite.
+
+This does **not** weaken its Euclid role.  On the contrary, it exhibits an
+explicit growing divisor whose prime factors can be synchronized to avoid any
+previously prescribed finite set.
+
+In particular the infinite-prime-divisor proof may take its new prime factor
+directly from the divisor \(10^k+1\).
+
+This subsection should therefore be viewed as an explicit composite/Euclid
+family, not as a candidate subsequence for prime terms.
+
 ## 3. Residue 5 modulo every synchronized odd prime
 
 Let \(p\ne2,5\) be prime and assume
