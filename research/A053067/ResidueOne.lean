@@ -201,4 +201,55 @@ theorem fixedConcat_natTriangular_eq_one {R : Type*} [Field R]
   rw [cast_natTriangularStart]
   exact fixedConcat_triangular_eq_one q n hq hn (NeZero.ne (2 : R))
 
+/-- General residue-one criterion used by the rough-values construction.
+
+In an odd-characteristic field, if the first appended value and the natural
+block length both reduce to 1, and the positional base satisfies `q^n = q`,
+then the complete fixed-width concatenation reduces to 1.  The condition
+`q^n = q` is what follows from `n = 1` modulo the multiplicative order of
+`q`. -/
+theorem fixedConcat_eq_one_of_pow_eq_self {R : Type*} [Field R]
+    [NeZero (2 : R)] (q L : R) (n : ℕ)
+    (hL : L = 1) (hn : (n : R) = 1) (hpow : q ^ n = q) :
+    fixedConcat q L n = 1 := by
+  by_cases hq : q = 1
+  · exact fixedConcat_eq_one_of_cast_eq_one q L n hq hL hn
+      (NeZero.ne (2 : R))
+  · cases n with
+    | zero =>
+        norm_num at hn
+    | succ k =>
+        have hk : (k : R) = 0 := by
+          have hks : (k : R) + 1 = 1 := by
+            simpa using hn
+          have hsub := congrArg (fun x : R => x - 1) hks
+          simpa using hsub
+        have hclosed := fixedConcat_closed_succ (R := R) q L k
+        have hmul :
+            (q - 1)^2 * fixedConcat q L (k + 1) = (q - 1)^2 := by
+          calc
+            (q - 1)^2 * fixedConcat q L (k + 1) =
+                q^(k + 1) * ((q - 1) * L + 1) -
+                  ((q - 1) * (L + (k : R)) + q) := hclosed
+            _ = (q - 1)^2 := by
+                  rw [hpow, hL, hk]
+                  ring
+        have hqm1 : q - 1 ≠ 0 := sub_ne_zero.mpr hq
+        have hsq : (q - 1)^2 ≠ 0 := pow_ne_zero 2 hqm1
+        have hmul' :
+            (q - 1)^2 * fixedConcat q L (k + 1) = (q - 1)^2 * 1 := by
+          simpa using hmul
+        exact (mul_left_cancel₀ hsq) hmul'
+
+/-- Natural-triangular specialization of `fixedConcat_eq_one_of_pow_eq_self`.
+This is the exact algebraic congruence used to avoid every small prime in
+`ROUGH_VALUES.md`. -/
+theorem fixedConcat_natTriangular_eq_one_of_pow_eq_self
+    {R : Type*} [Field R] [NeZero (2 : R)]
+    (q : R) (n : ℕ) (hn : (n : R) = 1) (hpow : q ^ n = q) :
+    fixedConcat q (((natTriangularStart n : ℕ) : R)) n = 1 := by
+  rw [cast_natTriangularStart]
+  exact fixedConcat_eq_one_of_pow_eq_self q (triangularStart (n : R)) n
+    (triangularStart_eq_one_of_eq_one (n : R) hn) hn hpow
+
 end LeanFrontier.A053067Research
