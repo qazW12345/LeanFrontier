@@ -86,4 +86,64 @@ theorem fixedConcat_closed_succ {R : Type*} [CommRing R]
                 rw [pow_succ]
                 ring
 
+/-- Abstract residue-one criterion.
+
+If the append base and first block value are both 1, the block length also
+casts to 1, and the casted index offsets sum to zero, then the complete
+fixed-width concatenation is 1. This separates the generic concatenation
+algebra from the number-theoretic construction of suitable A053067 indices. -/
+theorem fixedConcat_eq_one_of_residue_data {R : Type*} [CommRing R]
+    (q L : R) (n : ℕ)
+    (hq : q = 1)
+    (hL : L = 1)
+    (hn : (n : R) = 1)
+    (hoffsets : (∑ i ∈ Finset.range n, (i : R)) = 0) :
+    fixedConcat q L n = 1 := by
+  rw [fixedConcat_eq_sum_of_eq_one q L n hq]
+  calc
+    (∑ i ∈ Finset.range n, (L + (i : R))) =
+        (∑ _i ∈ Finset.range n, L) +
+          (∑ i ∈ Finset.range n, (i : R)) := by
+            rw [Finset.sum_add_distrib]
+    _ = (n : R) * L + (∑ i ∈ Finset.range n, (i : R)) := by
+          simp
+    _ = 1 := by
+          rw [hL, hn, hoffsets]
+          simp
+
+/-- Division-free formula for the casted sum of the offsets 0,...,n-1. -/
+theorem two_mul_sum_range_cast {R : Type*} [CommRing R] (n : ℕ) :
+    2 * (∑ i ∈ Finset.range n, (i : R)) =
+      (n : R) * ((n : R) - 1) := by
+  induction n with
+  | zero =>
+      simp
+  | succ n ih =>
+      rw [Finset.sum_range_succ]
+      push_cast
+      rw [mul_add, ih]
+      ring
+
+/-- If n casts to 1 and 2 is not a zero divisor, the triangular offset
+sum vanishes. -/
+theorem sum_range_cast_eq_zero_of_cast_eq_one {R : Type*} [CommRing R]
+    [NoZeroDivisors R] (n : ℕ) (hn : (n : R) = 1) :
+    (∑ i ∈ Finset.range n, (i : R)) = 0 := by
+  have htwo :
+      2 * (∑ i ∈ Finset.range n, (i : R)) = 0 := by
+    rw [two_mul_sum_range_cast, hn]
+    ring
+  rcases mul_eq_zero.mp htwo with h2 | hsum
+  · norm_num at h2
+  · exact hsum
+
+/-- In a domain, base 1, start 1, and length congruent to 1 force the
+concatenation residue to be 1. -/
+theorem fixedConcat_eq_one_of_cast_eq_one {R : Type*} [CommRing R]
+    [NoZeroDivisors R] (q L : R) (n : ℕ)
+    (hq : q = 1) (hL : L = 1) (hn : (n : R) = 1) :
+    fixedConcat q L n = 1 := by
+  exact fixedConcat_eq_one_of_residue_data q L n hq hL hn
+    (sum_range_cast_eq_zero_of_cast_eq_one n hn)
+
 end LeanFrontier.A053067Research
