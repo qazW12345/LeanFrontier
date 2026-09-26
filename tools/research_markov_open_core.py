@@ -549,6 +549,104 @@ def verify_root_bridges(max_modulus: int) -> None:
     )
 
 
+def centered_mod_root(value: int, modulus: int) -> int:
+    if modulus <= 1:
+        return 0
+    residue = value % modulus
+    return min(residue, (-residue) % modulus)
+
+
+def arithmetic_cohn_descent(modulus: int, root: int):
+    """Arithmetic form of palindromic Cohn-core descent.
+
+    The input root is centered to 0 < u <= M/2.  For
+      v = (u^2 + 1) / M,
+    the centered symmetric modular-root core is
+      [[M-2u+v, u-v], [u-v, v]].
+
+    If it is a nontrivial B-wrapped Cohn palindrome, stripping the outer B
+    gives a parent whose m-value is exactly v.  The one scalar
+      h = -M + 5u - 6v
+    is the off-diagonal entry of that parent.
+
+    We stop at the two smallest centered palindromic cores:
+      (M,u)=(2,1): identity core, inner counts (0,0);
+      (M,u)=(5,2): B core, inner counts (0,1).
+
+    Returns a dictionary suitable for exploratory printing.
+    """
+    u = centered_mod_root(root, modulus)
+    if modulus == 2 and u == 1:
+        return {"accepted": True, "steps": [], "inner_counts": (0, 0)}
+    if modulus == 5 and u == 2:
+        return {"accepted": True, "steps": [], "inner_counts": (0, 1)}
+
+    steps = []
+    M = modulus
+    while (M, u) not in ((2, 1), (5, 2)):
+        if M <= 1 or u <= 0 or 2 * u > M or (u * u + 1) % M:
+            return {"accepted": False, "steps": steps, "reason": "not a centered root"}
+
+        v = (u * u + 1) // M
+        h = -M + 5 * u - 6 * v
+
+        # Entries of Q = B^-1 P(M,u) B^-1.
+        q11 = M - 4 * u + 4 * v
+        q12 = h
+        q22 = M - 6 * u + 9 * v
+
+        if h < 0:
+            return {
+                "accepted": False,
+                "steps": steps,
+                "reason": "outer-B strip leaves the nonnegative cone",
+                "failed_at": (M, u, v, h),
+            }
+
+        if min(q11, q12, q22) < 0:
+            raise AssertionError(
+                "h >= 0 should force the whole symmetric determinant-one parent nonnegative"
+            )
+
+        # The parent root represented by Q is q12+q22 = 3v-u (mod v).
+        # Recenter it; exchanging A<->B corresponds to swapping Q's diagonal.
+        parent_root_raw = q12 + q22
+        parent_u = centered_mod_root(parent_root_raw, v)
+        swap = 2 * parent_root_raw > v
+        # Equivalent exact sign test: Q is already centered iff q11 >= q22,
+        # i.e. iff 2u >= 5v.
+        if swap != (2 * u < 5 * v):
+            raise AssertionError("orientation tests disagree")
+
+        steps.append(
+            {
+                "M": M,
+                "u": u,
+                "v": v,
+                "h": h,
+                "parent_matrix": ((q11, q12), (q12, q22)),
+                "swap_parent": swap,
+                "parent_u": parent_u,
+            }
+        )
+        M, u = v, parent_u
+
+    counts = (0, 0) if (M, u) == (2, 1) else (0, 1)
+    a_count, b_count = counts
+    for step in reversed(steps):
+        if step["swap_parent"]:
+            a_count, b_count = b_count, a_count + 2
+        else:
+            a_count, b_count = a_count, b_count + 2
+
+    return {
+        "accepted": True,
+        "steps": steps,
+        "inner_counts": (a_count, b_count),
+        "whole_counts": (a_count + 1, b_count + 1),
+    }
+
+
 def recognize_root(modulus: int, root: int) -> None:
     centered = min(root % modulus, (-root) % modulus)
     cf = continued_fraction(modulus, centered)
@@ -686,6 +784,10 @@ def main() -> None:
     pal = sub.add_parser("scan-palindromes")
     pal.add_argument("--inner", type=int, default=30)
 
+    descent = sub.add_parser("descent-root")
+    descent.add_argument("modulus", type=int)
+    descent.add_argument("root", type=int)
+
     bridges = sub.add_parser("verify-root-bridges")
     bridges.add_argument("--max-modulus", type=int, default=5000)
 
@@ -698,6 +800,9 @@ def main() -> None:
         recognize_root(args.modulus, args.root)
     elif args.command == "scan-palindromes":
         scan_palindromes(args.inner)
+    elif args.command == "descent-root":
+        result = arithmetic_cohn_descent(args.modulus, args.root)
+        print(result)
     elif args.command == "verify-root-bridges":
         verify_root_bridges(args.max_modulus)
 
