@@ -167,6 +167,27 @@ def main() -> int:
         f"pairs={len(rows)} mean_abs_log_survival_ratio={mean_abs_log:.9g} "
         f"rms_phi={rms_phi:.9g}"
     )
+
+    for threshold in (13, 29, 53, 101, 211):
+        subset = [row for row in rows if int(row["p"]) >= threshold]
+        if not subset:
+            continue
+        subset_mean_abs_log = sum(
+            abs(float(row["log_survival_ratio"])) for row in subset
+        ) / len(subset)
+        subset_rms_phi = math.sqrt(
+            sum(float(row["phi"]) ** 2 for row in subset) / len(subset)
+        )
+        subset_max_abs_log = max(
+            abs(float(row["log_survival_ratio"])) for row in subset
+        )
+        print(
+            f"min_prime>={threshold} pairs={len(subset)} "
+            f"mean_abs_log_survival_ratio={subset_mean_abs_log:.9g} "
+            f"rms_phi={subset_rms_phi:.9g} "
+            f"max_abs_log_survival_ratio={subset_max_abs_log:.9g}"
+        )
+
     print("largest pairwise deviations from independent survival:")
     for row in ranked[: args.top]:
         print(
