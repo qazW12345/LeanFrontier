@@ -947,3 +947,211 @@ interpretation and immediately explains why letter counts should be preserved.
 
 Before any Lean formalization, the next task is to seek an algebraic proof (or
 counterexample) of this slice statement.
+
+
+## 22. Matrix recognition collapses to an arithmetic descent on modular roots
+
+The Cohn-word recognizer can be eliminated from the inner loop.
+
+For a centered modular root
+
+[
+0<ule M/2,qquad u^2equiv -1pmod M,
+]
+
+write
+
+[
+v=rac{u^2+1}{M}.
+]
+
+The associated centered symmetric determinant-one core is
+
+[
+P(M,u)=
+egin{pmatrix}
+M-2u+v & u-v\\
+u-v & v
+end{pmatrix}.
+]
+
+Since (M-2uge0), its first diagonal entry is at least its second.
+For any nontrivial palindromic Cohn core this forces the outer Cohn letter to
+be (B), because
+
+[
+AQA
+]
+
+has first diagonal strictly smaller than its second for positive (Q), while
+
+[
+BQB
+]
+
+has first diagonal strictly larger.
+
+Stripping this forced outer (B) gives
+
+[
+Q=B^{-1}P(M,u)B^{-1}
+ =
+egin{pmatrix}
+M-4u+4v & -M+5u-6v\\
+-M+5u-6v & M-6u+9v
+end{pmatrix}.
+]
+
+A direct calculation gives the striking identity
+
+[
+(1,1)Q(1,1)^T=v.
+]
+
+So the next candidate denominator in the descent is simply
+
+[
+M' = v = rac{u^2+1}{M}.
+]
+
+The off-diagonal entry is
+
+[
+h=-M+5u-6v.
+]
+
+For a centered root, the single inequality
+
+[
+hge0
+]
+
+is enough to put all of (Q) in the nonnegative cone.
+
+Indeed (det Q=1), hence
+
+[
+q_{11}q_{22}=h^2+1>0.
+]
+
+Thus the diagonal entries have the same sign. If both were negative, writing
+(a=-q_{11}>0), (b=-q_{22}>0) gives
+
+[
+ab=h^2+1,
+]
+
+so
+
+[
+a+b>2h
+]
+
+and consequently
+
+[
+v=q_{11}+2h+q_{22}=2h-a-b<0,
+]
+
+contradicting (v>0).
+
+Therefore the first Cohn-membership test is purely arithmetic:
+compute (v), then check (-M+5u-6vge0).
+
+The root represented by the parent matrix (Q) is
+
+[
+q_{12}+q_{22}=3v-u,
+]
+
+which is congruent to (-u) modulo (v). Re-centering therefore gives
+
+[
+u'=min(umod v,; -umod v).
+]
+
+The parent needs the generator-exchange symmetry exactly when
+
+[
+2u<5v.
+]
+
+This follows from
+
+[
+q_{11}-q_{22}=2u-5v.
+]
+
+Hence the entire positive-palindrome recognition problem becomes the finite
+recursion
+
+[
+(M,u)mapsto
+left(
+rac{u^2+1}{M},
+operatorname{centered}(umod ((u^2+1)/M))
+ight),
+]
+
+together with the scalar cone test at each step.
+
+The two smallest centered cores are
+
+- ((M,u)=(2,1)): the identity matrix, empty inner palindrome;
+- ((M,u)=(5,2)): the single generator (B).
+
+### Examples
+
+For the genuine root of (M=985),
+
+[
+(985,408)	o(169,70)	o(29,12)	o(5,2).
+]
+
+For the alternative root (u=183),
+
+[
+v=34,qquad -985+5(183)-6(34)=-274<0,
+]
+
+so it leaves the positive Cohn cone immediately.
+
+For the first broad noncentral collision (M=1130), both centered roots pass:
+
+[
+(1130,437)	o(169,70)	o(29,12)	o(5,2),
+]
+
+whereas
+
+[
+(1130,467)	o(193,81)	o(34,13)	o(5,2).
+]
+
+Thus the two accepted roots have genuinely different denominator descents.
+
+Nevertheless, reconstructing the generator-count vector through the orientation
+swaps gives the same whole-word endpoint counts ((3,6)) in both cases.
+
+This is exactly the endpoint-rigidity phenomenon from the large palindrome
+scan, now expressed without words or matrices.
+
+### Purely arithmetic reformulation of the experimental rigidity statement
+
+Define a centered root ((M,u)) to be *Cohn-admissible* when the above descent
+reaches one of the two base cores without violating the cone inequality.
+
+The computational endpoint-rigidity conjecture can then be stated entirely in
+integer arithmetic:
+
+> For fixed (M), all Cohn-admissible centered roots of (-1) modulo (M)
+> reconstruct the same unordered generator-count pair.
+
+On the central/Christoffel subfamily this would imply Frobenius uniqueness.
+
+This formulation is currently preferable to the trace-slice conjecture as an
+attack surface because it exposes an explicit decreasing parameter
+(M'=(u^2+1)/M<M), an exact failure inequality, and a finite orientation bit
+at every step.
+
+The research script now implements this as the `descent-root` command.
