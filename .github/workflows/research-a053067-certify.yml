@@ -1,0 +1,96 @@
+name: A053067 certify checked evidence
+
+on:
+  push:
+    branches:
+      - research/a053067
+    paths:
+      - research/A053067/certify-request.env
+      - research/A053067/mr_certify.py
+      - .github/workflows/research-a053067-certify.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a053067-certify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  certify:
+    if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Check out triggering revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Validate request
+        shell: bash
+        run: |
+          set -euo pipefail
+          request=research/A053067/certify-request.env
+          max_n="$(awk -F= '$1 == "MAX_N" {print $2}' "$request" | tail -n 1 | tr -d '[:space:]')"
+          if [[ ! "$max_n" =~ ^[0-9]+$ ]]; then
+            echo "Invalid MAX_N" >&2
+            exit 2
+          fi
+          echo "MAX_N=$max_n" >> "$GITHUB_ENV"
+
+      - name: Select checked-in scans
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p research/A053067/cert-run
+          python3 - <<'PY'
+          import csv
+          import os
+          from pathlib import Path
+
+          max_n = int(os.environ["MAX_N"])
+          selected = []
+          for path in sorted(Path("research/A053067/results").glob("*.csv")):
+              with path.open(newline="") as f:
+                  rows = list(csv.DictReader(f))
+              if rows and max(int(row["n"]) for row in rows) <= max_n:
+                  selected.append(str(path))
+          if not selected:
+              raise SystemExit("no checked-in scan files selected")
+          Path("research/A053067/cert-run/inputs.txt").write_text("\n".join(selected) + "\n")
+          print("\n".join(selected))
+          PY
+
+      - name: Generate strong Miller-Rabin certificates
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t files < research/A053067/cert-run/inputs.txt
+          python3 research/A053067/mr_certify.py "${files[@]}" \
+            --output research/A053067/cert-run/mr-certificates.csv \
+            | tee research/A053067/cert-run/certify.log
+
+      - name: Record metadata
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "repository=$GITHUB_REPOSITORY"
+            echo "commit=$GITHUB_SHA"
+            echo "max_n=${MAX_N:-unset}"
+            echo
+            python3 --version || true
+            sha256sum research/A053067/mr_certify.py research/A053067/certify-request.env || true
+          } > research/A053067/cert-run/metadata.txt
+
+      - name: Upload certificates
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a053067-certificates-${{ github.run_id }}-${{ github.run_attempt }}
+          path: research/A053067/cert-run/
+          if-no-files-found: error
+          retention-days: 90
