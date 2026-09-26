@@ -1616,3 +1616,150 @@ just a numerical curiosity.
 The current plan is therefore to keep attacking the pairwise descent law
 above and ask whether distinct admissible roots can preserve primitivity all
 the way through the folded quotient-two recursion.
+
+
+## 28. Fake-root survival scan on genuine Markov labels
+
+The arithmetic selector was then tested directly on genuine Markov numbers,
+rather than on arbitrary palindromic denominators.
+
+For each distinct positive Markov triple with maximal coordinate
+
+[
+Mle 10^{18},
+]
+
+the coordinate-defined genuine centered root was compared with every other
+centered square root of (-1) modulo (M).  The optional research command
+
+`scan-markov-fakes`
+
+now reproduces this experiment (using SymPy only inside that command to
+enumerate modular square roots).
+
+The scan covered:
+
+- **327 distinct Markov triples**;
+- **889 non-genuine centered roots**;
+- **0 non-genuine roots surviving the complete folded quotient-two descent**.
+
+The failure-depth histogram was:
+
+| successful strips before failure | number of fake roots |
+|---:|---:|
+| 0 | 623 |
+| 1 | 187 |
+| 2 | 40 |
+| 3 | 23 |
+| 4 | 7 |
+| 5 | 4 |
+| 6 | 4 |
+| 9 | 1 |
+
+So the selector is very strong empirically, but not merely a one-step test.
+
+### A simple selector that fails
+
+The tempting hypothesis that the genuine root is always the largest centered
+root is false.
+
+The Markov number
+
+[
+M=10,946
+]
+
+has centered roots
+
+[
+4181,qquad 5023,
+]
+
+and the genuine coordinate root is the **smaller** one, (4181).
+
+The fake larger root (5023) even passes one quotient-two strip:
+
+[
+(10,946,5023)longmapsto(2305,413),
+]
+
+and only then fails the next cone test.
+
+So no order statistic on the initial roots can replace the recursive
+criterion.
+
+### The longest fake shadow below (10^{18})
+
+The deepest non-genuine survivor occurred for the genuine Markov number
+
+[
+M=10,910,721,905.
+]
+
+One fake root is
+
+[
+u_{mathrm{fake}}=4,218,159,922.
+]
+
+It survives nine quotient-two strips before failing:
+
+[
+egin{aligned}
+10,910,721,905 &	o 1,630,769,557\
+&	o 278,688,386\
+&	o 48,928,105\
+&	o 7,312,898\
+&	o 1,249,585\
+&	o 219,530\
+&	o 32,677\
+&	o 5,441\
+&	o 1,105,
+end{aligned}
+]
+
+where the root at (M=1105) is (242), and the next quotient-two condition
+fails.
+
+The genuine root
+
+[
+u_{mathrm{true}}=4,510,417,602
+]
+
+has a different descent but repeatedly meets the fake descent at the same
+smaller moduli:
+
+[
+48,928,105,qquad219,530,qquad1105.
+]
+
+At those common moduli the two chains carry different centered roots.
+
+For example:
+
+| common modulus | fake root | genuine root |
+|---:|---:|---:|
+| (48,928,105) | (18,915,767) | (20,226,717) |
+| (219,530) | (84,697) | (90,927) |
+| (1105) | (242) | (463) |
+
+This is strong evidence that a nontrivial CRT sign choice can be transported
+through the descent for a long time while repeatedly returning to a common
+modulus skeleton.
+
+At the first two common moduli the odd CRT partition has one side containing
+the factor (5); at (1105) the complementary global sign convention swaps
+the two sides, but the same unordered partition still isolates the factor
+(5).  This suggests that the correct invariant may be an **unordered
+prime-power sign partition**, transported through common descent moduli, rather
+than a signed root itself.
+
+This is now the most promising arithmetic experiment:
+
+> track the unordered CRT sign partition whenever two descent chains meet at
+> the same modulus, and determine whether a nontrivial partition must
+> eventually force violation of the quotient-two/Christoffel condition.
+
+If such a termination statement can be proved for a chain containing one
+genuine Markov root, it would give an induction mechanism for uniqueness.
