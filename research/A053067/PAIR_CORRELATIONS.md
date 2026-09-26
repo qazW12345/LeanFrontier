@@ -686,7 +686,7 @@ and the sparse cross-order relations between multiplicative orders.
 
 A larger \(d=3001,\ p<3000\) stress test is the next computational check.
 
-## 8. Rigorous non-cross-order covariance bound
+## 8. Sharp elementary non-cross-order covariance bound
 
 Assume a prime-width generator regime and distinct local primes \(p<r\) with
 no cross-order relation
@@ -709,27 +709,33 @@ Then
 \gcd(P_p,P_r)=h.
 \]
 
-### Root discrepancy modulo h
+### Root counts by exponent class
 
-For the local prime \(p\), write the exponent class as
-
-\[
-b=n\bmod\ell_p.
-\]
-
-For each \(b\), let \(N_p(b)\in\{0,1,2\}\) be the number of roots in
-\(a=n\bmod p\).
-
-Apart from the degenerate exponent class \(b=0\),
+For local prime \(p\), let
 
 \[
-N_p(b)-1
-=
-\chi_p(\Delta_p(q_p^b)).
+N_p(b)\in\{0,1,2\},
+\qquad
+b\bmod\ell_p,
 \]
 
-For a residue \(c\bmod h\), the number of local zero classes reducing to \(c\)
-modulo \(h\) is
+be the number of roots in \(a=n\bmod p\) for exponent class \(b\).
+
+Write
+
+\[
+N_p(b)=1+e_p(b).
+\]
+
+The degenerate class \(b=0\) has exactly one root, hence \(e_p(0)=0\); every
+other class comes from a quadratic and therefore
+
+\[
+\boxed{|e_p(b)|\le1.}
+\]
+
+For a residue \(c\bmod h\), define the number of local zero classes reducing
+to \(c\) modulo \(h\):
 
 \[
 \alpha_c
@@ -738,97 +744,128 @@ modulo \(h\) is
 N_p(b).
 \]
 
-The exponent classes in one residue \(c\bmod h\) make \(q_p^b\) run through a
-coset of the subgroup
+Since exactly \(\ell_p/h\) exponent classes lie above \(c\),
 
 \[
-\langle q_p^h\rangle.
-\]
-
-The quadratic discriminant polynomial is nonsquare outside the same finite
-exceptional set already isolated in the one-prime theory.  The standard Weil
-bound over a subgroup coset therefore gives
-
-\[
-\alpha_c-\frac{|R_p|}{h}
+\alpha_c
 =
-O(\sqrt p)
+\frac{\ell_p}{h}+E_c,
 \]
 
-uniformly in \(c\) and \(h\mid\ell_p\).
+where
 
-Consequently the discrepancy energy satisfies
+\[
+E_c
+=
+\sum_{b\equiv c\pmod h}e_p(b).
+\]
+
+Thus
+
+\[
+|E_c|\le\frac{\ell_p}{h}.
+\]
+
+Subtracting the mean can only decrease squared Euclidean norm, so
+
+\[
+\sum_{c\bmod h}
+\left(
+\alpha_c-\frac{|R_p|}{h}
+\right)^2
+\le
+\sum_{c\bmod h}E_c^2
+\le
+h\left(\frac{\ell_p}{h}\right)^2.
+\]
+
+Therefore
 
 \[
 \boxed{
-E_p(h)
-=
-\sum_{c\bmod h}
-\left(\alpha_c-\frac{|R_p|}{h}\right)^2
-\ll hp.
+E_p(h)\le\frac{\ell_p^2}{h}.
 }
 \]
 
-The same bound holds for \(r\).
+The same argument gives
+
+\[
+E_r(h)\le\frac{\ell_r^2}{h}.
+\]
+
+No character-sum estimate is needed.
 
 ### Covariance
 
-Insert these energy estimates into the exact Cauchy covariance identity:
+Insert these two elementary energy bounds into the exact unconditioned
+covariance identity:
 
 \[
 |\rho_{p,r}-\rho_p\rho_r|
 \le
-\frac{h}{P_pP_r}
-\sqrt{E_p(h)E_r(h)}.
+\frac{h}{p\ell_p\,r\ell_r}
+\sqrt{
+\frac{\ell_p^2}{h}
+\frac{\ell_r^2}{h}
+}.
 \]
 
-Since
-
-\[
-P_p=p\ell_p,
-\qquad
-P_r=r\ell_r,
-\]
-
-we obtain
+Everything cancels:
 
 \[
 \boxed{
 |\rho_{p,r}-\rho_p\rho_r|
-\ll
-\frac{h^2}
-{\sqrt{pr}\,\ell_p\ell_r}.
+\le
+\frac1{pr}.
 }
 \]
 
-The exact mod-60 conditioning splits the argument into only a bounded number
-of subgroup cosets, so it changes only the absolute implied constant.
+This holds for every non-cross-order generator pair.
 
-This bound is far weaker than the striking empirical conjecture
+If \(h=1\), the discrepancy vectors have only one coordinate and are
+identically zero, recovering the exact independence theorem.
+
+### Elementary-filter conditioning
+
+The mod-60 candidate restriction splits the calculation into a fixed bounded
+number of CRT components. Repeating the same root-count argument inside those
+components gives
 
 \[
-|\rho_{p,r}-\rho_p\rho_r|
-\le
-\frac{h}{2pr},
+\boxed{
+|\rho^S_{p,r}-\rho^S_p\rho^S_r|
+\ll
+\frac1{pr},
+}
 \]
 
-but it is unconditional given the same standard subgroup-character estimate
-already used in the one-prime theory.
+with an absolute implied constant depending only on the fixed modulus 60.
 
-### Why it is useful
+The experiments indicate that the optimal conditioned constant may be much
+smaller: through all tested generator pairs up to \(p,r<3000\),
 
-For almost all primes, Erdős--Murty gives very large multiplicative order.
-When both \(\ell_p\) and \(\ell_r\) are large and their gcd \(h\) is modest,
-the bound above is extremely small.
+\[
+\frac{pr}{\gcd(P_p,P_r)}
+|\rho^S_{p,r}-\rho^S_p\rho^S_r|
+\le\frac12.
+\]
 
-Thus the remaining second-moment problem splits naturally into:
+That sharper factor remains conjectural.
 
-1. controlling averages of \(\gcd(\ell_p,\ell_r)^2\);
-2. handling the sparse cross-order pairs \(p\mid\ell_r\);
-3. absorbing the exceptional small-order primes separately.
+### Consequence
 
-This is substantially more structured than a general two-prime character-sum
-problem.
+The difficult part of pair correlation is therefore no longer generic
+character-sum cancellation.
+
+For non-cross pairs, an elementary \(1/(pr)\) covariance bound is automatic.
+What remains is to exploit:
+
+1. exact independence when \(h=1\);
+2. arithmetic sparsity/average size of shared order factors when \(h>1\);
+3. the sparse cross-order family \(p\mid\ell_r\).
+
+This is a significantly simpler second-moment problem than the earlier
+character-sum formulation suggested.
 
 ## 9. Analytic target
 
