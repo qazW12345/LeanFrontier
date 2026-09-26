@@ -146,6 +146,75 @@ Therefore
 Hence no finite collection of local prime effects can make the predicted
 total prime mass finite.
 
+## Proven layer 9: exponentially many rough values in every large width
+
+Fix any constant
+
+\[
+0<c<\frac{\log10}{2}.
+\]
+
+For width \(D\), let
+
+\[
+z_D=\lfloor cD\rfloor,
+\qquad
+M_D=\operatorname{lcm}(1,\ldots,z_D).
+\]
+
+Every genuine fixed-width index satisfying
+
+\[
+n\equiv1\pmod{M_D}
+\]
+
+has
+
+\[
+A(n)\equiv1\pmod p
+\]
+
+for every prime \(p\le z_D\).  Thus
+
+\[
+P^-(A(n))>cD.
+\]
+
+Since
+
+\[
+\log M_D=\psi(z_D)=(c+o(1))D
+\]
+
+while the width band contains
+
+\[
+\exp\!\left(\frac{\log10}{2}D+O(1)\right)
+\]
+
+indices, the number of such avoiding indices is
+
+\[
+\boxed{
+\exp\!\left(
+\left(\frac{\log10}{2}-c+o(1)\right)D
+\right).
+}
+\]
+
+Equivalently, for every fixed \(\eta>0\), every sufficiently large width band
+contains exponentially many terms with
+
+\[
+\boxed{
+P^-(A(n))>(1-\eta)\log\log A(n).
+}
+\]
+
+So local admissibility is not represented by one exceptional Euclid-style
+term: each large width contains a large explicit population of increasingly
+rough values.
+
 ## Numerical layer
 
 At \(B=1000\), the exact correction was computed for every width
