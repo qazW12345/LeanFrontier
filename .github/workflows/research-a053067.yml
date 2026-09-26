@@ -1,0 +1,124 @@
+name: A053067 research scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: First n to test
+        required: true
+        default: "1001"
+      end:
+        description: Last n to test
+        required: true
+        default: "10000"
+      sieve_bound:
+        description: Trial-prime sieve bound
+        required: true
+        default: "200000"
+      prp_reps:
+        description: GMP probable-prime repetitions
+        required: true
+        default: "25"
+      shard_index:
+        description: Zero-based shard index
+        required: true
+        default: "0"
+      shard_count:
+        description: Total number of shards
+        required: true
+        default: "1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a053067-${{ github.ref }}-${{ inputs.start }}-${{ inputs.end }}-${{ inputs.shard_index }}-${{ inputs.shard_count }}
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    if: github.ref == 'refs/heads/research/a053067'
+    runs-on: [self-hosted, linux, x64]
+    timeout-minutes: 1440
+
+    steps:
+      - name: Check out research branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/a053067
+
+      - name: Check runner dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v g++ >/dev/null
+          command -v python3 >/dev/null
+          test -f /usr/include/gmpxx.h || {
+            echo "Missing GMP C++ development headers (install libgmp-dev)." >&2
+            exit 2
+          }
+
+      - name: Build searcher
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p research/A053067/build
+          g++ -O3 -march=native -std=c++20             research/A053067/search.cpp -lgmpxx -lgmp             -o research/A053067/build/a053067-search
+
+      - name: Verify implementation and checked-in pilot
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 research/A053067/verify.py
+
+      - name: Run scan
+        id: scan
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p research/A053067/run
+          OUT="research/A053067/run/scan-${{ inputs.start }}-${{ inputs.end }}-shard-${{ inputs.shard_index }}-of-${{ inputs.shard_count }}.csv"
+          LOG="research/A053067/run/scan-${{ inputs.start }}-${{ inputs.end }}-shard-${{ inputs.shard_index }}-of-${{ inputs.shard_count }}.log"
+
+          set +e
+          research/A053067/build/a053067-search             --start "${{ inputs.start }}"             --end "${{ inputs.end }}"             --sieve-bound "${{ inputs.sieve_bound }}"             --prp-reps "${{ inputs.prp_reps }}"             --shard-index "${{ inputs.shard_index }}"             --shard-count "${{ inputs.shard_count }}"             --output "$OUT" 2>"$LOG"
+          RC=$?
+          set -e
+
+          cat "$LOG"
+
+          if [ "$RC" -eq 10 ]; then
+            echo "candidate=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::A053067 probable-prime candidate found; inspect the artifact."
+          elif [ "$RC" -ne 0 ]; then
+            exit "$RC"
+          else
+            echo "candidate=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Summarize
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import csv
+          from collections import Counter
+          from pathlib import Path
+
+          files = sorted(Path("research/A053067/run").glob("scan-*.csv"))
+          for path in files:
+              rows = list(csv.DictReader(path.open()))
+              counts = Counter(row["status"] for row in rows)
+              print(path.name, dict(counts))
+              candidates = [row for row in rows if row["status"] == "probable_prime"]
+              if candidates:
+                  print("probable-prime candidates:", candidates)
+          PY
+
+      - name: Upload scan evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: a053067-${{ inputs.start }}-${{ inputs.end }}-shard-${{ inputs.shard_index }}-of-${{ inputs.shard_count }}
+          path: research/A053067/run/
+          if-no-files-found: error
+          retention-days: 90
