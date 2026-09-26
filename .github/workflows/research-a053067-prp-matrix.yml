@@ -54,6 +54,7 @@ jobs:
               exit 2
             fi
             printf '%s=%s\n' "$key" "$value" >> "$GITHUB_ENV"
+            printf -v "$key" '%s' "$value"
           }
           read_uint START
           read_uint END
@@ -119,6 +120,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p research/A053067/prp-run
           {
             echo "repository=$GITHUB_REPOSITORY"
             echo "commit=$GITHUB_SHA"
