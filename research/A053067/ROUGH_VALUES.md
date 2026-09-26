@@ -306,7 +306,127 @@ after adjusting constants through the displayed asymptotic.
 So the sequence contains a very large family of values that are rough at the
 natural \(\log\log\)-scale.
 
-## 6. Why this matters
+## 6. Near-optimal roughness at the natural scale
+
+The fixed-\(c\) theorem can be sharpened by allowing the cutoff coefficient to
+approach its limiting value.
+
+The classical de la Vallée-Poussin prime-number-theorem error bound gives
+
+\[
+\psi(x)
+=
+x+O\!\left(
+x\exp(-a\sqrt{\log x})
+\right)
+\]
+
+for some absolute \(a>0\).
+
+Set
+
+\[
+z_D
+=
+\left\lfloor
+\left(
+\frac{\log10}{2}
+-
+\frac1{\log D}
+\right)D
+\right\rfloor.
+\]
+
+Then
+
+\[
+\log M_{z_D}
+=
+\psi(z_D)
+=
+\frac{\log10}{2}D
+-
+\frac{D}{\log D}
++
+o\!\left(\frac{D}{\log D}\right).
+\]
+
+On the other hand,
+
+\[
+\log|I_D|
+=
+\frac{\log10}{2}D+O(1).
+\]
+
+Hence
+
+\[
+\log\frac{|I_D|}{M_{z_D}}
+=
+\left(1+o(1)\right)\frac{D}{\log D}.
+\]
+
+Therefore the explicit progression
+
+\[
+n\equiv1\pmod{M_{z_D}}
+\]
+
+contains
+
+\[
+\boxed{
+\exp\!\left(
+(1+o(1))\frac{D}{\log D}
+\right)
+}
+\]
+
+indices inside the genuine \(D\)-digit width band.
+
+Every one of their A053067 values satisfies
+
+\[
+P^-(A(n))>z_D.
+\]
+
+Since
+
+\[
+\log\log A(n)
+=
+\frac{\log10}{2}D+O(\log D),
+\]
+
+we obtain the asymptotically sharp statement
+
+\[
+\boxed{
+P^-(A(n))
+>
+(1-o(1))\log\log A(n)
+}
+\]
+
+for
+
+\[
+\boxed{
+\exp\!\left(
+(1+o(1))\frac{D}{\log D}
+\right)
+}
+\]
+
+terms in every sufficiently large decimal width.
+
+The coefficient 1 in front of \(\log\log A(n)\) is the natural limit of this
+least-common-multiple progression construction: pushing \(z_D\) beyond
+\((\log10/2)D\) makes \(\log\operatorname{lcm}(1,\ldots,z_D)\) exceed the
+logarithmic length of the width interval.
+
+## 7. Why this matters
 
 This theorem is stronger than merely constructing one term escaping a
 prescribed finite prime set.
