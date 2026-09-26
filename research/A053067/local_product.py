@@ -105,7 +105,12 @@ def main() -> int:
     admissible_list = [n for n in range(lo, hi + 1) if elementary_candidate(n)]
     admissible = set(admissible_list)
     checkpoints = parse_checkpoints(args.checkpoints, args.exact_prime_bound)
-    checkpoint_set = set(checkpoints)
+    all_primes = [p for p in primes_up_to(args.exact_prime_bound) if p not in (2, 3, 5)]
+    checkpoint_end: dict[int, list[int]] = {}
+    for bound in checkpoints:
+        eligible = [p for p in all_primes if p <= bound]
+        if eligible:
+            checkpoint_end.setdefault(eligible[-1], []).append(bound)
 
     exact_product = 1.0
     naive_product = 1.0
@@ -113,10 +118,7 @@ def main() -> int:
     checkpoint_rows: list[dict] = []
     prime_rows: list[dict] = []
 
-    for p in primes_up_to(args.exact_prime_bound):
-        if p in (2, 3, 5):
-            continue
-
+    for p in all_primes:
         period, roots = zero_family(args.digits, p)
         rho = conditioned_zero_density(period, roots)
         exact_product *= 1.0 - rho
@@ -135,30 +137,28 @@ def main() -> int:
             }
         )
 
-        if p in checkpoint_set:
+        if p in checkpoint_end:
             actual_survival = (
                 (len(admissible) - len(covered)) / len(admissible)
                 if admissible
                 else 1.0
             )
-            checkpoint_rows.append(
-                {
-                    "prime_bound": p,
-                    "actual_union_survival": actual_survival,
-                    "local_product_survival": exact_product,
-                    "naive_random_survival": naive_product,
-                    "local_correction_factor": exact_product / naive_product,
-                    "relative_product_error": (
-                        exact_product / actual_survival - 1.0
-                        if actual_survival
-                        else None
-                    ),
-                }
-            )
-
-    # If a checkpoint lies between consecutive primes, report it at the final
-    # prime <= checkpoint by reconstructing from prime_rows would add clutter.
-    # The configured defaults are close enough to actual primes for diagnostics.
+            for requested_bound in checkpoint_end[p]:
+                checkpoint_rows.append(
+                    {
+                        "prime_bound": requested_bound,
+                        "last_prime": p,
+                        "actual_union_survival": actual_survival,
+                        "local_product_survival": exact_product,
+                        "naive_random_survival": naive_product,
+                        "local_correction_factor": exact_product / naive_product,
+                        "relative_product_error": (
+                            exact_product / actual_survival - 1.0
+                            if actual_survival
+                            else None
+                        ),
+                    }
+                )
     final_actual = (
         (len(admissible) - len(covered)) / len(admissible)
         if admissible
