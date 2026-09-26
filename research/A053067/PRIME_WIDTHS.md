@@ -468,7 +468,245 @@ prime cutoff, all the way to a **square-logarithmic cutoff**
 This is presently the strongest unconditional width-growing local statement
 on the branch.
 
-## 8. Remaining tail
+## 8. Full factorization-scale local theorem
+
+The square-logarithmic cutoff is not the natural endpoint.  A different bound
+on the bad primes reaches all the way to the largest prime scale relevant for
+testing primality of every term in the \(D\)-digit band.
+
+### A universal crude local bound
+
+For \(q\ne1\pmod p\), every exponent class gives a quadratic congruence in
+\(n\bmod p\), hence at most two roots.
+
+Conditioning on the 12 elementary classes modulo 60 does not change that
+root-count bound: over a joint period the compatibility weights sum exactly.
+Thus
+
+\[
+0\le\rho_{p,D}\le\frac2p
+\]
+
+when \(q\ne1\).
+
+When \(q=1\), the exact formula is
+
+\[
+2A(n)\equiv n(n^2+1)\pmod p,
+\]
+
+so there are at most three roots modulo \(p\), and therefore
+
+\[
+0\le\rho_{p,D}\le\frac3p.
+\]
+
+Consequently, for every \(p>5\),
+
+\[
+\boxed{
+\left|\rho_{p,D}-\frac1p\right|
+\le\frac2p.
+}
+\]
+
+### Reciprocal sum over the bad primes
+
+Let \(D\) be a large prime decimal width.  The bad local primes are those with
+
+\[
+D\mid\ell_p,
+\qquad
+\ell_p=\operatorname{ord}_p(10).
+\]
+
+They satisfy
+
+\[
+p\equiv1\pmod D.
+\]
+
+A dyadic Brun--Titchmarsh argument gives, uniformly for \(X\ge2D\),
+
+\[
+\boxed{
+\sum_{\substack{p\le X\\p\equiv1\pmod D}}
+\frac1p
+\ll
+\frac{1+\log\log(X/D)}{D}.
+}
+\]
+
+Indeed, on \(2^jD<p\le2^{j+1}D\), Brun--Titchmarsh gives
+\(O(2^j/j)\) primes, while each reciprocal is at most
+\((2^jD)^{-1}\).  Summing \(1/(jD)\) gives the displayed bound.
+
+Therefore the total bad-prime local-density error up to \(X\) is
+
+\[
+\sum_{\substack{p\le X\\D\mid\ell_p}}
+\left|\rho_{p,D}-\frac1p\right|
+\ll
+\frac{1+\log\log(X/D)}D.
+\]
+
+### The full prime-factor scale of one width band
+
+Let \(q=10^D\).  Every genuine fixed-width term is
+
+\[
+A(n)=\sum_{j=0}^{n-1}(L_n+j)q^{n-1-j}.
+\]
+
+Since every coefficient is \(<q\),
+
+\[
+A(n)<q^n.
+\]
+
+Also \(U_n<q\) implies
+
+\[
+\frac{n(n+1)}2<q,
+\qquad
+n<\sqrt{2q}
+=\sqrt2\,10^{D/2}.
+\]
+
+Thus every composite term in the entire \(D\)-digit band has a prime factor
+below
+
+\[
+B_D
+=
+\exp\!\left(
+\frac{\log10}{\sqrt2}\,
+D\,10^{D/2}
+\right),
+\]
+
+because
+
+\[
+\sqrt{A(n)}
+<
+q^{n/2}
+<
+B_D.
+\]
+
+The important scale identity is
+
+\[
+\boxed{
+\log\log B_D
+=
+\frac{\log10}{2}\,D+O(\log D).
+}
+\]
+
+Hence
+
+\[
+\frac{1+\log\log(B_D/D)}D=O(1).
+\]
+
+The total bad-prime local-density error across **every bad prime that can be
+needed to certify compositeness of any term in the band** is therefore bounded
+by an absolute constant, uniformly in prime \(D\).
+
+### Good primes
+
+For the remaining primes \(p\le B_D\), we have \(D\nmid\ell_p\), hence
+
+\[
+\operatorname{ord}_p(10^D)=\ell_p.
+\]
+
+The character-sum estimate gives
+
+\[
+\left|\rho_{p,D}-\frac1p\right|
+\ll
+\frac1{\ell_p\sqrt p}.
+\]
+
+Pappalardi's reciprocal-order estimate implies
+
+\[
+\sum_p\frac1{\ell_p\sqrt p}<\infty,
+\]
+
+so the total good-prime error is bounded by one absolute convergent series,
+again uniformly in the prime width \(D\).
+
+### Uniform nondegeneracy at the full relevant scale
+
+For \(p>5\), \(\rho_{p,D}\le3/p<1\).  Thus
+
+\[
+\left|
+\log\frac{1-\rho_{p,D}}{1-1/p}
+\right|
+\ll
+\left|\rho_{p,D}-\frac1p\right|,
+\]
+
+with an absolute implied constant.
+
+Combining the good and bad primes gives absolute constants
+
+\[
+0<c<C<\infty
+\]
+
+such that for every sufficiently large prime decimal width \(D\),
+
+\[
+\boxed{
+c
+\le
+\prod_{5<p\le B_D}
+\frac{1-\rho_{p,D}}{1-1/p}
+\le
+C.
+}
+\]
+
+This product includes **every local prime up to a uniform upper bound for the
+square root of every A053067 term in the entire \(D\)-digit band**.
+
+So along prime decimal widths, the full local divisibility model relevant to
+primality is uniformly nondegenerate.
+
+### Divergent full-scale local prime mass
+
+The heuristic contribution of a width band is proportional to the normalized
+local correction divided by \(D\).  The theorem above shows that on prime
+widths this correction is bounded below by \(c>0\) even at the complete
+factorization scale.
+
+Therefore the fully locally corrected mass satisfies
+
+\[
+\boxed{
+\sum_{D\ {\rm prime}}
+\frac1D
+\prod_{5<p\le B_D}
+\frac{1-\rho_{p,D}}{1-1/p}
+=
+\infty.
+}
+\]
+
+This is an unconditional theorem about the **local model**: no congruence
+obstruction, including primes all the way up to the square-root scale of the
+terms, can make the prime-value heuristic summable along prime decimal widths.
+
+What remains is no longer a local singular-series problem.  It is the genuine
+global prime-values/parity problem.
+
+## 9. Remaining global barrier
 
 The full singular factor \(C_D\) also contains primes \(p\ge D\).
 
