@@ -212,11 +212,30 @@ static std::optional<unsigned> small_factor(
   return std::nullopt;
 }
 
+static std::size_t decimal_length(u64 n) {
+  auto [lo, hi] = block_bounds(n);
+  u128 total = 0;
+  u64 cur = lo;
+
+  while (cur <= hi) {
+    unsigned d = digits10(cur);
+    u64 p10 = pow10_u64(d);
+    u64 end = std::min(hi, p10 - 1);
+    total += (u128)(end - cur + 1) * d;
+    cur = end + 1;
+  }
+
+  if (total > SIZE_MAX) {
+    throw std::runtime_error("decimal length exceeds size_t");
+  }
+  return (std::size_t)total;
+}
+
 static std::string build_decimal(u64 n) {
   auto [lo, hi] = block_bounds(n);
 
   std::string s;
-  s.reserve((size_t)n * digits10(hi));
+  s.reserve(decimal_length(n));
 
   for (u64 x = lo; x <= hi; ++x) {
     s += std::to_string(x);
@@ -229,6 +248,7 @@ struct Config {
   u64 end = 1000;
   unsigned sieve_bound = 200000;
   int prp_reps = 25;
+  std::size_t max_prp_digits = 250000;
   u64 shard_index = 0;
   u64 shard_count = 1;
   unsigned threads = 0;
@@ -260,6 +280,8 @@ static Config parse_args(int argc, char** argv) {
       need(cfg.sieve_bound);
     } else if (arg == "--prp-reps") {
       need(cfg.prp_reps);
+    } else if (arg == "--max-prp-digits") {
+      need(cfg.max_prp_digits);
     } else if (arg == "--shard-index") {
       need(cfg.shard_index);
     } else if (arg == "--shard-count") {
@@ -275,6 +297,7 @@ static Config parse_args(int argc, char** argv) {
       std::cout
           << "A053067 search\n"
           << "  --start N --end N --sieve-bound P --prp-reps R\n"
+          << "  --max-prp-digits D (0 = unlimited)\n"
           << "  --shard-index I --shard-count C --threads T --output FILE\n";
       std::exit(0);
     } else {
@@ -311,8 +334,16 @@ static Result evaluate(
     return result;
   }
 
+  result.digits = decimal_length(n);
+  if (cfg.max_prp_digits != 0 && result.digits > cfg.max_prp_digits) {
+    result.status = "sieve_survivor";
+    return result;
+  }
+
   std::string decimal = build_decimal(n);
-  result.digits = decimal.size();
+  if (decimal.size() != result.digits) {
+    throw std::runtime_error("decimal length mismatch");
+  }
 
   mpz_class value;
   if (mpz_set_str(value.get_mpz_t(), decimal.c_str(), 10) != 0) {
@@ -408,12 +439,15 @@ int main(int argc, char** argv) {
     os << "n,status,witness,digits\n";
 
     u64 factored = 0;
+    u64 sieve_survivor = 0;
     u64 prp_composite = 0;
     u64 probable_prime = 0;
 
     for (const auto& result : results) {
       if (result.status == "small_factor") {
         ++factored;
+      } else if (result.status == "sieve_survivor") {
+        ++sieve_survivor;
       } else if (result.status == "composite_prp") {
         ++prp_composite;
       } else if (result.status == "probable_prime") {
@@ -443,6 +477,7 @@ int main(int argc, char** argv) {
         << " threads=" << worker_count
         << " elementary=" << candidates.size()
         << " small_factor=" << factored
+        << " sieve_survivor=" << sieve_survivor
         << " composite_prp=" << prp_composite
         << " probable_prime=" << probable_prime
         << " seconds=" << seconds
