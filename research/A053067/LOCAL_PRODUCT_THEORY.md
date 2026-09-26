@@ -439,6 +439,46 @@ So through 500 decimal widths there is no evidence of a downward drift in the
 finite-cutoff singular correction; the harmonic mass is slightly larger than
 the uncorrected baseline.
 
+A larger hosted sweep, run 36266146082, extended the same exact
+\(B=1000\) calculation through \(d=5000\). It found
+
+\[
+\min_{d\le5000}C_d(1000)=0.486569337
+\quad(d=672),
+\]
+
+\[
+\max_{d\le5000}C_d(1000)=1.443758197
+\quad(d=2566),
+\]
+
+with arithmetic mean \(1.050424999\), geometric mean \(1.034882931\), and
+harmonic-weighted mean
+
+\[
+\boxed{1.060316723}.
+\]
+
+The accumulated harmonic mass is
+
+\[
+\sum_{d\le5000}\frac{C_d(1000)}d
+=
+9.643059820,
+\]
+
+while
+
+\[
+\sum_{d\le5000}\frac1d
+=
+9.094508853.
+\]
+
+Thus the finite-cutoff correction still enhances, rather than suppresses, the
+harmonic mass after five thousand complete decimal-width bands.
+
+
 A second run, 36266146082, extended the same \(B=1000\) calculation through
 
 \[
