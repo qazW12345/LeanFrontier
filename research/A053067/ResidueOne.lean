@@ -271,7 +271,7 @@ theorem zmod_fixedConcat_natTriangular_eq_one
     exact hp2 (Nat.le_antisymm hp_le htwo_le)
   letI : NeZero (2 : ZMod p) := ⟨h2ne⟩
   have hn : (n : ZMod p) = 1 := by
-    exact (ZMod.natCast_eq_natCast_iff n 1 p).2 hnmod
+    simpa using (ZMod.natCast_eq_natCast_iff n 1 p).2 hnmod
   exact fixedConcat_natTriangular_eq_one_of_pow_eq_self
     (q : ZMod p) n hn hpow
 
