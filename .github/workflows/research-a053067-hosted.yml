@@ -59,6 +59,12 @@ jobs:
           read_uint SHARD_INDEX
           read_uint SHARD_COUNT
           read_uint THREADS
+          mode="$(awk -F= '$1 == "MODE" {print $2}' "$request" | tail -n 1 | tr -d '[:space:]')"
+          if [[ "$mode" != "sieve" && "$mode" != "full" ]]; then
+            echo "Invalid or missing MODE in $request" >&2
+            exit 2
+          fi
+          printf 'MODE=%s\n' "$mode" >> "$GITHUB_ENV"
 
       - name: Build and verify
         shell: bash
@@ -83,7 +89,7 @@ jobs:
             --start "$START" --end "$END" \
             --sieve-bound "$SIEVE_BOUND" --prp-reps "$PRP_REPS" \
             --shard-index "$SHARD_INDEX" --shard-count "$SHARD_COUNT" \
-            --threads "$THREADS" --output "$OUT" \
+            --threads "$THREADS" --mode "$MODE" --output "$OUT" \
             2> >(tee "$LOG" >&2)
           RC=$?
           set -e
@@ -124,6 +130,7 @@ jobs:
             echo "shard_index=${SHARD_INDEX:-unset}"
             echo "shard_count=${SHARD_COUNT:-unset}"
             echo "threads=${THREADS:-unset}"
+            echo "mode=${MODE:-unset}"
             echo "candidate=${{ steps.scan.outputs.candidate }}"
             echo
             uname -a || true
