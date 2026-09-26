@@ -32,6 +32,18 @@ theorem fixedConcat_succ {R : Type*} [Semiring R] (q L : R) (n : ℕ) :
     fixedConcat q L (n + 1) =
       q * fixedConcat q L n + (L + (n : R)) := rfl
 
+
+/-- Fixed-width concatenation commutes with semiring homomorphisms. -/
+theorem map_fixedConcat {R S : Type*} [Semiring R] [Semiring S]
+    (f : R →+* S) (q L : R) (n : ℕ) :
+    f (fixedConcat q L n) = fixedConcat (f q) (f L) n := by
+  induction n with
+  | zero =>
+      simp [fixedConcat]
+  | succ n ih =>
+      simp [fixedConcat, ih]
+
+
 /-- If the append base is 1, fixed-width concatenation is just the ordinary
 sum of the consecutive block. -/
 theorem fixedConcat_one_eq_sum {R : Type*} [Semiring R] (L : R) (n : ℕ) :
