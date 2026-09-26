@@ -1,0 +1,52 @@
+name: A053067 prime width average
+
+on:
+  push:
+    branches:
+      - research/a053067
+    paths:
+      - research/A053067/prime-width-average-request.env
+      - research/A053067/prime_width_average.py
+      - research/A053067/congruence_families.py
+      - research/A053067/local_product.py
+      - .github/workflows/research-a053067-prime-width-average.yml
+
+permissions:
+  contents: read
+
+jobs:
+  average:
+    if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Parse request
+        shell: bash
+        run: |
+          set -euo pipefail
+          value="$(awk -F= '$1 == "PRIME_BOUND" {print $2}' research/A053067/prime-width-average-request.env | tail -n 1 | tr -d '[:space:]')"
+          [[ "$value" =~ ^[0-9]+$ ]]
+          echo "PRIME_BOUND=$value" >> "$GITHUB_ENV"
+
+      - name: Average exact local factors over widths
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p research/A053067/prime-width-average-run
+          python3 research/A053067/prime_width_average.py \
+            --prime-bound "$PRIME_BOUND" \
+            --output research/A053067/prime-width-average-run/per-prime.csv \
+            | tee research/A053067/prime-width-average-run/summary.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: a053067-prime-width-average-${{ github.run_id }}
+          path: research/A053067/prime-width-average-run/
+          if-no-files-found: error
+          retention-days: 90
