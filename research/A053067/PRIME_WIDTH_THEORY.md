@@ -340,7 +340,44 @@ whereas
 Thus prime widths are, empirically, **more prime-friendly** than the average
 width at this cutoff, while displaying a notably tighter lower envelope.
 
-## 7. Remaining interchange problem
+## 7. Generator-only numerical check
+
+An independent exact computation through local primes \(p\le1000\), averaging
+only the generator width classes
+
+\[
+a\in(\mathbb Z/\ell_p\mathbb Z)^\times,
+\]
+
+gives the finite-cutoff generator product
+
+\[
+\boxed{
+C_{\mathrm{gen}}(1000)\approx1.124861734.
+}
+\]
+
+This is noticeably larger than the corresponding all-width geometric
+correction
+
+\[
+1.034795187.
+\]
+
+The result is consistent with the direct prime-width \(B=5000\) experiment,
+whose harmonic-weighted correction through prime widths \(d\le1000\) is
+
+\[
+1.094852374.
+\]
+
+Thus the analytically privileged generator classes are also empirically among
+the more prime-friendly width classes.
+
+A hosted exact generator computation through \(p\le5000\) is running under
+the prime-width-average workflow and will provide the higher-cutoff comparison.
+
+## 8. Remaining interchange problem
 
 The theorem above controls the iterated limit
 
@@ -370,7 +407,7 @@ prime-width average.  Controlling these exceptional pairs uniformly in both
 
 This is substantially narrower than the original width-uniform problem.
 
-## 8. Implication for the prime-term programme
+## 9. Implication for the prime-term programme
 
 Prime widths provide a natural infinite subsequence on which:
 
