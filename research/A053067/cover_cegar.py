@@ -235,6 +235,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--iterations", type=int, default=200)
     p.add_argument("--min-d", type=int, default=3)
     p.add_argument("--max-d", type=int)
+    p.add_argument("--extra-primes", type=Path)
     p.add_argument("--z3", default="z3")
     p.add_argument("--timeout-ms", type=int, default=10000)
     p.add_argument("--csv-out", type=Path, required=True)
@@ -245,6 +246,18 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     pool = primes_up_to(args.prime_bound)
+    if args.extra_primes and args.extra_primes.exists():
+        extras = []
+        for raw in args.extra_primes.read_text().splitlines():
+            raw = raw.split("#", 1)[0].strip()
+            if not raw:
+                continue
+            p = int(raw)
+            if p < 2:
+                raise SystemExit(f"invalid extra prime: {p}")
+            extras.append(p)
+        pool = sorted(set(pool + extras))
+
     clauses: list[Clause] = []
     selected: set[tuple[int, int, int, int, int]] = set()
 
