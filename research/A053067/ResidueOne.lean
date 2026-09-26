@@ -335,4 +335,31 @@ theorem zmod_natFixedA_eq_one_of_base_one
   exact zmod_fixedConcat_natTriangular_eq_one_of_base_one
     p q n hp2 hnmod hq
 
+
+
+/-- Decimal-base specialization of the natural residue-one theorem. -/
+theorem zmod_natFixedA_decimal_eq_one
+    (p d n : ℕ) [Fact p.Prime] (hp2 : p ≠ 2)
+    (hnmod : n ≡ 1 [MOD p])
+    (hqmod : 10 ^ d ≡ 1 [MOD p]) :
+    ((natFixedA (10 ^ d) n : ℕ) : ZMod p) = 1 := by
+  apply zmod_natFixedA_eq_one_of_base_one p (10 ^ d) n hp2 hnmod
+  simpa using (ZMod.natCast_eq_natCast_iff (10 ^ d) 1 p).2 hqmod
+
+/-- Under the residue-one hypotheses, the odd prime p does not divide the
+natural fixed-width A053067 recurrence value. -/
+theorem prime_not_dvd_natFixedA_decimal
+    (p d n : ℕ) [Fact p.Prime] (hp2 : p ≠ 2)
+    (hnmod : n ≡ 1 [MOD p])
+    (hqmod : 10 ^ d ≡ 1 [MOD p]) :
+    ¬ p ∣ natFixedA (10 ^ d) n := by
+  intro hdiv
+  have hzero :
+      ((natFixedA (10 ^ d) n : ℕ) : ZMod p) = 0 :=
+    (ZMod.natCast_eq_zero_iff (natFixedA (10 ^ d) n) p).2 hdiv
+  have hone :=
+    zmod_natFixedA_decimal_eq_one p d n hp2 hnmod hqmod
+  rw [hone] at hzero
+  exact one_ne_zero hzero
+
 end LeanFrontier.A053067Research
