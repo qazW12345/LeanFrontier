@@ -43,27 +43,36 @@ def main() -> int:
     with args.output.open("w", newline="") as f:
         w = csv.writer(f)
         w.writerow([
-            "prime", "ord10", "mean_rho", "signed_bias",
-            "scaled_bias_p_ord", "mean_factor", "geom_factor", "mean_log_factor",
+            "prime", "ord10",
+            "mean_rho", "signed_bias", "scaled_bias_p_ord",
+            "mean_rho_unconditioned", "signed_bias_unconditioned",
+            "scaled_bias_unconditioned_p_ord",
+            "mean_factor", "geom_factor", "mean_log_factor",
         ])
 
         for p in primes:
             ell = multiplicative_order(10, p)
             rhos = []
+            rhos_unconditioned = []
             logs = []
             factors = []
 
             for d in range(1, ell + 1):
                 period, roots = zero_family(d, p)
                 rho = conditioned_zero_density(period, roots)
+                rho_unconditioned = len(roots) / period
                 factor = (1.0 - rho) / (1.0 - 1.0 / p)
                 rhos.append(rho)
+                rhos_unconditioned.append(rho_unconditioned)
                 factors.append(factor)
                 logs.append(math.log(factor))
 
             mean_rho = sum(rhos) / ell
             bias = mean_rho - 1.0 / p
             scaled = bias * p * ell
+            mean_rho_unconditioned = sum(rhos_unconditioned) / ell
+            bias_unconditioned = mean_rho_unconditioned - 1.0 / p
+            scaled_unconditioned = bias_unconditioned * p * ell
             mean_factor = sum(factors) / ell
             mean_log = sum(logs) / ell
             geom = math.exp(mean_log)
@@ -75,6 +84,9 @@ def main() -> int:
                 f"{mean_rho:.17g}",
                 f"{bias:.17g}",
                 f"{scaled:.17g}",
+                f"{mean_rho_unconditioned:.17g}",
+                f"{bias_unconditioned:.17g}",
+                f"{scaled_unconditioned:.17g}",
                 f"{mean_factor:.17g}",
                 f"{geom:.17g}",
                 f"{mean_log:.17g}",
