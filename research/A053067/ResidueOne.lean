@@ -44,6 +44,17 @@ theorem map_fixedConcat {R S : Type*} [Semiring R] [Semiring S]
       simp [fixedConcat, ih]
 
 
+/-- Casting a natural fixed concatenation into any semiring commutes with the
+recurrence. -/
+theorem natCast_fixedConcat {R : Type*} [Semiring R]
+    (q L n : ℕ) :
+    ((fixedConcat q L n : ℕ) : R) =
+      fixedConcat (q : R) (L : R) n := by
+  simpa using
+    (map_fixedConcat (Nat.castRingHom R) q L n)
+
+
+
 /-- If the append base is 1, fixed-width concatenation is just the ordinary
 sum of the consecutive block. -/
 theorem fixedConcat_one_eq_sum {R : Type*} [Semiring R] (L : R) (n : ℕ) :
@@ -305,5 +316,23 @@ theorem zmod_fixedConcat_natTriangular_eq_one_of_base_one
   simp
 
 
+
+
+
+/-- The natural fixed-width triangular A053067 recurrence at positional base
+q. When q = 10^d and the whole block has width d, this is the decimal
+concatenation. -/
+def natFixedA (q n : ℕ) : ℕ :=
+  fixedConcat q (natTriangularStart n) n
+
+/-- Natural-number version of the prime-modulus residue-one theorem. -/
+theorem zmod_natFixedA_eq_one_of_base_one
+    (p q n : ℕ) [Fact p.Prime] (hp2 : p ≠ 2)
+    (hnmod : n ≡ 1 [MOD p])
+    (hq : (q : ZMod p) = 1) :
+    ((natFixedA q n : ℕ) : ZMod p) = 1 := by
+  rw [natFixedA, natCast_fixedConcat]
+  exact zmod_fixedConcat_natTriangular_eq_one_of_base_one
+    p q n hp2 hnmod hq
 
 end LeanFrontier.A053067Research
