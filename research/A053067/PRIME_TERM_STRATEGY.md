@@ -198,6 +198,88 @@ Therefore the refined prime heuristic predicts infinitely many prime terms if
 }
 \]
 
+## Proven layer 7: prime widths have a uniform growing-cutoff correction
+
+Restrict the decimal width \(D\) itself to primes.
+
+For every local prime \(p<D\),
+
+\[
+\operatorname{ord}_p(10^D)=\operatorname{ord}_p(10),
+\]
+
+because \(\operatorname{ord}_p(10)\mid p-1<D\) and therefore cannot be
+divisible by the prime \(D\).
+
+The pointwise character-sum estimate then gives
+
+\[
+\left|
+\rho_{p,D}-\frac1p
+\right|
+\ll
+\frac1{\operatorname{ord}_p(10)\sqrt p},
+\]
+
+uniformly in the prime width \(D\), for all \(p<D\).
+
+Pappalardi's reciprocal-order estimate implies
+
+\[
+\sum_p
+\frac1{\operatorname{ord}_p(10)\sqrt p}<\infty.
+\]
+
+Hence the naturally growing truncated correction
+
+\[
+C_D^{<D}
+=
+\prod_{5<p<D}
+\frac{1-\rho_{p,D}}{1-1/p}
+\]
+
+satisfies
+
+\[
+\boxed{
+0<c\le C_D^{<D}\le C<\infty
+}
+\]
+
+uniformly over all sufficiently large prime decimal widths \(D\).
+
+Since
+
+\[
+\sum_{D\ {\rm prime}}\frac1D=\infty,
+\]
+
+we obtain the rigorous local-density statement
+
+\[
+\boxed{
+\sum_{D\ {\rm prime}}
+\frac{C_D^{<D}}D=\infty.
+}
+\]
+
+Thus even when the local prime cutoff grows linearly with the decimal width,
+the corrected prime mass remains divergent on the thin subsequence of prime
+widths alone.
+
+The only local singular-series contribution not covered by this theorem is
+the tail \(p\ge D\), where order collapse can occur only if
+
+\[
+D\mid\operatorname{ord}_p(10),
+\]
+
+hence only for primes \(p\equiv1\pmod D\).
+
+This reduces the width-uniform local problem to a sparse arithmetic-progression
+tail.
+
 ## Analytic gap A: width-uniform singular mass
 
 We know \(C_d>0\) for each fixed \(d\), but pointwise positivity alone does not
