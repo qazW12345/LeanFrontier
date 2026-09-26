@@ -200,3 +200,32 @@ to be a quadratic residue modulo p.
 The research tool root_order_probe.py searches these families by intersecting
 H_k(X,Y) with Phi_k(q^n) and then independently verifying any common factor
 against A modulo that factor.
+
+
+### Reciprocity: every H_k depends only on n^2
+
+For every k>1 the cyclotomic polynomial Phi_k is reciprocal.  Therefore its
+homogenization satisfies
+
+  H_k(X,Y) = H_k(Y,X).
+
+Write
+
+  C = ((q-1)n^2 + 2q)/2,
+  D = (q-1)n/2,
+
+so that
+
+  X=C-D,
+  Y=C+D.
+
+Swapping X and Y is exactly D -> -D.  Since H_k is symmetric, every odd power
+of D cancels.  Consequently, after the harmless powers of 2 are cleared,
+
+  H_k(X,Y)
+
+is a polynomial in n^2 and q for every k>1.
+
+Thus each fixed small order k gives a concrete algebraic curve in the two
+variables s=n^2 and q=10^d.  The order-3, order-4 and order-6 quadratics above
+are the first examples of this general phenomenon.
