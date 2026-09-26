@@ -567,7 +567,140 @@ compared with the uncorrected baseline
 Thus the exact growing sieve controlled by the moving-cutoff theorem not only
 remains positive but enhances the harmonic mass over this range.
 
-## 10. Remaining full-product problem
+## 10. Subexponential moving cutoffs
+
+The moving-cutoff theorem extends far beyond \(p<d\).
+
+Let \(d\) be a prime width and let \(B(d)\ge d\). Split local primes into
+
+- **generator primes**, for which \(d\nmid\ell_p\);
+- **exceptional primes**, for which \(d\mid\ell_p\),
+
+where
+
+\[
+\ell_p=\operatorname{ord}_p(10).
+\]
+
+Because \(d\) is prime,
+
+\[
+d\nmid\ell_p
+\quad\Longrightarrow\quad
+\gcd(d,\ell_p)=1,
+\]
+
+so every generator prime has
+
+\[
+\operatorname{ord}_p(10^d)=\ell_p.
+\]
+
+Its normalized logarithmic local factor satisfies the uniform summable bound
+
+\[
+|\lambda_p(d)|
+\ll
+\frac1{\ell_p\sqrt p}+\frac1{p^2}.
+\]
+
+Hence all generator-prime contributions are controlled by one absolutely
+summable majorant, independently of \(d\).
+
+For an exceptional prime,
+
+\[
+d\mid\ell_p\mid p-1,
+\]
+
+so necessarily
+
+\[
+\boxed{p\equiv1\pmod d.}
+\]
+
+For any fixed-width local factor, at most two roots occur for each exponent
+class. Conditioning on the \(1/5\)-density elementary candidate set can
+increase the zero density by at most a factor 5, so
+
+\[
+\rho_{p,d}\ll\frac1p.
+\]
+
+For all sufficiently large \(d\), every exceptional \(p\) is large enough that
+
+\[
+|\lambda_p(d)|\ll\frac1p.
+\]
+
+Therefore
+
+\[
+\sum_{\substack{p\le B(d)\\d\mid\ell_p}}
+|\lambda_p(d)|
+\ll
+\sum_{\substack{p\le B(d)\\p\equiv1\pmod d}}\frac1p.
+\]
+
+Discarding primality and writing \(p=kd+1\) gives the elementary bound
+
+\[
+\sum_{\substack{p\le B(d)\\p\equiv1\pmod d}}\frac1p
+\le
+\sum_{1\le k\le B(d)/d}\frac1{kd+1}
+\ll
+\frac{1+\log(B(d)/d)}d.
+\]
+
+Consequently, whenever
+
+\[
+\boxed{\log B(d)=o(d),}
+\]
+
+the entire exceptional contribution tends to zero.
+
+Thus for prime widths and every subexponential cutoff
+
+\[
+B(d)=\exp(o(d)),
+\]
+
+the normalized local product has exactly the same limiting harmonic-geometric
+correction as the generator model:
+
+\[
+\boxed{
+\text{prime-width local correction through }B(d)
+\longrightarrow C_{\rm gen}
+\text{ in harmonic logarithmic mean.}
+}
+\]
+
+In particular this holds for every fixed power
+
+\[
+\boxed{B(d)=d^A,\qquad A>0.}
+\]
+
+So the positive local correction survives sieving by **all primes up to any
+fixed polynomial in the decimal width**.
+
+More generally, if
+
+\[
+B(d)=e^{cd}
+\]
+
+with fixed \(c>0\), the exceptional contribution is merely \(O(c)\); hence
+the normalized product remains bounded away from zero by a constant depending
+on \(c\).
+
+This sharply strengthens the moving-cutoff theorem.  The unresolved local
+range begins only when the prime cutoff grows faster than exponentially in
+the decimal width.
+
+## 11. Remaining full-product problem
 
 The theorem above controls the iterated limit
 
@@ -597,7 +730,7 @@ prime-width average.  Controlling these exceptional pairs uniformly in both
 
 This is substantially narrower than the original width-uniform problem.
 
-## 11. Implication for the prime-term programme
+## 12. Implication for the prime-term programme
 
 Prime widths provide a natural infinite subsequence on which:
 
