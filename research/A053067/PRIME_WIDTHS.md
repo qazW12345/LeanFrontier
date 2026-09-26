@@ -217,20 +217,16 @@ compared with the uncorrected prime harmonic sum
 Thus the prime-width restriction is empirically even healthier than the
 all-width average.
 
-## 7. Extension to an almost-quadratic prime cutoff
+## 7. Extension to a square-logarithmic prime cutoff
 
 The preceding theorem can be pushed substantially beyond the cutoff \(p<D\).
 
-Fix any real
+Let \(D\) tend to infinity through prime decimal widths, and let \(X_D>D\)
+be a growing local-prime cutoff.  The Brun--Titchmarsh argument below applies
+uniformly whenever
 
 \[
-0<\varepsilon<1
-\]
-
-and let \(D\) tend to infinity through prime decimal widths.  Put
-
-\[
-X_D=D^{2-\varepsilon}.
+X_D\le D^2(\log D)^2.
 \]
 
 Consider the normalized local correction contributed by primes
@@ -319,7 +315,7 @@ The character-sum bound therefore gives the crude but sufficient estimate
 It remains to sum \(p^{-1/2}\) over primes
 
 \[
-D\le p<D^{2-\varepsilon},
+D\le p<X_D,
 \qquad
 p\equiv1\pmod D.
 \]
@@ -347,67 +343,110 @@ Hence the weighted contribution of this interval is
 \frac{2^{j/2}}{j\sqrt D}.
 \]
 
-Summing until \(2^jD\le D^{2-\varepsilon}\), the final dyadic interval
-dominates and yields
+Summing dyadically gives the general estimate
 
 \[
 \boxed{
-\sum_{\substack{D\le p<D^{2-\varepsilon}\\D\mid\ell_p}}
+\sum_{\substack{D\le p<X_D\\D\mid\ell_p}}
 \frac1{\sqrt p}
-\ll_\varepsilon
-\frac{D^{-\varepsilon/2}}{\log D}.
+\ll
+\frac{\sqrt{X_D}}{D\log(X_D/D)}
 }
 \]
 
-Thus the bad-prime contribution also tends to zero.
+for the range relevant here.
 
-### Almost-quadratic local theorem
+Several useful cutoffs follow immediately.
 
-Combining the two classes,
+### Quadratic cutoff
+
+For
 
 \[
-\sum_{D\le p<D^{2-\varepsilon}}
-\left|
-\rho_{p,D}-\frac1p
-\right|
-=o_\varepsilon(1)
+X_D=D^2,
 \]
 
-as \(D\to\infty\) through primes.
+the bad-prime contribution is
 
-Therefore the normalized correction from this whole range tends to 1:
+\[
+O\!\left(\frac1{\log D}\right)=o(1).
+\]
+
+Hence
 
 \[
 \boxed{
-\prod_{D\le p<D^{2-\varepsilon}}
+\prod_{D\le p<D^2}
 \frac{1-\rho_{p,D}}{1-1/p}
 =
-1+o_\varepsilon(1).
+1+o(1).
 }
 \]
 
-Together with the uniformly bounded correction below \(D\), there are
-constants
+Thus the normalized local correction through the exact quadratic cutoff is
+asymptotically the same as the correction below \(D\).
+
+### Slightly superquadratic cutoff
+
+More generally, if
 
 \[
-0<c_\varepsilon<C_\varepsilon<\infty
+X_D=D^2(\log D)^A
 \]
 
-such that for every sufficiently large prime width \(D\),
+with any fixed \(A<2\), then
+
+\[
+\frac{\sqrt{X_D}}{D\log(X_D/D)}
+\asymp
+(\log D)^{A/2-1}
+\longrightarrow0.
+\]
+
+Therefore
 
 \[
 \boxed{
-c_\varepsilon
-\le
-\prod_{5<p<D^{2-\varepsilon}}
+\prod_{D\le p<D^2(\log D)^A}
 \frac{1-\rho_{p,D}}{1-1/p}
-\le
-C_\varepsilon.
+=
+1+o(1)
+\qquad(A<2).
 }
 \]
 
-So the rigorous positive local regime extends from a linear cutoff all the
-way to **almost the square of the decimal width**.
+### Square-logarithmic cutoff
+
+At the endpoint
+
+\[
+X_D=D^2(\log D)^2,
+\]
+
+the total bad-prime absolute error is merely \(O(1)\), rather than
+\(o(1)\).  This is still sufficient: using
+\(\log(1-x)=-x+O(x^2)\), the normalized local product contributed by
+\(D\le p<X_D\) is bounded above and below by positive absolute constants.
+
+Combining this with the uniformly positive correction below \(D\), there
+exist constants
+
+\[
+0<c<C<\infty
+\]
+
+such that for every sufficiently large prime decimal width \(D\),
+
+\[
+\boxed{
+c
+\le
+\prod_{5<p<D^2(\log D)^2}
+\frac{1-\rho_{p,D}}{1-1/p}
+\le
+C.
+}
+\]
 
 Consequently
 
@@ -415,12 +454,16 @@ Consequently
 \boxed{
 \sum_{D\ {\rm prime}}
 \frac1D
-\prod_{5<p<D^{2-\varepsilon}}
+\prod_{5<p<D^2(\log D)^2}
 \frac{1-\rho_{p,D}}{1-1/p}
 =
 \infty.
 }
 \]
+
+So the rigorous positive local regime now extends beyond the quadratic
+prime cutoff, all the way to a **square-logarithmic cutoff**
+\(D^2(\log D)^2\).
 
 This is presently the strongest unconditional width-growing local statement
 on the branch.
