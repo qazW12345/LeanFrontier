@@ -95,6 +95,34 @@ The naive random product is substantially low, but after applying the exact
 A053067 local factors, the independence product tracks the true finite-interval
 sieve to substantially better than one percent.
 
+## Width dependence
+
+A second hosted workflow evaluated the exact local product through (B=1000)
+over the full genuine fixed-width intervals for (d=6,ldots,12).
+
+GitHub Actions run: 36262447262
+
+| d | admissible indices | exact union survival | local-product prediction | correction factor (C_d(1000)) | relative prediction error |
+|---:|---:|---:|---:|---:|---:|
+| 6 | 192 | 0.21875000 | 0.23893041 | 0.78693966 | +9.2253% |
+| 7 | 612 | 0.27777778 | 0.28518038 | 0.93926825 | +2.6649% |
+| 8 | 1935 | 0.29560724 | 0.29946938 | 0.98633040 | +1.3065% |
+| 9 | 6115 | 0.34178250 | 0.34156572 | 1.12497863 | -0.0634% |
+| 10 | 19340 | 0.38086867 | 0.38277108 | 1.26069234 | +0.4995% |
+| 11 | 61157 | 0.37583596 | 0.38078376 | 1.25414691 | +1.3165% |
+| 12 | 193401 | 0.23940414 | 0.24023823 | 0.79124708 | +0.3484% |
+
+The local correction is therefore strongly width-dependent, as expected from
+the dependence of (10^dmod p) on (d).  The prediction error decreases
+sharply once the fixed-width interval contains thousands of admissible
+indices.  The visibly larger errors for (d=6,7) are consistent with their
+small finite samples.
+
+The sharp oscillation of (C_d) is itself structural information: widths such
+as (d=6) and (d=12) acquire unusually dense small-prime divisor families
+from factors of (10^dpm1), while (d=10,11) are locally less divisible than
+the naive random model.
+
 ## Extrapolation to one million
 
 The exact local product was computed through \(10^4\). For the tail
