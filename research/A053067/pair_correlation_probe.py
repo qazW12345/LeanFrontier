@@ -124,13 +124,29 @@ def main() -> int:
             )
             phi = covariance / variance_scale if variance_scale else 0.0
 
+            order_p = period_p // p
+            order_r = period_r // r
+            order_gcd = math.gcd(order_p, order_r)
+            cross_order = order_r % p == 0
+            period_gcd = math.gcd(period_p, period_r)
+            expected_period_gcd = order_gcd * (p if cross_order else 1)
+            if period_gcd != expected_period_gcd:
+                raise RuntimeError(
+                    f"period gcd decomposition failed for p={p}, r={r}: "
+                    f"{period_gcd} != {expected_period_gcd}"
+                )
+
             rows.append(
                 {
                     "p": p,
                     "r": r,
                     "period_p": period_p,
                     "period_r": period_r,
-                    "period_gcd": math.gcd(period_p, period_r),
+                    "order_p": order_p,
+                    "order_r": order_r,
+                    "order_gcd": order_gcd,
+                    "cross_order": int(cross_order),
+                    "period_gcd": period_gcd,
                     "rho_p": rho_p,
                     "rho_r": rho_r,
                     "rho_joint": rho_pr,
@@ -183,6 +199,28 @@ def main() -> int:
         )
         print(
             f"min_prime>={threshold} pairs={len(subset)} "
+            f"mean_abs_log_survival_ratio={subset_mean_abs_log:.9g} "
+            f"rms_phi={subset_rms_phi:.9g} "
+            f"max_abs_log_survival_ratio={subset_max_abs_log:.9g}"
+        )
+
+    for label, subset in (
+        ("cross_order", [row for row in rows if int(row["cross_order"]) == 1]),
+        ("no_cross_order", [row for row in rows if int(row["cross_order"]) == 0]),
+    ):
+        if not subset:
+            continue
+        subset_mean_abs_log = sum(
+            abs(float(row["log_survival_ratio"])) for row in subset
+        ) / len(subset)
+        subset_rms_phi = math.sqrt(
+            sum(float(row["phi"]) ** 2 for row in subset) / len(subset)
+        )
+        subset_max_abs_log = max(
+            abs(float(row["log_survival_ratio"])) for row in subset
+        )
+        print(
+            f"{label} pairs={len(subset)} "
             f"mean_abs_log_survival_ratio={subset_mean_abs_log:.9g} "
             f"rms_phi={subset_rms_phi:.9g} "
             f"max_abs_log_survival_ratio={subset_max_abs_log:.9g}"
