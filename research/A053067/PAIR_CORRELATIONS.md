@@ -575,7 +575,118 @@ This does not by itself cross the parity barrier to prime values, but it is a
 natural route toward a theorem that the actual small-prime sieve has the
 density predicted by the local product.
 
-## 7. Analytic target
+## 7. Higher exact-independence and the covariance-scale conjecture
+
+The CRT argument extends immediately from two local primes to any finite
+family.
+
+Let local primes \(p_1,\ldots,p_k\) have exact index periods
+\(P_1,\ldots,P_k\). If
+
+\[
+\gcd(P_i,P_j)=1
+\qquad(i\ne j),
+\]
+
+then after conditioning on the elementary candidate set \(S\bmod60\),
+
+\[
+\boxed{
+\Pr(p_1\cdots p_k\mid A(n)\mid n\in S)
+=
+\prod_{i=1}^k
+\Pr(p_i\mid A(n)\mid n\in S).
+}
+\]
+
+Thus pairwise-coprime local periods give **exact mutual independence**, not
+merely pairwise independence.
+
+### Stress test at d = 2003, primes through 2000
+
+Hosted run 36278790904 tested
+
+\[
+300
+\]
+
+local primes and all
+
+\[
+44850
+\]
+
+pairs in a full generator regime.
+
+Exactly
+
+\[
+19619
+\]
+
+pairs, or
+
+\[
+\boxed{43.7436\%},
+\]
+
+had coprime local periods and therefore zero covariance exactly.
+
+The remaining pairs split as follows:
+
+- 24934 pairs (55.5942%) shared multiplicative-order factors but had no
+  cross-order relation;
+- 297 pairs (0.6622%) had a cross-order relation
+  \(p\mid\operatorname{ord}_r(10)\).
+
+The cross-order pairs have substantially larger average correlation and form
+a sparse exceptional family.
+
+### Empirical covariance-scale bound
+
+For every one of the 44850 tested pairs,
+
+\[
+\boxed{
+\frac{pr}{\gcd(P_p,P_r)}
+\left|
+\rho_{p,r}-\rho_p\rho_r
+\right|
+\le \frac12.
+}
+\]
+
+Equivalently,
+
+\[
+\boxed{
+\left|
+\rho_{p,r}-\rho_p\rho_r
+\right|
+\le
+\frac{\gcd(P_p,P_r)}{2pr}.
+}
+\]
+
+The largest observed value of the normalized left-hand side is numerically
+\(0.5\) to floating precision.
+
+This is currently a **conjecture**, not a proved theorem.  It is much sharper
+than the generic discrepancy-energy Cauchy bound and deserves direct
+combinatorial investigation.
+
+If true uniformly in the generator regime, it reduces pairwise dependence to
+the arithmetic average of
+
+\[
+\gcd(P_p,P_r)
+\]
+
+and the sparse cross-order relations between multiplicative orders.
+
+A larger \(d=3001,\ p<3000\) stress test is the next computational check.
+
+## 8. Analytic target
 
 For generator-regime local primes, seek a bound of the schematic form
 
