@@ -1,0 +1,28 @@
+name: A053067 width-average identity check
+
+on:
+  push:
+    branches:
+      - research/a053067
+    paths:
+      - research/A053067/verify_width_average_identity.py
+      - research/A053067/congruence_families.py
+      - research/A053067/local_product.py
+      - .github/workflows/research-a053067-width-identity.yml
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Verify exact common-period identity
+        run: python3 research/A053067/verify_width_average_identity.py --prime-bound 200
