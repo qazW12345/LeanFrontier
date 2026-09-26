@@ -1415,3 +1415,204 @@ reconstructed generator-count vector would rule out primitive collisions and
 therefore settle the original conjecture.  Because this is stronger than the
 known problem, it should first be attacked algebraically and computationally,
 not formalized in Lean.
+
+
+## 26. Two-root dynamics: CRT splitting becomes descent-modulus separation
+
+Take two distinct centered roots
+
+[
+0<u_1<u_2le M/2,qquad u_i^2equiv-1pmod M,
+]
+
+and define their first descent moduli
+
+[
+v_i=rac{u_i^2+1}{M}.
+]
+
+Put
+
+[
+d=u_2-u_1,qquad s=u_1+u_2.
+]
+
+Subtracting the two root equations gives the exact identity
+
+[
+M(v_2-v_1)=u_2^2-u_1^2=ds.
+]
+
+Thus, with
+
+[
+Delta=v_2-v_1,
+]
+
+we have
+
+[
+Delta=rac{ds}{M}.
+]
+
+This is exactly the arithmetic bridge between the earlier CRT sign split and
+the new descent language:
+
+- odd prime-power factors of (M) assigned to the “same root” case divide
+  (d);
+- those assigned to the “opposite root” case divide (s);
+- after dividing by the full modulus, the normalized product is literally the
+  separation (Delta) between the two next descent moduli.
+
+For Markov moduli with the known modulo-four restriction, the only extra
+bookkeeping is the single factor (2); the odd part still splits cleanly
+between (d) and (s).
+
+### Strong bounds when both roots pass the quotient-two strip
+
+If both roots are Cohn-admissible for one step, Section 23 gives
+
+[
+rac{M}{3}<u_i<rac{M}{2}.
+]
+
+Hence
+
+[
+0<d<rac{M}{6},
+qquad
+rac{2M}{3}<s<M.
+]
+
+Substituting into (Delta=ds/M) gives
+
+[
+rac{2}{3}d<Delta<d.
+]
+
+So distinct admissible roots remain distinct after the first denominator
+descent, but their separation contracts by a factor strictly between
+(2/3) and (1).
+
+Now write the quotient-two Euclidean remainders
+
+[
+r_i=u_i-2v_i.
+]
+
+Then
+
+[
+r_2-r_1
+=(u_2-u_1)-2(v_2-v_1)
+=d-2Delta,
+]
+
+and therefore
+
+[
+-d<r_2-r_1<-rac d3.
+]
+
+So before the centering/folding operation, the remainder order **reverses
+strictly**:
+
+[
+r_1>r_2.
+]
+
+This is the first genuinely pairwise dynamical law found in the arithmetic
+descent.  It is stronger than running the two root descents independently.
+
+The research script now exposes this calculation with
+
+`compare-roots M u1 u2`.
+
+For the smallest broad palindrome collision,
+
+[
+(M,u_1,u_2)=(1130,437,467),
+]
+
+one gets
+
+[
+d=30,quad s=904,quad
+(v_1,v_2)=(169,193),quad
+Delta=24.
+]
+
+Indeed (24/30=0.8), in the predicted interval, and the raw remainders
+reverse from
+
+[
+(99,81).
+]
+
+### Collision descents can recombine
+
+The larger non-dihedral palindrome collision
+
+[
+M=57,204,005
+]
+
+has centered roots
+
+[
+22,115,492,qquad23,647,712.
+]
+
+Their descent chains are initially different, but later recombine at smaller
+common moduli.  In particular they pass through the earlier collision
+(M=1130), with its two distinct roots, before eventually reaching the same
+base root at (M=5).
+
+This shows that the collision structure in the broad palindrome class is
+recursive rather than a collection of unrelated accidents.
+
+A promising minimal-counterexample question is therefore:
+
+> Must every distinct-root collision in the positive palindrome cone either
+> descend to a smaller distinct-root collision or coalesce in a way that
+> forces an imprimitive endpoint-count vector?
+
+The current finite data are consistent with this.  Establishing such a
+dichotomy in the primitive sector would be enough to rule out a Frobenius
+counterexample.
+
+## 27. Literature sanity check on the primitive/imprimitive boundary
+
+The 2021 work of Lagisquet--Pelantová--Tavenas--Vuillon is important here
+because it proves that, for every lattice endpoint ((q,p)), the minimum
+(m)-value over all paths to that endpoint is attained by the Christoffel
+word, or by a power of a Christoffel word in the imprimitive case.  They then
+formulate a stronger generalized uniqueness conjecture for these endpoint
+minima.  Their published theorem also proves strict monotonicity in the fixed
+numerator, fixed denominator, and fixed sum directions.
+
+So the new finite observation
+
+> no distinct-root palindrome collision touches a coprime endpoint-count pair
+
+is not something already supplied by that theorem.  It is a stronger
+palindrome-level statement: arbitrary palindromic Cohn candidates are allowed,
+not just endpoint minimizers.
+
+Likewise, Fisac's 2025 integral-necklace reformulation isolates the original
+Markov problem on the **primitive small-variation** sector, where primitivity
+is equivalent to a coprimality condition on the two multiplicities.
+
+These two external formulations reinforce the same boundary seen in the
+experiment:
+
+- imprimitive/generalized objects admit visible repeated-root phenomena;
+- the primitive balanced/Christoffel sector is exactly where the classical
+  uniqueness problem remains.
+
+This makes the primitive/imprimitive divide a meaningful research target, not
+just a numerical curiosity.
+
+The current plan is therefore to keep attacking the pairwise descent law
+above and ask whether distinct admissible roots can preserve primitivity all
+the way through the folded quotient-two recursion.
