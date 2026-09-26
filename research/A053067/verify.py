@@ -98,7 +98,9 @@ def main() -> None:
     for n, expected in known.items():
         assert decimal(n) == expected
 
-    residues = {r for r in range(60) if elementary_candidate(r)}
+    # Test the periodic n>2 condition using representatives in the next period,
+    # so the deliberate n=1,2 exceptions do not contaminate the residue set.
+    residues = {r for r in range(60) if elementary_candidate(r + 60)}
     assert residues == {1, 2, 13, 17, 22, 26, 37, 38, 41, 46, 53, 58}
 
     for n in range(1, 60):
