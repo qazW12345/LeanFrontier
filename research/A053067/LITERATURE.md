@@ -542,3 +542,91 @@ question, and it is encouraging: the failure of multiplicativity appears
 small on average and strongly localized in this range.
 
 The detailed next-step programme is recorded in `SIEVE_TYPE_II.md`.
+
+
+## 13. Divisibility of multiplicative orders and pair resonances
+
+The exact two-prime CRT analysis in PAIR_CORRELATIONS.md isolates a new
+arithmetic subproblem.  For local primes \(p<r\), writing
+
+\[
+\ell_p=\operatorname{ord}_p(10^d),
+\qquad
+\ell_r=\operatorname{ord}_r(10^d),
+\]
+
+the shared period satisfies
+
+\[
+\gcd(p\ell_p,r\ell_r)
+=
+\gcd(\ell_p,\ell_r)
+\begin{cases}
+p,&p\mid\ell_r,\\
+1,&p\nmid\ell_r.
+\end{cases}
+\]
+
+Thus one exceptional family is defined by divisibility of a multiplicative
+order.
+
+**P. Moree,
+"On primes \(p\) for which \(d\) divides \(\operatorname{ord}_p(g)\)",
+Funct. Approx. Comment. Math. 33 (2005), 85--95.**
+arXiv:math/0407421.
+
+Moree gives a compact description of the natural density of primes \(p\) for
+which a prescribed integer \(d\) divides \(\operatorname{ord}_p(g)\), building
+on Wiertelak's earlier existence and asymptotic results for this density.
+
+For A053067 the paper is directly relevant with \(g=10\).  The cross-order
+condition
+
+\[
+p\mid\operatorname{ord}_r(10)
+\]
+
+is exactly of this form, with the prescribed divisor itself varying over the
+smaller local prime \(p\).
+
+Uniformity in that varying divisor is the important issue: the fixed-\(d\)
+density theorem alone does not sum the A053067 exceptional pairs.  However
+there is an immediate unconditional envelope,
+
+\[
+p\mid\operatorname{ord}_r(10)
+\Longrightarrow
+r\equiv1\pmod p,
+\]
+
+so Brun--Titchmarsh bounds the containing arithmetic progression.  This
+suggests combining:
+
+1. Wiertelak--Moree order-divisibility structure for the fine arithmetic;
+2. Brun--Titchmarsh or Bombieri--Vinogradov for uniform average control as the
+   divisor varies;
+3. character-sum discrepancy bounds for the zero-class distribution inside
+   the resulting shared period.
+
+The common-order part is also amenable to arithmetic-progression counting.  If
+
+\[
+h\mid\gcd(\ell_p,\ell_r),
+\]
+
+then necessarily
+
+\[
+p\equiv r\equiv1\pmod h.
+\]
+
+Hence large common-order resonances can be organized by divisors \(h\) and
+bounded through prime counts in the progression \(1\bmod h\).
+
+The generator-regime experiment at width \(1009\), local primes through
+\(1000\), supports treating cross-order pairs separately: only 143 of 13530
+pairs were cross-order pairs, but their mean absolute log-survival deviation
+was about sixteen times that of the remaining pairs.
+
+This gives the first literature-backed decomposition of the composite-modulus
+error into a sparse order-divisibility family and a common-order tail.
