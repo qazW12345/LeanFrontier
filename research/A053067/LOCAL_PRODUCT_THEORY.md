@@ -314,7 +314,132 @@ The two unconditional structural statements now fit together:
 These remove the standard finite local reasons for a prime-value heuristic to
 vanish.
 
-## 8. What remains
+## 8. Finite-cutoff periodicity and harmonic divergence
+
+Fix a prime cutoff \(B\).  For every prime \(5<p\le B\), the local density
+\(\rho_{p,d}\) depends on the decimal width \(d\) only through
+
+\[
+10^d\bmod p.
+\]
+
+Hence it is periodic in \(d\) with period dividing
+
+\[
+\ell_p=\operatorname{ord}_p(10).
+\]
+
+Therefore the finite-cutoff correction
+
+\[
+C_d(B)
+=
+\prod_{5<p\le B}
+\frac{1-\rho_{p,d}}{1-1/p}
+\]
+
+is periodic in \(d\), with period dividing
+
+\[
+T_B=\operatorname{lcm}_{5<p\le B}\ell_p.
+\]
+
+For \(p>5\), fixing an exponent class leaves at most three roots modulo \(p\),
+so
+
+\[
+0\le\rho_{p,d}\le\frac3p<1.
+\]
+
+Thus every factor and every \(C_d(B)\) is strictly positive.
+
+Let
+
+\[
+\mu_B=\frac1{T_B}\sum_{d=1}^{T_B}C_d(B)>0.
+\]
+
+A standard harmonic sum over a positive periodic sequence gives
+
+\[
+\boxed{
+\sum_{d\le D}\frac{C_d(B)}d
+=
+\mu_B\log D+O_B(1).
+}
+\]
+
+Consequently **every finite set of local prime corrections has divergent
+harmonic prime mass**.  No finite prime cutoff can turn the predicted total
+number of prime terms finite.
+
+The only possible local-Euler-product route to convergence would therefore
+have to come from a nonuniform collapse of the infinite-prime tail as the
+width \(d\) itself grows.
+
+This isolates the remaining singular-series problem very sharply.
+
+## 9. Wide numerical check
+
+Hosted run 36265962667 computed \(C_d(1000)\) without enumerating the
+astronomically large fixed-width intervals, for every
+
+\[
+1\le d\le500.
+\]
+
+It found
+
+\[
+\min C_d(1000)=0.563480574\quad(d=240),
+\]
+
+\[
+\max C_d(1000)=1.404870706\quad(d=388),
+\]
+
+with arithmetic mean
+
+\[
+1.051011831,
+\]
+
+geometric mean
+
+\[
+1.035876145,
+\]
+
+and harmonic-weighted mean
+
+\[
+\frac{\sum_{d\le500}C_d(1000)/d}
+     {\sum_{d\le500}1/d}
+=
+1.063702814.
+\]
+
+Numerically,
+
+\[
+\sum_{d\le500}\frac{C_d(1000)}d
+=
+7.225545396,
+\]
+
+compared with
+
+\[
+\sum_{d\le500}\frac1d
+=
+6.792823430.
+\]
+
+So through 500 decimal widths there is no evidence of a downward drift in the
+finite-cutoff singular correction; the harmonic mass is slightly larger than
+the uncorrected baseline.
+
+## 10. What remains
 
 The missing step is global in the decimal width.
 
