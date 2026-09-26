@@ -7,6 +7,7 @@ on:
     paths:
       - research/A053067/cover-request.env
       - research/A053067/cover_cegar.py
+      - research/A053067/cover-extra-primes.txt
       - .github/workflows/research-a053067-cover.yml
 
 permissions:
@@ -69,6 +70,7 @@ jobs:
             --iterations "$ITERATIONS" \
             --min-d "$MIN_D" \
             --max-d "$MAX_D" \
+            --extra-primes research/A053067/cover-extra-primes.txt \
             --timeout-ms "$TIMEOUT_MS" \
             --csv-out research/A053067/cover-run/clauses.csv \
             --smt-out research/A053067/cover-run/final.smt2 \
