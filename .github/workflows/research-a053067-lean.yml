@@ -1,0 +1,40 @@
+name: A053067 Lean research
+
+on:
+  push:
+    branches:
+      - research/a053067
+    paths:
+      - research/A053067/ResidueOne.lean
+      - .github/workflows/research-a053067-lean.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a053067-lean-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lean:
+    if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Build validator image
+        run: docker build -f tools/Dockerfile.validator -t leanfrontier-a053067:ci .
+
+      - name: Acquire pinned Mathlib cache and check research theorem
+        run: >-
+          docker run --rm
+          -v "$GITHUB_WORKSPACE/elan:/elan"
+          -v "$GITHUB_WORKSPACE:/workspace"
+          -w /workspace
+          leanfrontier-a053067:ci
+          sh -c 'lake update && lake exe cache get && lake env lean research/A053067/ResidueOne.lean'
