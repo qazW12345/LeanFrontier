@@ -1,0 +1,48 @@
+name: A053067 local-product width sweep
+
+on:
+  push:
+    branches:
+      - research/a053067
+    paths:
+      - research/A053067/local-product-widths.trigger
+      - research/A053067/local_product.py
+      - research/A053067/congruence_families.py
+      - .github/workflows/research-a053067-local-product-widths.yml
+
+permissions:
+  contents: read
+
+jobs:
+  width:
+    if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        digits: [6, 7, 8, 9, 10, 11, 12]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Run width-local product
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p research/A053067/local-width-run
+          python3 research/A053067/local_product.py \
+            --digits "${{ matrix.digits }}" \
+            --exact-prime-bound 1000 \
+            --checkpoints 1000 \
+            --json-out "research/A053067/local-width-run/d${{ matrix.digits }}.json" \
+            | tee "research/A053067/local-width-run/d${{ matrix.digits }}.txt"
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: a053067-local-width-d${{ matrix.digits }}-${{ github.run_id }}
+          path: research/A053067/local-width-run/
+          if-no-files-found: error
+          retention-days: 90
