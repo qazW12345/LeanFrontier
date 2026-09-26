@@ -217,7 +217,215 @@ compared with the uncorrected prime harmonic sum
 Thus the prime-width restriction is empirically even healthier than the
 all-width average.
 
-## 7. Remaining tail
+## 7. Extension to an almost-quadratic prime cutoff
+
+The preceding theorem can be pushed substantially beyond the cutoff \(p<D\).
+
+Fix any real
+
+\[
+0<\varepsilon<1
+\]
+
+and let \(D\) tend to infinity through prime decimal widths.  Put
+
+\[
+X_D=D^{2-\varepsilon}.
+\]
+
+Consider the normalized local correction contributed by primes
+
+\[
+D\le p<X_D.
+\]
+
+Split these local primes into two classes.
+
+### Good local primes
+
+If
+
+\[
+D\nmid\ell_p,
+\qquad
+\ell_p=\operatorname{ord}_p(10),
+\]
+
+then, because \(D\) is prime,
+
+\[
+\gcd(D,\ell_p)=1
+\]
+
+and therefore
+
+\[
+\operatorname{ord}_p(10^D)=\ell_p.
+\]
+
+The pointwise character-sum estimate gives
+
+\[
+\left|\rho_{p,D}-\frac1p\right|
+\ll
+\frac1{\ell_p\sqrt p}.
+\]
+
+Since
+
+\[
+\sum_p\frac1{\ell_p\sqrt p}<\infty,
+\]
+
+the total contribution from good primes \(p\ge D\) tends to zero as
+\(D\to\infty\).
+
+### Bad local primes
+
+If
+
+\[
+D\mid\ell_p,
+\]
+
+then necessarily
+
+\[
+D\mid p-1,
+\]
+
+so
+
+\[
+p\equiv1\pmod D.
+\]
+
+Also
+
+\[
+\operatorname{ord}_p(10^D)=\frac{\ell_p}{D}.
+\]
+
+The character-sum bound therefore gives the crude but sufficient estimate
+
+\[
+\left|\rho_{p,D}-\frac1p\right|
+\ll
+\frac{D}{\ell_p\sqrt p}
+\le
+\frac1{\sqrt p}.
+\]
+
+It remains to sum \(p^{-1/2}\) over primes
+
+\[
+D\le p<D^{2-\varepsilon},
+\qquad
+p\equiv1\pmod D.
+\]
+
+For odd prime \(D\), there is no prime in the residue class \(1\bmod D\)
+strictly between \(D\) and \(2D\).  On dyadic intervals
+
+\[
+2^jD<p\le2^{j+1}D,
+\qquad j\ge1,
+\]
+
+Brun--Titchmarsh gives
+
+\[
+\#\{p\le2^{j+1}D:p\equiv1\pmod D\}
+\ll
+\frac{2^j}{j}.
+\]
+
+Hence the weighted contribution of this interval is
+
+\[
+\ll
+\frac{2^{j/2}}{j\sqrt D}.
+\]
+
+Summing until \(2^jD\le D^{2-\varepsilon}\), the final dyadic interval
+dominates and yields
+
+\[
+\boxed{
+\sum_{\substack{D\le p<D^{2-\varepsilon}\\D\mid\ell_p}}
+\frac1{\sqrt p}
+\ll_\varepsilon
+\frac{D^{-\varepsilon/2}}{\log D}.
+}
+\]
+
+Thus the bad-prime contribution also tends to zero.
+
+### Almost-quadratic local theorem
+
+Combining the two classes,
+
+\[
+\sum_{D\le p<D^{2-\varepsilon}}
+\left|
+\rho_{p,D}-\frac1p
+\right|
+=o_\varepsilon(1)
+\]
+
+as \(D\to\infty\) through primes.
+
+Therefore the normalized correction from this whole range tends to 1:
+
+\[
+\boxed{
+\prod_{D\le p<D^{2-\varepsilon}}
+\frac{1-\rho_{p,D}}{1-1/p}
+=
+1+o_\varepsilon(1).
+}
+\]
+
+Together with the uniformly bounded correction below \(D\), there are
+constants
+
+\[
+0<c_\varepsilon<C_\varepsilon<\infty
+\]
+
+such that for every sufficiently large prime width \(D\),
+
+\[
+\boxed{
+c_\varepsilon
+\le
+\prod_{5<p<D^{2-\varepsilon}}
+\frac{1-\rho_{p,D}}{1-1/p}
+\le
+C_\varepsilon.
+}
+\]
+
+So the rigorous positive local regime extends from a linear cutoff all the
+way to **almost the square of the decimal width**.
+
+Consequently
+
+\[
+\boxed{
+\sum_{D\ {\rm prime}}
+\frac1D
+\prod_{5<p<D^{2-\varepsilon}}
+\frac{1-\rho_{p,D}}{1-1/p}
+=
+\infty.
+}
+\]
+
+This is presently the strongest unconditional width-growing local statement
+on the branch.
+
+## 8. Remaining tail
 
 The full singular factor \(C_D\) also contains primes \(p\ge D\).
 
