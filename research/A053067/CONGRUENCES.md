@@ -77,6 +77,32 @@ object used for fixed-width blocks; it merely composes two different bases.
 This is the natural starting point for a separate modular analysis of the
 mixed-width terms.
 
+
+Modulo 11 this decomposition becomes especially simple because
+\(10^d\equiv(-1)^d\).  With the same \(a,b\) notation, direct evaluation of
+\(F(1,L,k)\) and \(F(-1,L,k)\) gives:
+
+- if \(d\) is even and \(b\) is even,
+  \[
+  2A_{\mathrm{mix}}\equiv-a^2+a+b\pmod{11};
+  \]
+- if \(d\) is even and \(b\) is odd,
+  \[
+  2A_{\mathrm{mix}}\equiv a^2-a+b+1\pmod{11};
+  \]
+- if \(d\) is odd and \(a\) is even,
+  \[
+  2A_{\mathrm{mix}}\equiv a+b^2-3b\pmod{11};
+  \]
+- if \(d\) is odd and \(a\) is odd,
+  \[
+  2A_{\mathrm{mix}}\equiv-a+b^2-3b-3\pmod{11}.
+  \]
+
+These formulas turn divisibility by 11 for the mixed-width subsequence into
+small congruence conditions on the boundary offsets rather than a decimal
+concatenation calculation.
+
 ## Fixed-width representation
 
 Assume every integer in the block has the same decimal width \(d\), and put
