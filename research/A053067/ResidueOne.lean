@@ -53,4 +53,37 @@ theorem fixedConcat_eq_sum_of_eq_one {R : Type*} [Semiring R]
   subst q
   exact fixedConcat_one_eq_sum L n
 
+
+/-- Division-free closed form for n+1 consecutive appended values.
+
+This is the form used throughout the A053067 congruence analysis. Stating the
+theorem at n+1 avoids any subtraction on natural-number indices. -/
+theorem fixedConcat_closed_succ {R : Type*} [CommRing R]
+    (q L : R) (n : ℕ) :
+    (q - 1)^2 * fixedConcat q L (n + 1) =
+      q^(n + 1) * ((q - 1) * L + 1) -
+        ((q - 1) * (L + (n : R)) + q) := by
+  induction n with
+  | zero =>
+      simp [fixedConcat]
+      ring
+  | succ n ih =>
+      calc
+        (q - 1)^2 * fixedConcat q L (n + 1 + 1) =
+            q * ((q - 1)^2 * fixedConcat q L (n + 1)) +
+              (q - 1)^2 * (L + ((n + 1 : ℕ) : R)) := by
+                rw [fixedConcat_succ]
+                ring
+        _ =
+            q * (q^(n + 1) * ((q - 1) * L + 1) -
+              ((q - 1) * (L + (n : R)) + q)) +
+              (q - 1)^2 * (L + ((n + 1 : ℕ) : R)) := by
+                rw [ih]
+        _ =
+            q^((n + 1) + 1) * ((q - 1) * L + 1) -
+              ((q - 1) * (L + ((n + 1 : ℕ) : R)) + q) := by
+                push_cast
+                rw [pow_succ]
+                ring
+
 end LeanFrontier.A053067Research
