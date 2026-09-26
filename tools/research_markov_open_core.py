@@ -256,6 +256,13 @@ A_INV: Matrix = ((2, -1), (-1, 1))
 B_INV: Matrix = ((1, -1), (-1, 2))
 IDENTITY: Matrix = ((1, 0), (0, 1))
 
+# Ordinary positive SL_2(Z) Euclidean generators.  The Cohn generators
+# factor as A = R*L and B = L*R.
+L: Matrix = ((1, 1), (0, 1))
+R: Matrix = ((1, 0), (1, 1))
+L_INV: Matrix = ((1, -1), (0, 1))
+R_INV: Matrix = ((1, 0), (-1, 1))
+
 
 def matrix_mul(x: Matrix, y: Matrix) -> Matrix:
     return (
@@ -327,6 +334,46 @@ def zhang_candidate_matrix(modulus: int, root: int) -> Matrix:
 
 def matrix_nonnegative(x: Matrix) -> bool:
     return all(entry >= 0 for row in x for entry in row)
+
+
+def recognize_lr_word(x: Matrix) -> str | None:
+    """Unique positive Euclidean word in L,R, when x lies in that monoid.
+
+    Right stripping is deterministic for determinant-one nonnegative matrices:
+    multiplying by L^-1 or R^-1 must keep all entries nonnegative.  For the
+    positive symmetric root cores considered here this reaches the identity.
+    """
+    current = x
+    reversed_word: list[str] = []
+    for _ in range(100000):
+        if current == IDENTITY:
+            return "".join(reversed(reversed_word))
+        choices: list[tuple[str, Matrix]] = []
+        for letter, inverse in (("L", L_INV), ("R", R_INV)):
+            parent = matrix_mul(current, inverse)
+            if matrix_nonnegative(parent):
+                choices.append((letter, parent))
+        if len(choices) != 1:
+            return None
+        letter, current = choices[0]
+        reversed_word.append(letter)
+    raise RuntimeError("Euclidean word recognition did not terminate")
+
+
+def lr_word_to_cohn_word(word: str) -> str | None:
+    """Decode an L/R word in the fixed two-letter phase A=RL, B=LR."""
+    if len(word) % 2:
+        return None
+    letters: list[str] = []
+    for index in range(0, len(word), 2):
+        pair = word[index:index + 2]
+        if pair == "RL":
+            letters.append("a")
+        elif pair == "LR":
+            letters.append("b")
+        else:
+            return None
+    return "".join(letters)
 
 
 def recognize_cohn_word(x: Matrix) -> str | None:
@@ -420,18 +467,22 @@ def recognize_root(modulus: int, root: int) -> None:
             continue
         core = root_core_matrix(modulus, representative)
         candidate = zhang_candidate_matrix(modulus, representative)
+        lr_word = recognize_lr_word(core)
+        paired_word = None if lr_word is None else lr_word_to_cohn_word(lr_word)
         core_word = recognize_cohn_word(core)
         word = recognize_cohn_word(candidate)
         if word is None:
             print(
                 f"  {representative}: candidate does not lie in <A,B>; "
-                f"core={core} core_word={core_word}"
+                f"core={core} lr_word={lr_word} paired_word={paired_word} "
+                f"core_word={core_word}"
             )
             continue
         inner = word[1:-1] if len(word) >= 2 and word[0] == "a" and word[-1] == "b" else None
         central = inner is not None and is_central_palindrome(inner)
         print(
-            f"  {representative}: core={core} core_word={core_word} "
+            f"  {representative}: core={core} lr_word={lr_word} "
+            f"paired_word={paired_word} core_word={core_word} "
             f"word={word} palindrome_inner="
             f"{inner is not None and inner == inner[::-1]} central={central}"
         )
