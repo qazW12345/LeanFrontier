@@ -8,6 +8,7 @@ on:
       - research/A053067/structural-request.env
       - research/A053067/search.cpp
       - research/A053067/root_order_probe.py
+      - research/A053067/structural_gcd_probe.py
       - .github/workflows/research-a053067-structural.yml
 
 permissions:
@@ -78,6 +79,15 @@ jobs:
             --output research/A053067/structural-run/sieve.csv \
             2> >(tee research/A053067/structural-run/sieve.log >&2)
 
+      - name: Probe proof-derived structural gcds
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 research/A053067/structural_gcd_probe.py \
+            research/A053067/structural-run/sieve.csv \
+            --output research/A053067/structural-run/structural-gcd-factors.csv \
+            | tee research/A053067/structural-run/structural-gcd-summary.txt
+
       - name: Probe small orders of q^n
         shell: bash
         run: |
@@ -103,7 +113,7 @@ jobs:
             echo
             python3 --version || true
             g++ --version | head -n 1 || true
-            sha256sum research/A053067/search.cpp research/A053067/root_order_probe.py research/A053067/structural-request.env || true
+            sha256sum research/A053067/search.cpp research/A053067/root_order_probe.py research/A053067/structural_gcd_probe.py research/A053067/structural-request.env || true
           } > research/A053067/structural-run/metadata.txt
 
       - name: Upload evidence
