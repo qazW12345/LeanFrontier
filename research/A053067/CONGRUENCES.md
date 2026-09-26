@@ -143,6 +143,28 @@ n\equiv0\pmod{p\,\operatorname{ord}_p(10)}
 is a width-independent composite family (apart from the one mixed-width block
 at each decimal boundary, where the fixed-width representation does not apply).
 
+A second immediate consequence is a strong restriction on cyclotomic
+factorizations.  If a prime \(p\) divides both \(A(n)\) and \(R_n(q)\),
+then the repunit identity gives
+
+\[
+p\mid X_n(q)R_n(q)-(q-1)A(n)=n.
+\]
+
+Hence
+
+\[
+\boxed{p\mid A(n)\ \text{and}\ p\mid R_n(q)\quad\Longrightarrow\quad p\mid n.}
+\]
+
+In particular, a primitive prime divisor of \(q^n-1\) cannot divide
+\(A(n)\): such a prime has multiplicative order \(n\), hence
+\(n\mid p-1\) and therefore \(p>n\), contradicting \(p\mid n\).
+
+This explains why searching for factors coming directly from the large
+cyclotomic/repunit part of \(q^n-1\) is intrinsically limited.  Only the
+non-primitive factors that also divide \(n\) can be shared with \(A(n)\).
+
 The simplest useful example is \(p=11\), for which
 \(\operatorname{ord}_{11}(10)=2\).  Thus every fixed-width A053067 term with
 
