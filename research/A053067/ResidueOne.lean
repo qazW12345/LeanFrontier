@@ -276,24 +276,4 @@ theorem zmod_fixedConcat_natTriangular_eq_one
     (q : ZMod p) n hn hpow
 
 
-
-/-- Lower endpoint of the n-th triangular block used by A053067. -/
-def lower (n : ℕ) : ℕ := n * (n - 1) / 2 + 1
-
-/-- The ordinary sum of the A053067 block, in a division-free form. -/
-theorem two_mul_blockSum (n : ℕ) :
-    2 * (∑ i ∈ Finset.range n, (lower n + i)) = n * (n ^ 2 + 1) := by
-  rw [Finset.sum_add_distrib]
-  rw [Finset.sum_const_nat]
-  rw [Finset.sum_range_id]
-  simp [lower]
-  omega
-
-/-- In any commutative ring, the cast of the block-sum identity remains
-division-free. -/
-theorem two_mul_blockSum_cast {R : Type*} [CommRing R] (n : ℕ) :
-    (2 : R) * (∑ i ∈ Finset.range n, ((lower n + i : ℕ) : R)) =
-      (n : R) * ((n : R) ^ 2 + 1) := by
-  norm_num [← Nat.cast_sum, two_mul_blockSum]
-
 end LeanFrontier.A053067Research
