@@ -396,3 +396,202 @@ Farey/Christoffel index ((n,k)) together with the Cohn word and modular root,
 then measure how CRT sign changes alter the word and index data.  Lean should
 enter only if this produces a stable exact relation rather than another
 numerical pattern.
+
+
+## 13. Continued-fraction filter for CRT roots
+
+The modular-root experiment now has a cleaner arithmetic form.
+
+For a positive Markov triple with centre/maximal coordinate (M), let (u) be
+the centered coordinate root obtained from the two complementary coordinates.
+Then (u^2\equiv -1 \pmod M), and the regular continued fraction of (M/u)
+is palindromic.
+
+This is consistent with the classical continued-fraction descriptions of
+Markov fractions and Markov numbers. In particular, work of Çanakçı and
+Schiffler gives palindromic continued-fraction descriptions of Markov numbers
+using only the partial quotients (1) and (2), with additional run
+constraints depending on the Farey slope. Springborn's Markov-fraction picture
+and Reutenauer's weak Markoff theory describe the same symbolic structure from
+related viewpoints.
+
+References:
+- İ. Çanakçı, R. Schiffler, work on continued fractions of Markov numbers;
+- B. Springborn, *The worst approximable rational numbers*;
+- C. Reutenauer, *Christoffel words and weak Markoff theory*.
+
+The finite experiment was enlarged to **1,011 distinct positive Markov
+triples with (M\le 10^{32})**.
+
+For each (M), all square roots of (-1\pmod M) were computed and reduced by
+the sign symmetry (u\leftrightarrow M-u). The genuine centered root was
+identified independently from the complementary coordinates of the actual
+Markov triple.
+
+Totals in this scan:
+
+- 5,423 non-genuine centered roots;
+- 1,752 non-genuine roots still satisfy the crude interval
+  (M/3\le u\le M/2);
+- **0 non-genuine roots** have a continued fraction (M/u) whose partial
+  quotients are all in ({1,2});
+- for every one of the 1,011 Markov triples, the genuine root is the **unique**
+  centered root passing the ({1,2})-continued-fraction filter.
+
+Examples:
+
+- (M=985):
+  - genuine (u=408), with (985/408=[2,2,2,2,2,2,2,2]);
+  - fake (u=183), with
+    (985/183=[5,2,1,1,1,1,2,5]).
+
+- (M=48,928,105):
+  - the genuine root (20,226,717) has only (1)'s and (2)'s;
+  - the alternative root (18,915,767), despite lying in the same narrow
+    numerical interval, has larger partial quotients (including (3) and
+    (4)).
+
+This is **not yet evidence of a new proof**. The literature already makes clear
+that the Markov/Christoffel problem is deeply equivalent to special balanced
+continued-fraction words on ({1,2}). The value of the experiment is that it
+gives an exact interface between our CRT-sign language and that classical word
+language:
+
+> a hypothetical collision must produce two different square roots of
+> (-1\pmod M) whose centered continued fractions both remain entirely inside
+> the Markov alphabet ({1,2}), and in fact satisfy the stronger
+> Christoffel/central balance condition.
+
+This is a much sharper target than the earlier interval tests.
+
+### Long fake prefixes rule out a purely local cutoff
+
+The fake roots can imitate the allowed alphabet for a surprisingly long time
+before failing.
+
+In the (M\le10^{32}) scan, one fake root first leaves ({1,2}) only at
+continued-fraction index 32. One explicit case is
+
+[
+M=401802671206705795353304445,
+]
+
+with genuine root
+
+[
+155339674974133842143735298
+]
+
+and a fake root
+
+[
+166102461991230794138908258.
+]
+
+The fake continued fraction stays in ({1,2}) for 32 terms before a (9)
+appears; later a (52) also appears, symmetrically.
+
+So no argument based only on checking a bounded initial block of partial
+quotients is likely to work. The proof target must be global: balance,
+centrality, a continuant inequality, or an interaction with the CRT factor
+split.
+
+## 14. New palindrome experiment: equal m-values appear to preserve endpoint counts
+
+The broad Cohn-monoid scan gave another unexpectedly clean pattern.
+
+For every inner palindrome (p), consider the word
+
+[
+w=a p b.
+]
+
+Its Cohn matrix satisfies
+
+[
+\operatorname{tr}(M_w)=3(M_w)_{12},
+]
+
+so it has exactly the same numerical “candidate shape” as a Zhang/Cohn Markov
+matrix, even when (p) is not central.
+
+The scan through inner palindrome length 36 contains:
+
+- 1,048,573 words;
+- 524,151 distinct candidate (m)-values;
+- 132 (m)-values occurring with more than one centered modular root.
+
+The first such collision is the already recorded (M=1130) example.
+
+A new diagnostic records the unordered endpoint-count pair
+
+[
+{,|w|_a, |w|_b,}.
+]
+
+Across the entire scan there are:
+
+- **132** repeated candidate (m)-values;
+- **0** cases where one repeated (m)-value occurs for two different unordered
+  endpoint-count pairs.
+
+For example, all four (M=1130) witnesses have counts ((6,3)) or its
+letter-exchanged version ((3,6)).
+
+This suggests the stronger experimental statement:
+
+> For words of the form (a p b) with (p) palindromic, the (m)-value may
+> determine the Parikh vector ((|w|_a,|w|_b)) up to exchanging the letters.
+
+If true, this would be extremely strong. A Christoffel word is determined by
+its coprime endpoint counts, so applying such a theorem to two Christoffel
+words with the same Markov number would immediately collapse a Frobenius
+collision to the same Farey endpoint.
+
+Accordingly, this conjecture is **at least as ambitious as the original
+uniqueness problem on the central subclass**. It should not be mistaken for a
+cheap lemma merely because it has a simple formulation.
+
+Still, the larger palindrome class is useful experimentally because it has real
+collisions. We can now compare:
+
+- collisions that do occur: same (m), same endpoint counts, different
+  palindrome arrangements;
+- the collision we need to rule out: same (m), different primitive endpoint
+  counts, with both words central.
+
+That contrast gives a concrete combinatorial question rather than a raw
+Diophantine one.
+
+### Why the 2021 path-minimality theorem is relevant
+
+Lagisquet--Pelantová--Tavenas--Vuillon prove that, for fixed endpoint counts,
+the generalized Christoffel path minimizes the (m)-value among all lattice
+paths with those counts.
+
+Thus, if equal (m)-values really force equal endpoint counts, the rest would
+be close to automatic on the Christoffel subclass: the central/Christoffel
+word is the canonical minimizer for that endpoint.
+
+What is missing is precisely the cross-endpoint statement. The numerical
+ranges for different endpoint-count pairs overlap substantially, so this
+cannot follow from a crude monotone interval bound; an exact structural
+argument would be needed.
+
+## 15. Immediate research direction
+
+The best next bridge now looks like:
+
+1. express a centered root (u^2\equiv-1\pmod M) by its palindromic
+   continued fraction (M/u);
+2. translate the CRT sign flip relative to the genuine Markov root into an
+   operation on the associated continuant / palindrome;
+3. use the Christoffel central-word characterization to ask why a nontrivial
+   sign flip must either
+   - create a partial quotient at least (3), or
+   - destroy the central/balanced condition;
+4. in parallel, investigate the stronger palindrome statement that equal
+   trace-shaped (m)-values preserve endpoint counts.
+
+Lean should stay out of this until one of these statements acquires an actual
+proof mechanism.
