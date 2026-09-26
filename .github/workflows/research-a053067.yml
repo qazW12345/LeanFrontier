@@ -31,6 +31,10 @@ on:
         description: Worker threads; 0 means hardware concurrency
         required: true
         default: "0"
+      mode:
+        description: Search stage (sieve or full)
+        required: true
+        default: "sieve"
   push:
     branches:
       - research/a053067
@@ -75,6 +79,15 @@ jobs:
             printf '%s=%s\n' "$key" "$value" >> "$GITHUB_ENV"
           }
 
+          write_mode() {
+            local value="$1"
+            if [[ "$value" != "sieve" && "$value" != "full" ]]; then
+              echo "Invalid MODE: $value" >&2
+              exit 2
+            fi
+            printf 'MODE=%s\n' "$value" >> "$GITHUB_ENV"
+          }
+
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             write_uint START "${{ inputs.start }}"
             write_uint END "${{ inputs.end }}"
@@ -83,6 +96,7 @@ jobs:
             write_uint SHARD_INDEX "${{ inputs.shard_index }}"
             write_uint SHARD_COUNT "${{ inputs.shard_count }}"
             write_uint THREADS "${{ inputs.threads }}"
+            write_mode "${{ inputs.mode }}"
           else
             request=research/A053067/run-request.env
             read_uint() {
@@ -98,6 +112,8 @@ jobs:
             read_uint SHARD_INDEX
             read_uint SHARD_COUNT
             read_uint THREADS
+            mode="$(awk -F= '$1 == "MODE" {print $2}' "$request" | tail -n 1 | tr -d '[:space:]')"
+            write_mode "$mode"
           fi
 
       - name: Check runner dependencies
@@ -142,6 +158,7 @@ jobs:
             --shard-index "$SHARD_INDEX" \
             --shard-count "$SHARD_COUNT" \
             --threads "$THREADS" \
+            --mode "$MODE" \
             --output "$OUT" \
             2> >(tee "$LOG" >&2)
           RC=$?
@@ -197,6 +214,7 @@ jobs:
             echo "shard_index=${SHARD_INDEX:-unset}"
             echo "shard_count=${SHARD_COUNT:-unset}"
             echo "threads=${THREADS:-unset}"
+            echo "mode=${MODE:-unset}"
             echo "candidate=${{ steps.scan.outputs.candidate }}"
             echo
             uname -a || true
