@@ -90,6 +90,72 @@ q^n((q-1)L+1)
 
 This form avoids division entirely.
 
+## Repunit identity and a width-independent divisor family
+
+Let
+
+\[
+R_n(q)=1+q+\cdots+q^{n-1}
+\]
+
+and put
+
+\[
+X_n(q)=(q-1)L_n+1.
+\]
+
+Because
+\[
+(q-1)U_n+q=X_n(q)+n(q-1),
+\]
+the closed form simplifies further to
+
+\[
+\boxed{(q-1)A(n)=X_n(q)R_n(q)-n.}
+\]
+
+This form exposes a divisor family that is independent of the decimal width.
+
+Let \(p\) be an odd prime with \(p\nmid10\), and write
+\(r=\operatorname{ord}_p(10)\).  If
+
+\[
+p\mid n
+\qquad\text{and}\qquad
+r\mid n,
+\]
+
+then \(p\mid A(n)\) for every fixed-width decimal block.
+
+Indeed, for \(q=10^d\), the order of \(q\) modulo \(p\) divides \(r\),
+hence \(q^n\equiv1\pmod p\).  If \(q\not\equiv1\pmod p\), then
+\(R_n(q)\equiv0\pmod p\), and the boxed identity gives
+\((q-1)A(n)\equiv-n\equiv0\pmod p\).  Since \(q-1\) is invertible,
+\(p\mid A(n)\).  If \(q\equiv1\pmod p\), the earlier sum formula gives
+\(A(n)\equiv n(n^2+1)/2\equiv0\pmod p\).
+
+Therefore the arithmetic progression
+
+\[
+n\equiv0\pmod{p\,\operatorname{ord}_p(10)}
+\]
+
+is a width-independent composite family (apart from the one mixed-width block
+at each decimal boundary, where the fixed-width representation does not apply).
+
+The simplest useful example is \(p=11\), for which
+\(\operatorname{ord}_{11}(10)=2\).  Thus every fixed-width A053067 term with
+
+\[
+22\mid n
+\]
+
+is divisible by 11.
+
+More generally this produces infinitely many provably composite A053067 terms
+without fixing the decimal width.  It is a natural reusable Lean lemma even if
+it is not sufficient for a complete covering proof.
+
 ## The \(10^d-1\) lemma
 
 Let \(p\) be an odd prime with \(p\mid10^d-1\). Then \(q\equiv1\pmod p\), so
