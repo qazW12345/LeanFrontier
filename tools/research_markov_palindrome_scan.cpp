@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <iostream>
+#include <numeric>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -68,18 +69,21 @@ struct KeyHash {
   }
 };
 
-struct Counts {
+struct Record {
+  u128 root;
   std::uint8_t lo, hi;
 };
 
 int main(int argc, char** argv) {
   int max_inner = argc > 1 ? std::stoi(argv[1]) : 40;
 
-  std::unordered_map<Key, Counts, KeyHash> seen;
+  std::unordered_map<Key, Record, KeyHash> seen;
   seen.reserve(std::size_t(1) << std::min(24, (max_inner + 1) / 2 + 2));
 
   std::uint64_t total = 0;
   std::uint64_t cross_endpoint = 0;
+  std::uint64_t repeated_root_events = 0;
+  std::uint64_t primitive_repeated_root_events = 0;
 
   for (int n = 0; n <= max_inner; ++n) {
     const int half = (n + 1) / 2;
@@ -117,6 +121,8 @@ int main(int argc, char** argv) {
 
       const Mat X = mul(mul(A, P), B);
       const u128 m = X.b;
+      const u128 raw_root = X.d - m;
+      const u128 centered_root = std::min(raw_root, m - raw_root);
 
       const int count_a = inner_a + 1;
       const int count_b = inner_b + 1;
@@ -124,15 +130,31 @@ int main(int argc, char** argv) {
       const std::uint8_t hi = std::uint8_t(std::max(count_a, count_b));
 
       ++total;
-      auto [it, inserted] = seen.emplace(Key{m}, Counts{lo, hi});
-      if (!inserted && (it->second.lo != lo || it->second.hi != hi)) {
-        ++cross_endpoint;
-        std::cout
-          << "COUNTEREXAMPLE m=" << show(m)
-          << " old_counts=" << unsigned(it->second.lo) << "," << unsigned(it->second.hi)
-          << " new_counts=" << unsigned(lo) << "," << unsigned(hi)
-          << "\n";
-        return 1;
+      auto [it, inserted] = seen.emplace(Key{m}, Record{centered_root, lo, hi});
+      if (!inserted) {
+        if (it->second.lo != lo || it->second.hi != hi) {
+          ++cross_endpoint;
+          std::cout
+            << "COUNTEREXAMPLE m=" << show(m)
+            << " old_counts=" << unsigned(it->second.lo) << "," << unsigned(it->second.hi)
+            << " new_counts=" << unsigned(lo) << "," << unsigned(hi)
+            << "\n";
+          return 1;
+        }
+        if (it->second.root != centered_root) {
+          ++repeated_root_events;
+          const bool primitive =
+            std::gcd(unsigned(lo), unsigned(hi)) == 1;
+          if (primitive) {
+            ++primitive_repeated_root_events;
+            std::cout
+              << "PRIMITIVE_ROOT_COLLISION m=" << show(m)
+              << " roots=" << show(it->second.root) << "," << show(centered_root)
+              << " counts=" << unsigned(lo) << "," << unsigned(hi)
+              << "\n";
+            return 2;
+          }
+        }
       }
     }
 
@@ -141,6 +163,8 @@ int main(int argc, char** argv) {
       << " total=" << total
       << " distinct_m=" << seen.size()
       << " cross_endpoint=" << cross_endpoint
+      << " repeated_root_events=" << repeated_root_events
+      << " primitive_repeated_root_events=" << primitive_repeated_root_events
       << "\n";
   }
 
@@ -149,6 +173,8 @@ int main(int argc, char** argv) {
     << " total=" << total
     << " distinct_m=" << seen.size()
     << " cross_endpoint=" << cross_endpoint
+    << " repeated_root_events=" << repeated_root_events
+    << " primitive_repeated_root_events=" << primitive_repeated_root_events
     << "\n";
   return 0;
 }
