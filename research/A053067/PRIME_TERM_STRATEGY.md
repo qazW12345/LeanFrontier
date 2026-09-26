@@ -280,7 +280,119 @@ hence only for primes \(p\equiv1\pmod D\).
 This reduces the width-uniform local problem to a sparse arithmetic-progression
 tail.
 
-## Analytic gap A: width-uniform singular mass
+## Proven layer 8: full local nondegeneracy on prime widths
+
+The prime-width argument can be pushed all the way to the complete
+factorization scale relevant for primality.
+
+For prime decimal width \(D\), split local primes according to whether
+
+\[
+D\mid\ell_p,
+\qquad
+\ell_p=\operatorname{ord}_p(10).
+\]
+
+For good primes \(D\nmid\ell_p\),
+
+\[
+\operatorname{ord}_p(10^D)=\ell_p
+\]
+
+and
+
+\[
+\left|\rho_{p,D}-\frac1p\right|
+\ll
+\frac1{\ell_p\sqrt p}.
+\]
+
+The total good-prime error is uniformly bounded by the convergent
+Pappalardi series.
+
+For bad primes \(D\mid\ell_p\), one has
+
+\[
+p\equiv1\pmod D.
+\]
+
+The exact quadratic root count gives the universal bound
+
+\[
+\left|\rho_{p,D}-\frac1p\right|\le\frac2p.
+\]
+
+Brun--Titchmarsh therefore yields
+
+\[
+\sum_{\substack{p\le X\\D\mid\ell_p}}
+\left|\rho_{p,D}-\frac1p\right|
+\ll
+\frac{1+\log\log(X/D)}D.
+\]
+
+Every term in the entire \(D\)-digit band satisfies
+
+\[
+A(n)<10^{Dn},
+\qquad
+n<\sqrt2\,10^{D/2}.
+\]
+
+Hence all prime factors needed to detect compositeness lie below a common
+bound \(B_D\) satisfying
+
+\[
+\log\log B_D
+=
+\frac{\log10}{2}D+O(\log D).
+\]
+
+Substituting \(X=B_D\) in the Brun--Titchmarsh estimate gives a uniform
+\(O(1)\) bad-prime contribution.
+
+Thus there exist absolute constants
+
+\[
+0<c<C<\infty
+\]
+
+such that for every sufficiently large prime width \(D\),
+
+\[
+\boxed{
+c
+\le
+\prod_{5<p\le B_D}
+\frac{1-\rho_{p,D}}{1-1/p}
+\le
+C.
+}
+\]
+
+This product already includes every local prime that can matter for deciding
+whether any term in the band is composite.
+
+Consequently the completely locally corrected mass on prime widths diverges:
+
+\[
+\boxed{
+\sum_{D\ {\rm prime}}
+\frac1D
+\prod_{5<p\le B_D}
+\frac{1-\rho_{p,D}}{1-1/p}
+=
+\infty.
+}
+\]
+
+So the width-uniform local singular-series problem is now closed on an
+infinite subsequence of decimal widths.
+
+The remaining obstacle is a genuinely global prime-values/parity barrier, not
+an uncontrolled congruence tail.
+
+## Remaining analytic/global gap
 
 We know \(C_d>0\) for each fixed \(d\), but pointwise positivity alone does not
 imply
