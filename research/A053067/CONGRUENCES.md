@@ -542,6 +542,97 @@ square.
 This reduction is also the natural point of contact with the literature on
 exponential congruences and character sums over multiplicative subgroups.
 
+## Exact maximal-order evaluation
+
+There is an important special case in which the character sum can be
+evaluated exactly.
+
+Assume \(p>5\), \(q=10^d\) is a primitive root modulo \(p\), and
+
+\[
+7q+1\not\equiv0\pmod p.
+\]
+
+Then
+
+\[
+r=\operatorname{ord}_p(q)=p-1,
+\qquad
+\langle q\rangle=\mathbb F_p^\times.
+\]
+
+Write
+
+\[
+f_q(t)=-(7q+1)t^2+(18q-2)t-(7q+1).
+\]
+
+Its discriminant is
+
+\[
+128q(q-1)\not\equiv0\pmod p.
+\]
+
+For a nondegenerate quadratic \(a t^2+bt+c\) over \(\mathbb F_p\),
+
+\[
+\sum_{t\in\mathbb F_p}\chi(at^2+bt+c)=-\chi(a).
+\]
+
+Here \(f_q(0)=-(7q+1)\), which is also the leading coefficient. Therefore
+
+\[
+\sum_{t\in\mathbb F_p^\times}\chi(f_q(t))
+=
+-2\chi(-(7q+1)).
+\]
+
+Multiplying by the constant character \(\chi(q-1)\) from
+\(\Delta_q(t)=(q-1)f_q(t)\), we obtain
+
+\[
+\boxed{
+\sum_{t\in\mathbb F_p^\times}\chi(\Delta_q(t))
+=
+-2\chi\!\bigl(-(q-1)(7q+1)\bigr).
+}
+\]
+
+Consequently the exact number of zero classes in the full period
+\(p(p-1)\) is
+
+\[
+\boxed{
+Z_{p,d}
+=
+p-2
+-
+2\chi\!\bigl(-(q-1)(7q+1)\bigr).
+}
+\]
+
+Thus
+
+\[
+Z_{p,d}\in\{p-4,p\},
+\]
+
+and the unconditioned zero density is
+
+\[
+\frac{Z_{p,d}}{p(p-1)}
+=
+\frac1p+O\!\left(\frac1{p^2}\right).
+\]
+
+If \(7q+1\equiv0\pmod p\), the quadratic degenerates to a nonzero linear
+multiple of \(t\); its character sum over \(\mathbb F_p^\times\) is zero,
+so \(Z_{p,d}=p-2\), again giving the same \(1/p+O(1/p^2)\) conclusion.
+
+This maximal-order case is substantially sharper than the generic
+\(O(1/(r\sqrt p))\) estimate and is a model for what width-averaging appears
+to recover more generally.
+
 ## Search consequence
 
 The special \(10^d\pm1\) identities give certificate-producing prefilters
