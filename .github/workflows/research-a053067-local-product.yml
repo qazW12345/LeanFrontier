@@ -1,0 +1,107 @@
+name: A053067 local Euler product
+
+on:
+  push:
+    branches:
+      - research/a053067
+    paths:
+      - research/A053067/local-product-request.env
+      - research/A053067/local_product.py
+      - research/A053067/congruence_families.py
+      - .github/workflows/research-a053067-local-product.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a053067-local-product-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  local_product:
+    if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Check out triggering revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Parse request
+        shell: bash
+        run: |
+          set -euo pipefail
+          request=research/A053067/local-product-request.env
+
+          read_uint() {
+            local key="$1"
+            local value
+            value="$(awk -F= -v key="$key" '$1 == key {print $2}' "$request" | tail -n 1 | tr -d '[:space:]')"
+            if [[ ! "$value" =~ ^[0-9]+$ ]]; then
+              echo "Invalid or missing $key" >&2
+              exit 2
+            fi
+            printf '%s=%s\n' "$key" "$value" >> "$GITHUB_ENV"
+          }
+
+          read_uint DIGITS
+          read_uint START
+          read_uint END
+          read_uint EXACT_PRIME_BOUND
+          read_uint EXTRAPOLATE_BOUND
+          read_uint OBSERVED_SURVIVORS
+
+          checkpoints="$(awk -F= '$1 == "CHECKPOINTS" {print $2}' "$request" | tail -n 1 | tr -d '[:space:]')"
+          if [[ ! "$checkpoints" =~ ^[0-9]+(,[0-9]+)*$ ]]; then
+            echo "Invalid CHECKPOINTS" >&2
+            exit 2
+          fi
+          printf 'CHECKPOINTS=%s\n' "$checkpoints" >> "$GITHUB_ENV"
+
+      - name: Run exact local-product comparison
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p research/A053067/local-product-run
+          python3 research/A053067/local_product.py \
+            --digits "$DIGITS" \
+            --start "$START" --end "$END" \
+            --exact-prime-bound "$EXACT_PRIME_BOUND" \
+            --checkpoints "$CHECKPOINTS" \
+            --extrapolate-bound "$EXTRAPOLATE_BOUND" \
+            --observed-survivors "$OBSERVED_SURVIVORS" \
+            --json-out research/A053067/local-product-run/result.json \
+            | tee research/A053067/local-product-run/summary.txt
+
+      - name: Record metadata
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "repository=$GITHUB_REPOSITORY"
+            echo "commit=$GITHUB_SHA"
+            echo "digits=${DIGITS:-unset}"
+            echo "start=${START:-unset}"
+            echo "end=${END:-unset}"
+            echo "exact_prime_bound=${EXACT_PRIME_BOUND:-unset}"
+            echo "extrapolate_bound=${EXTRAPOLATE_BOUND:-unset}"
+            echo "observed_survivors=${OBSERVED_SURVIVORS:-unset}"
+            echo
+            python3 --version || true
+            sha256sum \
+              research/A053067/local_product.py \
+              research/A053067/congruence_families.py \
+              research/A053067/local-product-request.env || true
+          } > research/A053067/local-product-run/metadata.txt
+
+      - name: Upload local-product evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a053067-local-product-${{ github.run_id }}-${{ github.run_attempt }}
+          path: research/A053067/local-product-run/
+          if-no-files-found: error
+          retention-days: 90
