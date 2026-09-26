@@ -229,3 +229,24 @@ is a polynomial in n^2 and q for every k>1.
 Thus each fixed small order k gives a concrete algebraic curve in the two
 variables s=n^2 and q=10^d.  The order-3, order-4 and order-6 quadratics above
 are the first examples of this general phenomenon.
+
+
+## Reverse-concatenation symmetry
+
+Let B be the same fixed-width block concatenated in descending order.  Pairing
+coefficients gives
+
+  A + B = (n^2+1) R_n(q).
+
+Therefore, for any odd prime p not dividing 10,
+
+  p | A and p | B
+
+implies p | n(n^2+1).
+
+Indeed, if p does not divide n^2+1 then the displayed sum forces p|R_n(q),
+and the repunit identity for A then forces p|n.
+
+Thus the ascending and descending concatenations have no unexplained common
+prime factors: their common support is confined to the already-understood
+index and n^2+1 mechanisms.
