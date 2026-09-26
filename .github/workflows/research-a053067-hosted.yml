@@ -1,0 +1,142 @@
+name: A053067 hosted bootstrap
+
+on:
+  push:
+    branches:
+      - research/a053067
+    paths:
+      - research/A053067/run-hosted.env
+      - research/A053067/search.cpp
+      - research/A053067/verify.py
+      - research/A053067/analyze.py
+      - .github/workflows/research-a053067-hosted.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a053067-hosted-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Check out triggering revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Install GMP development package
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y libgmp-dev
+
+      - name: Parse bounded request
+        shell: bash
+        run: |
+          set -euo pipefail
+          request=research/A053067/run-hosted.env
+          read_uint() {
+            local key="$1"
+            local value
+            value="$(awk -F= -v key="$key" '$1 == key {print $2}' "$request" | tail -n 1 | tr -d '[:space:]')"
+            if [[ ! "$value" =~ ^[0-9]+$ ]]; then
+              echo "Invalid or missing $key in $request" >&2
+              exit 2
+            fi
+            printf '%s=%s\n' "$key" "$value" >> "$GITHUB_ENV"
+          }
+          read_uint START
+          read_uint END
+          read_uint SIEVE_BOUND
+          read_uint PRP_REPS
+          read_uint SHARD_INDEX
+          read_uint SHARD_COUNT
+          read_uint THREADS
+
+      - name: Build and verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p research/A053067/run
+          g++ -O3 -march=native -std=c++20 -pthread \
+            research/A053067/search.cpp -lgmpxx -lgmp \
+            -o research/A053067/run/a053067-search
+          python3 research/A053067/verify.py
+
+      - name: Run scan
+        id: scan
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="research/A053067/run/scan-${START}-${END}-shard-${SHARD_INDEX}-of-${SHARD_COUNT}.csv"
+          LOG="research/A053067/run/scan-${START}-${END}-shard-${SHARD_INDEX}-of-${SHARD_COUNT}.log"
+
+          set +e
+          research/A053067/run/a053067-search \
+            --start "$START" --end "$END" \
+            --sieve-bound "$SIEVE_BOUND" --prp-reps "$PRP_REPS" \
+            --shard-index "$SHARD_INDEX" --shard-count "$SHARD_COUNT" \
+            --threads "$THREADS" --output "$OUT" \
+            2> >(tee "$LOG" >&2)
+          RC=$?
+          set -e
+
+          if [ "$RC" -eq 10 ]; then
+            echo "candidate=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::A053067 probable-prime candidate found."
+          elif [ "$RC" -ne 0 ]; then
+            exit "$RC"
+          else
+            echo "candidate=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validate and summarize evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(find research/A053067/run -maxdepth 1 -name 'scan-*.csv' -type f | sort)
+          python3 research/A053067/analyze.py "${files[@]}" \
+            --start "$START" --end "$END" \
+            --shard-index "$SHARD_INDEX" --shard-count "$SHARD_COUNT" \
+            --json-out research/A053067/run/manifest.json | tee research/A053067/run/analysis.txt
+
+      - name: Record metadata
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p research/A053067/run
+          {
+            echo "repository=$GITHUB_REPOSITORY"
+            echo "commit=$GITHUB_SHA"
+            echo "runner_image=ubuntu-latest"
+            echo "start=${START:-unset}"
+            echo "end=${END:-unset}"
+            echo "sieve_bound=${SIEVE_BOUND:-unset}"
+            echo "prp_reps=${PRP_REPS:-unset}"
+            echo "shard_index=${SHARD_INDEX:-unset}"
+            echo "shard_count=${SHARD_COUNT:-unset}"
+            echo "threads=${THREADS:-unset}"
+            echo "candidate=${{ steps.scan.outputs.candidate }}"
+            echo
+            uname -a || true
+            g++ --version | head -n 1 || true
+            python3 --version || true
+            sha256sum research/A053067/search.cpp research/A053067/verify.py research/A053067/analyze.py research/A053067/run-hosted.env || true
+          } > research/A053067/run/metadata.txt
+
+      - name: Upload scan evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a053067-hosted-${{ github.run_id }}-${{ github.run_attempt }}
+          path: research/A053067/run/
+          if-no-files-found: error
+          retention-days: 30
