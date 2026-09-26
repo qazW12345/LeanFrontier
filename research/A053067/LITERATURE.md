@@ -247,6 +247,149 @@ This is a promising computational/theoretical project in its own right:
 estimate the local correction product for successive width classes and compare
 its prediction with the actual small-factor survival rates.
 
+## 9. Multiplicative order for almost all primes
+
+**P. Erdős, M. Ram Murty,
+"On the order of a (mod p)",
+Number Theory (Ottawa, 1996), CRM Proceedings & Lecture Notes 19 (1999),
+87--97.**
+
+For any fixed integer \(a\ne0,\pm1\), their work shows that the multiplicative
+order of \(a\) modulo \(p\) is larger than \(p^{1/2+o(1)}\) for almost all
+primes \(p\).
+
+For A053067 this is relevant with \(a=10\).  It says that the subgroup
+
+\[
+H_p=\langle10\rangle
+\]
+
+is generically at least square-root scale.  The width-average problem is
+therefore naturally located near the transition range in modern subgroup
+character-sum estimates.
+
+A particularly useful infinite subsequence is obtained by taking the decimal
+width \(d\) itself prime.  For every local prime \(p<d\),
+
+\[
+\gcd(d,\operatorname{ord}_p(10))=1,
+\]
+
+because \(\operatorname{ord}_p(10)\mid p-1<d\).  Hence
+
+\[
+\operatorname{ord}_p(10^d)=\operatorname{ord}_p(10).
+\]
+
+Prime widths therefore avoid the order-collapse phenomenon for every smaller
+local prime.
+
+## 10. Bilinear character sums and shifted subgroups
+
+The width-average discriminant admits the transformation
+
+\[
+\chi(\Delta_q(t))
+=
+\chi(8Y(q))\,
+\chi\!\left(X(t)(8Y(q))^{-1}-1\right),
+\]
+
+with
+
+\[
+X(t)=\left(\frac{t+1}{t-1}\right)^2,
+\qquad
+(8Y(q))^{-1}=\frac{q-1}{8q}.
+\]
+
+Thus the central object is a weighted bilinear multiplicative-character sum
+of the classical form
+
+\[
+\sum_{a\in A}\sum_{b\in B}\alpha_a\beta_b\chi(ab-1).
+\]
+
+Relevant literature includes:
+
+**I. D. Shkredov, I. E. Shparlinski,
+"Double Character Sums with Intervals and Arbitrary Sets in Finite Fields",
+Proc. Steklov Inst. Math. 303 (2018).**
+arXiv:1803.08699.
+
+They develop Karatsuba-type and additive-combinatorial bounds for weighted
+bilinear multiplicative-character sums and emphasize the square-root-size
+transition.
+
+**I. D. Shkredov,
+"On tripling constant of multiplicative subgroups" (2015).**
+arXiv:1504.04522.
+
+Among other results, for a nonzero shift of a sufficiently small
+multiplicative subgroup \(G\),
+
+\[
+E^\times(G+x)\ll |G|^2\log|G|,
+\]
+
+showing that shifted subgroups have low multiplicative energy.
+
+**S. Kim, C. H. Yip, S. Yoo,
+"Multiplicative structure of shifted multiplicative subgroups and its
+applications to Diophantine tuples".**
+arXiv:2309.09124.
+
+They obtain strong restrictions on product sets contained in nontrivial
+shifts of multiplicative subgroups, refining consequences of Vinogradov's
+character-sum method.
+
+**E. Croot, C. H. Yip,
+"Diophantine tuples and product sets in shifted powers".**
+arXiv:2504.04354.
+
+This paper records explicit Karatsuba/Vinogradov character-sum estimates in a
+closely related shifted-power setting.
+
+These results do not immediately prove the A053067 divisor-scale width-bias
+bound, because the transformed \(A\)-set is a low-multiplicity rational image
+of a subgroup while the \(B\)-set is an affine shift of an inverse subgroup.
+They do, however, put the remaining sum squarely inside an active and
+well-developed finite-field framework rather than requiring an entirely new
+kind of estimate.
+
+## 11. Sharp empirical width-bias target
+
+The exact full-period computation through every prime \(p\le5000\) gives
+
+\[
+\max
+\frac{
+\left|p\operatorname{ord}_p(10)
+(\overline\rho_p^S-1/p)\right|
+}{
+\tau(\operatorname{ord}_p(10))
+}
+=
+1.754098\ldots,
+\]
+
+attained at \(p=733\).
+
+Thus the concrete analytic conjecture is
+
+\[
+\left|
+p\operatorname{ord}_p(10)
+(\overline\rho_p^S-1/p)
+\right|
+\ll
+\tau(\operatorname{ord}_p(10)).
+\]
+
+If this is proved, the width-averaged first-order Euler bias is absolutely
+summable, and the local singular-series obstruction to an infinite-prime
+heuristic disappears completely.
+
 ## Current interpretation
 
 The literature and our computations now line up:
