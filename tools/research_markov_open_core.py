@@ -369,9 +369,27 @@ def palindromes(length: int):
             yield first + first[-2::-1]
 
 
+def continued_fraction(numerator: int, denominator: int) -> list[int]:
+    """Regular continued fraction of a positive rational numerator/denominator."""
+    if numerator <= 0 or denominator <= 0:
+        raise ValueError("continued fractions here expect positive arguments")
+    out: list[int] = []
+    while denominator:
+        quotient, remainder = divmod(numerator, denominator)
+        out.append(quotient)
+        numerator, denominator = denominator, remainder
+    return out
+
+
 def recognize_root(modulus: int, root: int) -> None:
     centered = min(root % modulus, (-root) % modulus)
+    cf = continued_fraction(modulus, centered)
+    first_bad = next((i for i, digit in enumerate(cf) if digit not in (1, 2)), None)
     print(f"M={modulus} centered_root={centered}")
+    print(
+        f"  M/u continued fraction={cf} all_1_or_2={first_bad is None} "
+        f"first_non_12_index={first_bad}"
+    )
     for representative in sorted({centered, (-centered) % modulus}):
         if (representative * representative + 1) % modulus:
             print(f"  {representative}: not a square root of -1")
@@ -391,8 +409,11 @@ def recognize_root(modulus: int, root: int) -> None:
 
 def scan_palindromes(max_inner_length: int) -> None:
     """Search the wider a-palindrome-b class for denominator/root collisions."""
-    # denominator -> centered root -> (one witness, whether any witness is central)
-    groups: dict[int, dict[int, tuple[str, bool]]] = {}
+    # denominator -> centered root -> (one witness, central?, unordered endpoint counts)
+    groups: dict[int, dict[int, tuple[str, bool, tuple[int, int]]]] = {}
+    # A second index deliberately ignores the root and asks the stronger question:
+    # can one m-value occur for two different unordered endpoint-count pairs?
+    endpoint_groups: dict[int, dict[tuple[int, int], str]] = {}
     total_words = 0
     central_words = 0
 
@@ -409,12 +430,14 @@ def scan_palindromes(max_inner_length: int) -> None:
                 raise AssertionError(f"palindrome identity failed for {word}")
 
             central = is_central_palindrome(inner)
+            counts = tuple(sorted((word.count("a"), word.count("b"))))
             total_words += 1
             central_words += int(central)
             roots = groups.setdefault(modulus, {})
             old = roots.get(root)
             if old is None or (central and not old[1]):
-                roots[root] = (word, central)
+                roots[root] = (word, central, counts)
+            endpoint_groups.setdefault(modulus, {}).setdefault(counts, word)
 
     broad_collisions = [
         (modulus, roots) for modulus, roots in groups.items() if len(roots) > 1
@@ -422,21 +445,27 @@ def scan_palindromes(max_inner_length: int) -> None:
     mixed_collisions = [
         (modulus, roots)
         for modulus, roots in broad_collisions
-        if any(central for _, central in roots.values())
+        if any(central for _, central, _ in roots.values())
+    ]
+    cross_endpoint_collisions = [
+        (modulus, endpoints)
+        for modulus, endpoints in endpoint_groups.items()
+        if len(endpoints) > 1
     ]
 
     print(
         f"inner<= {max_inner_length}: words={total_words} "
         f"candidate_denominators={len(groups)} central_words={central_words} "
         f"multi_root_denominators={len(broad_collisions)} "
-        f"central_involved_multi_root={len(mixed_collisions)}"
+        f"central_involved_multi_root={len(mixed_collisions)} "
+        f"cross_endpoint_denominators={len(cross_endpoint_collisions)}"
     )
 
     print("first broad collisions:")
     for modulus, roots in sorted(broad_collisions)[:10]:
         summary = ", ".join(
-            f"root={root} word={word} central={central}"
-            for root, (word, central) in sorted(roots.items())
+            f"root={root} word={word} central={central} counts={counts}"
+            for root, (word, central, counts) in sorted(roots.items())
         )
         print(f"  M={modulus}: {summary}")
 
@@ -446,6 +475,13 @@ def scan_palindromes(max_inner_length: int) -> None:
             print(f"  M={modulus}: {roots}")
     else:
         print("no central-involved collision in this finite scan")
+
+    if cross_endpoint_collisions:
+        print("WARNING: equal m-values across distinct endpoint-count pairs found")
+        for modulus, endpoints in sorted(cross_endpoint_collisions)[:20]:
+            print(f"  M={modulus}: {endpoints}")
+    else:
+        print("no equal m-value across distinct unordered endpoint counts in this finite scan")
 
 
 def main() -> None:
