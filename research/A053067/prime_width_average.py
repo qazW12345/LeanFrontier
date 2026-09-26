@@ -91,6 +91,7 @@ def main() -> int:
 
     rows = []
     sum_mean_log = 0.0
+    sum_generator_mean_log = 0.0
 
     with args.output.open("w", newline="") as f:
         w = csv.writer(f)
@@ -100,6 +101,8 @@ def main() -> int:
             "mean_rho_unconditioned", "signed_bias_unconditioned",
             "scaled_bias_unconditioned_p_ord",
             "mean_factor", "geom_factor", "mean_log_factor",
+            "generator_mean_rho", "generator_scaled_bias_p_ord",
+            "generator_geom_factor", "generator_mean_log_factor",
         ])
 
         for p in primes:
@@ -108,6 +111,8 @@ def main() -> int:
             rhos_unconditioned = []
             logs = []
             factors = []
+            generator_rhos = []
+            generator_logs = []
 
             for d in range(1, ell + 1):
                 rho, rho_unconditioned = fast_local_densities(d, p)
@@ -115,7 +120,11 @@ def main() -> int:
                 rhos.append(rho)
                 rhos_unconditioned.append(rho_unconditioned)
                 factors.append(factor)
-                logs.append(math.log(factor))
+                log_factor = math.log(factor)
+                logs.append(log_factor)
+                if math.gcd(d, ell) == 1:
+                    generator_rhos.append(rho)
+                    generator_logs.append(log_factor)
 
             mean_rho = sum(rhos) / ell
             bias = mean_rho - 1.0 / p
@@ -126,7 +135,14 @@ def main() -> int:
             mean_factor = sum(factors) / ell
             mean_log = sum(logs) / ell
             geom = math.exp(mean_log)
+            generator_mean_rho = sum(generator_rhos) / len(generator_rhos)
+            generator_bias = generator_mean_rho - 1.0 / p
+            generator_scaled = generator_bias * p * ell
+            generator_mean_log = sum(generator_logs) / len(generator_logs)
+            generator_geom = math.exp(generator_mean_log)
+
             sum_mean_log += mean_log
+            sum_generator_mean_log += generator_mean_log
 
             rows.append((p, ell, scaled, mean_log))
             w.writerow([
@@ -140,6 +156,10 @@ def main() -> int:
                 f"{mean_factor:.17g}",
                 f"{geom:.17g}",
                 f"{mean_log:.17g}",
+                f"{generator_mean_rho:.17g}",
+                f"{generator_scaled:.17g}",
+                f"{generator_geom:.17g}",
+                f"{generator_mean_log:.17g}",
             ])
 
     maxrow = max(rows, key=lambda x: abs(x[2]))
@@ -150,7 +170,8 @@ def main() -> int:
         f"prime-width-average B={args.prime_bound} primes={len(rows)} "
         f"max_abs_scaled_bias={abs(maxrow[2]):.9f}@p={maxrow[0]} "
         f"sum_mean_log={sum_mean_log:.9f} "
-        f"aggregate_geom={math.exp(sum_mean_log):.9f}"
+        f"aggregate_geom={math.exp(sum_mean_log):.9f} "
+        f"generator_aggregate_geom={math.exp(sum_generator_mean_log):.9f}"
     )
     print(
         f"mean-log range: min={minlog[3]:+.9g}@p={minlog[0]} "
