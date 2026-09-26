@@ -146,7 +146,110 @@ No interval sampling or independence approximation is used.
 The conditioned formula is therefore a bounded sum of the same discrepancy
 inner products, one for each elementary candidate class.
 
-## 3. Why correlations should usually be small
+## 3. Exact independence when the local periods are coprime
+
+There is a large class of prime pairs for which the conditioned divisibility
+events are **exactly independent**.
+
+Let the exact local periods be \(P_p,P_r\), and assume
+
+\[
+\gcd(P_p,P_r)=1.
+\]
+
+The elementary candidate set has the exact CRT product description
+
+\[
+S=
+\left\{
+x\bmod60:
+\begin{array}{l}
+x\bmod3\in\{1,2\},\\
+x\bmod4\in\{1,2\},\\
+x\bmod5\in\{1,2,3\}
+\end{array}
+\right\}.
+\]
+
+Thus the mod-60 conditioning factors independently across the pairwise
+coprime prime-power components \(3,4,5\).
+
+Because \(P_p\) and \(P_r\) are coprime, the divisors
+
+\[
+\gcd(P_p,60),
+\qquad
+\gcd(P_r,60)
+\]
+
+are also coprime.  Consequently the compatibility restriction imposed by
+\(S\) on the \(P_p\)-coordinate and on the \(P_r\)-coordinate separates by
+the Chinese remainder theorem.
+
+Therefore
+
+\[
+\boxed{
+\gcd(P_p,P_r)=1
+\quad\Longrightarrow\quad
+\rho_{p,r}=\rho_p\rho_r
+}
+\]
+
+even **after** conditioning on the elementary A053067 candidate classes.
+
+Equivalently,
+
+\[
+\boxed{
+\operatorname{Cov}
+(1_{p\mid A(n)},1_{r\mid A(n)})
+=0.
+}
+\]
+
+### Generator-regime interpretation
+
+Assume \(p<r<d\) and \(d\) is prime, so both local primes are in the
+full-order generator regime. Then
+
+\[
+P_p=p\ell_p,
+\qquad
+P_r=r\ell_r,
+\qquad
+\ell_s=\operatorname{ord}_s(10).
+\]
+
+Since \(r>\ell_p\), the larger prime \(r\) cannot divide \(P_p\). Hence
+
+\[
+\gcd(P_p,P_r)=1
+\]
+
+is equivalent to the two conditions
+
+\[
+\gcd(\ell_p,\ell_r)=1
+\]
+
+and
+
+\[
+p\nmid\ell_r.
+\]
+
+The second condition is exactly the absence of the cross-order relation
+observed by pair_correlation_probe.py.
+
+For the \(d=1009,\ p,r<1000\) experiment, **5991 of 13530 pairs** satisfy
+these conditions. Every one of those pairs had zero covariance to floating
+precision, independently confirming the CRT argument.
+
+This removes almost half of all tested pairs from the analytic correlation
+problem entirely.
+
+## 4. Why the remaining correlations should usually be small
 
 For prime decimal width \(d\) and local primes below \(d\),
 
@@ -261,7 +364,7 @@ Consequently the pair-correlation problem should be split into:
 
 This is more precise than treating \(\gcd(P_p,P_r)\) as an opaque parameter.
 
-## 4. Exact numerical experiments
+## 5. Exact numerical experiments
 
 ### Width d = 101, primes through 500
 
@@ -450,7 +553,7 @@ local primes, so this is consistent with a two-stage decomposition:
 2. isolate the sparse cross-order family;
 3. prove a summable tail estimate for the remaining common-order correlations.
 
-## 5. Sieve-theoretic significance
+## 6. Sieve-theoretic significance
 
 The success of the one-prime local product could in principle have been an
 accident caused by compensating higher correlations.
@@ -472,7 +575,7 @@ This does not by itself cross the parity barrier to prime values, but it is a
 natural route toward a theorem that the actual small-prime sieve has the
 density predicted by the local product.
 
-## 6. Analytic target
+## 7. Analytic target
 
 For generator-regime local primes, seek a bound of the schematic form
 
