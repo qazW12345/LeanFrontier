@@ -1763,3 +1763,250 @@ This is now the most promising arithmetic experiment:
 
 If such a termination statement can be proved for a chain containing one
 genuine Markov root, it would give an induction mechanism for uniqueness.
+
+
+## 25. The first q-derivative is not extra classical information
+
+A tempting bridge to the injective q-deformed Markov theory was to use the
+first derivative at q=1 of a q-Cohn matrix entry.
+
+The 2026 Evans--Jouteur--Morier-Genoud--Ovsienko paper gives, for a
+q-deformed Cohn matrix C=(c_ij), the exact identity
+
+m_q = q^2 c_12 + q(1-q)c_22,
+
+where m_q is the normalized q-Markov polynomial attached to the same tree
+position.
+
+The q-Markov polynomial is palindromic as a Laurent polynomial, hence
+
+m_q'(1)=0.
+
+Differentiating the displayed identity at q=1 therefore gives
+
+c_12'(1) = c_22(1) - 2 c_12(1).
+
+At q=1 the upper-right Cohn entry is the classical Markov number M.  Thus
+
+c_12'(1)=c_22(1)-2M.
+
+In the Zhang/Cohn convention used on this research branch,
+c_22(1)=M+u, so
+
+c_12'(1)=u-M,
+
+and in particular
+
+c_12'(1) == u (mod M).
+
+This proves the experimentally observed derivative/root congruence, but also
+shows that the first derivative contains no information beyond the classical
+matrix (equivalently beyond M and the oriented modular root u).
+
+So first-order q-deformation is **not** an independent obstruction to a
+classical collision.  Any useful q-deformed attack would have to use genuinely
+higher-order information.
+
+Source: Evans, Jouteur, Morier-Genoud, Ovsienko, *On q-deformed Markov
+numbers. Cohn matrices and perfect matchings with weighted edges* (2026),
+Theorem 12, Lemma 13, and palindromicity of q-Markov numbers.
+
+## 26. Exact Pell/CRT residual factor system for a hypothetical collision
+
+Assume an odd common maximum M and two distinct normalized triples, oriented
+so that
+
+1 <= A < C < D < B < M,
+
+with
+
+(A,B,M), (C,D,M)
+
+both Markov triples.
+
+The fixed-M conic immediately gives two monotonicities on its reduced branch:
+
+- B>D;
+- AB>CD.
+
+Put
+
+K := AB-CD > 0,
+Delta := BC-AD > 0,
+E := BD-AC > 0.
+
+Srinivasan's identity, with signs oriented positively, is
+
+Delta * E = M^2 * K.
+
+For every prime-power block of M, the two attached square roots of -1 are
+either equal or opposite.  Let
+
+M=P Q,  gcd(P,Q)=1,
+
+where Q is the product of the complete prime-power blocks on which the two
+roots are equal, and P the product of the blocks on which they are opposite.
+Prime separation gives integers r,t>0 with
+
+Delta = Q^2 r,
+E     = P^2 t.
+
+Because no prime of P divides Delta and no prime of Q divides E,
+
+gcd(P,r)=1,
+gcd(Q,t)=1.
+
+Srinivasan's factorization then cancels the whole M^2 factor and leaves
+
+K = r t.                                                    (26.1)
+
+### Pell determinant factorization
+
+Define
+
+X_1=3AM-2B,
+X_2=3CM-2D,
+N=9M^2-4.
+
+Then
+
+X_1^2-N A^2=-4M^2,
+X_2^2-N C^2=-4M^2.
+
+Moreover
+
+X_2 A-X_1 C = 2 Delta.
+
+The conjugate sum
+
+Sigma_A := 3ACM-(AD+BC)
+
+satisfies
+
+Delta * Sigma_A = M^2(C^2-A^2).
+
+Since Delta=Q^2 r and gcd(P,r)=1, P^2 divides Sigma_A.  Write
+
+Sigma_A=P^2 s.
+
+Then
+
+r s = C^2-A^2.                                             (26.2)
+
+Exactly the same construction after swapping the second triple gives
+
+U := 3ADM-(AC+BD),
+
+E * U = M^2(D^2-A^2).
+
+Since E=P^2 t and gcd(Q,t)=1, write U=Q^2 w.  Then
+
+t w = D^2-A^2.                                             (26.3)
+
+Thus the huge square divisibilities by P^2 and Q^2 leave behind only the
+small residual products (26.1)--(26.3).
+
+### Four elementary linear identities
+
+The three positive bilinear differences also satisfy
+
+Delta-K = (C-A)(B+D),
+Delta+K = (A+C)(B-D),
+
+E-K = (D-A)(B+C),
+E+K = (A+D)(B-C).
+
+Substituting Delta=Q^2 r, E=P^2 t and K=rt gives
+
+r(Q^2-t) = (C-A)(B+D),                                    (26.4)
+r(Q^2+t) = (A+C)(B-D),                                    (26.5)
+
+t(P^2-r) = (D-A)(B+C),                                    (26.6)
+t(P^2+r) = (A+D)(B-C).                                    (26.7)
+
+In particular,
+
+Q^2>t,
+P^2>r.
+
+Also, because gcd(Q,t)=gcd(P,r)=1,
+
+gcd(Q^2-t,Q^2+t) divides 2,
+gcd(P^2-r,P^2+r) divides 2.
+
+So every odd common divisor occurring simultaneously in the two coordinate
+products on the right sides of (26.4)--(26.5) must be absorbed by r, and the
+analogous statement holds for t in (26.6)--(26.7).
+
+### Two useful reconstruction equations
+
+Combining (26.1) and (26.2) with Delta gives the exact linear relations
+
+A Q^2 = C t + D s,                                        (26.8)
+C Q^2 = A t + B s.                                        (26.9)
+
+These follow directly, for example, from
+
+A Delta - C K = D(C^2-A^2).
+
+Similarly (26.1) and (26.3) give
+
+A P^2 = D r + C w,                                        (26.10)
+D P^2 = A r + B w.                                        (26.11)
+
+This system is a compact arithmetic normal form for any odd hypothetical
+collision.  It is stronger bookkeeping than the raw collision factorization:
+the CRT blocks P,Q, the residual factors r,s,t,w, and the four lesser
+coordinates are tied by simultaneous product, sum/difference, and linear
+relations.
+
+### A 3-adic consequence
+
+No Markov coordinate is divisible by 3.  Reducing the three bilinear factors
+Delta, E, K modulo 3 shows:
+
+3 | K  iff  3 | Delta  iff  3 | E.
+
+Since 3 does not divide M, (26.1) implies that if 3 divides K then both r and
+t are divisible by 3.  Consequently
+
+v_3(K)>0  =>  v_3(K)>=2.
+
+Equivalently, the product difference AB-CD can never have 3-adic valuation
+exactly one.
+
+This does not by itself prove uniqueness, but it is a genuine local lifting
+constraint on a hypothetical collision and is compatible with the residual
+factor system above.
+
+## 27. Fixed-M orbit interpretation
+
+For fixed M, the conic
+
+a^2+b^2+M^2=3Mab
+
+is preserved by
+
+(a,b) -> (b, 3Mb-a).
+
+Modulo M this sends the quotient b/a to
+
+-a/b.
+
+For a Markov solution, (b/a)^2 == -1 (mod M), hence
+
+-a/b == b/a (mod M).
+
+Therefore the oriented modular root is an invariant of the entire fixed-M
+integer orbit.
+
+This gives the CRT split a conceptual meaning:
+
+- one modular root = one fixed-M orbit label;
+- a classical collision requires two different CRT sign choices whose orbits
+  both enter the reduced window 0<a<b<M;
+- the prime-power uniqueness theorem is the case in which there is no
+  nontrivial CRT sign partition.
+
+The remaining problem is therefore genuinely an orbit-selection problem, not
+merely reconstruction of a pair once its modular root is known.
