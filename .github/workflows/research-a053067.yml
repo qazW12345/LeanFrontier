@@ -38,14 +38,15 @@ on:
       - research/A053067/run-request.env
       - research/A053067/search.cpp
       - research/A053067/verify.py
+      - research/A053067/analyze.py
       - .github/workflows/research-a053067.yml
 
 permissions:
   contents: read
 
 concurrency:
-  group: a053067-research
-  cancel-in-progress: false
+  group: a053067-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   scan:
@@ -162,6 +163,21 @@ jobs:
 
           tail -n 1 "$LOG" >> "$GITHUB_STEP_SUMMARY" || true
 
+      - name: Validate scan evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(find research/A053067/run -maxdepth 1 -name 'scan-*.csv' -type f | sort)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No scan CSV was produced." >&2
+            exit 2
+          fi
+          python3 research/A053067/analyze.py "${files[@]}" \
+            --start "$START" --end "$END" \
+            --shard-index "$SHARD_INDEX" --shard-count "$SHARD_COUNT" \
+            --json-out research/A053067/run/manifest.json
+
       - name: Record reproducibility metadata
         if: always()
         shell: bash
@@ -186,7 +202,7 @@ jobs:
             uname -a || true
             g++ --version | head -n 1 || true
             python3 --version || true
-            sha256sum research/A053067/search.cpp research/A053067/verify.py research/A053067/run-request.env || true
+            sha256sum research/A053067/search.cpp research/A053067/verify.py research/A053067/analyze.py research/A053067/run-request.env || true
           } > research/A053067/run/metadata.txt
 
       - name: Summarize result classes
