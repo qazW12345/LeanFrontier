@@ -127,23 +127,25 @@ theorem two_mul_sum_range_cast {R : Type*} [CommRing R] (n : ℕ) :
 /-- If n casts to 1 and 2 is not a zero divisor, the triangular offset
 sum vanishes. -/
 theorem sum_range_cast_eq_zero_of_cast_eq_one {R : Type*} [CommRing R]
-    [NoZeroDivisors R] (n : ℕ) (hn : (n : R) = 1) :
+    [NoZeroDivisors R] (n : ℕ) (hn : (n : R) = 1)
+    (h2ne : (2 : R) ≠ 0) :
     (∑ i ∈ Finset.range n, (i : R)) = 0 := by
   have htwo :
       2 * (∑ i ∈ Finset.range n, (i : R)) = 0 := by
     rw [two_mul_sum_range_cast, hn]
     ring
   rcases mul_eq_zero.mp htwo with h2 | hsum
-  · norm_num at h2
+  · exact (h2ne h2).elim
   · exact hsum
 
 /-- In a domain, base 1, start 1, and length congruent to 1 force the
 concatenation residue to be 1. -/
 theorem fixedConcat_eq_one_of_cast_eq_one {R : Type*} [CommRing R]
     [NoZeroDivisors R] (q L : R) (n : ℕ)
-    (hq : q = 1) (hL : L = 1) (hn : (n : R) = 1) :
+    (hq : q = 1) (hL : L = 1) (hn : (n : R) = 1)
+    (h2ne : (2 : R) ≠ 0) :
     fixedConcat q L n = 1 := by
   exact fixedConcat_eq_one_of_residue_data q L n hq hL hn
-    (sum_range_cast_eq_zero_of_cast_eq_one n hn)
+    (sum_range_cast_eq_zero_of_cast_eq_one n hn h2ne)
 
 end LeanFrontier.A053067Research
