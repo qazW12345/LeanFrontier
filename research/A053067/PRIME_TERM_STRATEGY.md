@@ -492,6 +492,64 @@ Averaging over \(d\) therefore converts the remaining problem into controlling
 the interaction between divisors of multiplicative orders and quadratic
 character sums.
 
+## Prime-width reduction of analytic gap A
+
+The width-uniform problem can be weakened substantially.
+
+It is enough to prove divergence along prime decimal widths:
+
+\[
+\sum_{\substack{d\ {\rm prime}}}\frac{C_d}{d}=\infty,
+\]
+
+because Euler's theorem gives
+
+\[
+\sum_{d\ {\rm prime}}\frac1d=\infty.
+\]
+
+Prime widths are analytically special.  If \(d\) is prime and \(p<d\), then
+
+\[
+\operatorname{ord}_p(10^d)=\operatorname{ord}_p(10),
+\]
+
+so no smaller local prime suffers multiplicative-order collapse.
+
+For each fixed local prime \(p\), prime widths eventually sample only the
+generator classes of \(\langle10\rangle\).  The generator-averaged normalized
+logarithmic local factor is absolutely summable over \(p\), giving a positive
+constant
+
+\[
+0<C_{\rm gen}<\infty.
+\]
+
+For every finite local-prime cutoff \(B\), Dirichlet/Mertens equidistribution
+of prime widths in reduced residue classes implies
+
+\[
+\sum_{\substack{d\ {\rm prime}}}\frac{C_d(B)}d=\infty.
+\]
+
+The remaining local analytic issue is therefore only to justify interchange
+of
+
+1. the harmonic average over prime widths, and
+2. the infinite local-prime product.
+
+The exceptional pairs are precisely
+
+\[
+(d,p)\quad\text{with }d\text{ prime and }d\mid\operatorname{ord}_p(10).
+\]
+
+This is a much narrower target than uniform control over every width.
+
+The finite-cutoff data support this reduction strongly: for \(B=5000\) and
+prime widths \(d\le1000\), the correction lies between approximately
+\(0.938\) and \(1.310\), with harmonic-weighted mean \(1.095\).
+
 ## Analytic gap B: the parity / prime-values barrier
 
 Even proving
