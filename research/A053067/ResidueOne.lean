@@ -292,4 +292,20 @@ theorem zmod_fixedConcat_natTriangular_eq_one_of_base_one
   rw [hq]
   simp
 
+
+
+/-- Prime-modulus residue-one lemma in the form used by the Euclid-style
+finite-prime-avoidance construction: if the fixed positional base itself is
+1 modulo p and the triangular block length is 1 modulo p, then the whole
+fixed-width triangular concatenation is 1 modulo p. -/
+theorem zmod_fixedConcat_natTriangular_eq_one_of_base_one
+    (p q n : ℕ) [Fact p.Prime] (hp2 : p ≠ 2)
+    (hnmod : n ≡ 1 [MOD p])
+    (hq : (q : ZMod p) = 1) :
+    fixedConcat (q : ZMod p)
+      (((natTriangularStart n : ℕ) : ZMod p)) n = 1 := by
+  apply zmod_fixedConcat_natTriangular_eq_one p q n hp2 hnmod
+  rw [hq]
+  simp
+
 end LeanFrontier.A053067Research
