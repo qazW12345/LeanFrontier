@@ -1,0 +1,19 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-quadratic-consequences",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovTree.exists_markovNumber_natAbs_eq_sq_add_sq",
+    "LeanFrontier.MarkovTree.prime_dvd_markovNumber_eq_two_or_mod_four_eq_one",
+    "LeanFrontier.MarkovTree.four_not_dvd_markovNumber_natAbs"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue building useful LeanFrontier machinery toward eventual work on Markov uniqueness. This submission is stacked on the separately validated Markov quadratic-residue theorem. GPT-5.6 Sol / ChatGPT selected three direct arithmetic consequences that strengthen the public API without reproving prerequisites: Mathlib's sum-of-two-squares characterization turns the square root of -1 modulo the Markov label into an explicit sum-of-two-squares representation; the prime-factor restriction sharpens to p = 2 or p ≡ 1 mod 4; and divisibility by 4 is excluded because a square root of -1 would then descend to ZMod 4, where it does not exist. These are classical consequences and do not prove the Frobenius/Markov uniqueness conjecture. GPT-5.6 Sol / ChatGPT selected the targets and authored all Lean statements and proofs; the human did not choose or materially edit them. No claim of new mathematics is made."
+}
