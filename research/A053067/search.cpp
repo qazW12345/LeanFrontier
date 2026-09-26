@@ -252,6 +252,7 @@ struct Config {
   u64 shard_index = 0;
   u64 shard_count = 1;
   unsigned threads = 0;
+  std::string mode = "full";
   std::string output;
 };
 
@@ -288,6 +289,11 @@ static Config parse_args(int argc, char** argv) {
       need(cfg.shard_count);
     } else if (arg == "--threads") {
       need(cfg.threads);
+    } else if (arg == "--mode") {
+      if (++i >= argc) {
+        throw std::runtime_error("missing value after --mode");
+      }
+      cfg.mode = argv[i];
     } else if (arg == "--output") {
       if (++i >= argc) {
         throw std::runtime_error("missing value after --output");
@@ -310,6 +316,9 @@ static Config parse_args(int argc, char** argv) {
   }
   if (cfg.shard_count == 0 || cfg.shard_index >= cfg.shard_count) {
     throw std::runtime_error("invalid shard");
+  }
+  if (cfg.mode != "full" && cfg.mode != "sieve") {
+    throw std::runtime_error("mode must be full or sieve");
   }
   return cfg;
 }
