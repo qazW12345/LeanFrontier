@@ -57,20 +57,24 @@ Only indices surviving the small-prime sieve are materialized as a GMP integer a
 A probable-prime result is only a candidate: it must subsequently receive a rigorous primality
 certificate before any mathematical claim is made.
 
-## Pilot result
+## Checked-in search results
 
-With the checked-in implementation and
+Two bounded scans are currently checked in:
 
-    --start 3 --end 1000 --sieve-bound 200000 --prp-reps 25
+- `results/pilot-3-1000.csv`: 198 admissible indices, 161 with an explicit
+  small-prime divisor, 37 reported composite by GMP, and no probable prime.
+- `results/scan-1001-3000.csv`: 400 admissible indices, 340 with an explicit
+  small-prime divisor, 60 reported composite by GMP, and no probable prime.
 
-the result is:
+Combined, every index 3 <= n <= 3000 is covered by the exact 2/3/5 filter or one
+of those two result files. Among the 598 indices that survive the exact filter,
+501 have an explicit prime divisor recorded and independently checkable by
+modular evaluation; the remaining 97 were reported composite by GMP. No
+probable-prime term was found.
 
-- 198 indices survive the exact 2/3/5 sieve;
-- 161 have an explicit prime factor <= 200000;
-- the remaining 37 are reported composite by GMP;
-- no probable-prime term occurs.
-
-The raw result is in `results/pilot-3-1000.csv`.
+This is computational exclusion evidence, not yet a formal theorem about the
+entire interval: rows marked `composite_prp` intentionally do not pretend to
+contain a standalone compositeness certificate.
 
 ## Reproduction
 
@@ -80,20 +84,30 @@ On Debian/Ubuntu with a C++20 compiler and GMP development files:
     python3 research/A053067/verify.py
     ./a053067-search --start 3 --end 1000 --sieve-bound 200000 \
       --prp-reps 25 --output results.csv
+    python3 research/A053067/analyze.py results.csv --start 3 --end 1000
 
 The search supports `--shard-index I --shard-count C` for partitioning a range across machines.
 
-## Self-hosted runner
+## GitHub Actions compute
 
-`.github/workflows/research-a053067.yml` is intentionally `workflow_dispatch` only and requests
-a Linux x64 self-hosted runner. This avoids executing pull-request code on the research machine.
-The workflow has read-only repository permissions, compiles the searcher, runs the verifier, and
-uploads the CSV and log as an artifact.
+`.github/workflows/research-a053067.yml` targets a Linux x64 self-hosted runner.
+It runs only on the dedicated `research/a053067` branch, has read-only repository
+permissions, and accepts only numeric parameters from `run-request.env`; it never
+sources repository text as shell code. Push-triggering is restricted to the research
+request/search/verification files, so pull-request code cannot execute on the research
+machine.
 
-GitHub only exposes manual-dispatch workflows reliably once the workflow file exists on the
-default branch. Until this research workflow is intentionally promoted there, the same commands
-can be run directly on the registered runner host. Do not merge the research directory or
-workflow upstream as an ordinary LeanFrontier theorem submission.
+The workflow compiles the searcher, verifies checked-in evidence, runs the requested
+shard, validates exact shard coverage and explicit factors with `analyze.py`, records
+tool/source hashes, and uploads the result as an immutable Actions artifact.
+
+A second workflow, `.github/workflows/research-a053067-hosted.yml`, provides bounded
+bootstrap scans on `ubuntu-latest` from `run-hosted.env`. It exists so development and
+small searches can continue even when no matching self-hosted runner is online. Deep
+searches should use the self-hosted workflow.
+
+Do not merge the research directory or either research workflow upstream as an ordinary
+LeanFrontier theorem submission.
 
 ## Research plan
 
