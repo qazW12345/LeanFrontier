@@ -1401,32 +1401,124 @@ and its maximum is
 
 consistent with the uniform \(O(1)\) scale proved above.
 
-## 13. Analytic target
+## 13. Exact reduction of the remaining non-cross tail
 
-For generator-regime local primes, seek a bound of the schematic form
+The Fourier estimate has already reduced every non-cross, nondegenerate pair
+to
 
 \[
-E_p(g)
+|\operatorname{Cov}_{p,r}|
 \ll
-\frac{\ell_p}{g}\,p^{1-\delta}
+\gcd(\ell_p,\ell_r)\,a_pa_r,
+\qquad
+a_p=\frac1{\sqrt p\,\ell_p}.
 \]
 
-or any alternative estimate whose insertion into
+The remaining absolute-summability problem can therefore be rewritten exactly
+in terms of divisibility of multiplicative orders.
+
+Use the classical identity
 
 \[
-\frac{g}{P_pP_r}
-\sqrt{E_p(g)E_r(g)}
+\gcd(u,v)
+=
+\sum_{\substack{m\mid u\\m\mid v}}\varphi(m).
 \]
 
-is summable over the relevant prime pairs.
-
-Because \(g\) divides combinations of multiplicative orders, average-order
-results for
+Define
 
 \[
-\operatorname{ord}_p(10)
+B_m
+=
+\sum_{\substack{p>5\\m\mid\ell_p}}
+\frac1{\sqrt p\,\ell_p}.
 \]
 
-and gcds of such orders may combine naturally with character-sum estimates.
+Then, after symmetrizing the pair sum,
 
-This is the next layer beyond the one-prime singular-series analysis.
+\[
+\begin{aligned}
+\sum_{p<r}
+\gcd(\ell_p,\ell_r)a_pa_r
+&=
+\frac12
+\sum_{m\ge1}\varphi(m)
+\left(
+B_m^2
+-
+\sum_{\substack{p>5\\m\mid\ell_p}}a_p^2
+\right)\\
+&\le
+\frac12
+\sum_{m\ge1}\varphi(m)B_m^2.
+\end{aligned}
+\]
+
+Hence the full non-cross, nondegenerate pair-correlation tail is absolutely
+summable if
+
+\[
+\boxed{
+\sum_{m\ge1}\varphi(m)B_m^2<\infty.
+}
+\]
+
+This is now the clean arithmetic target.
+
+It is strictly stronger than the already proved bounded-gcd result: truncating
+the \(m\)-sum at any fixed \(H\) is automatically finite because
+
+\[
+\sum_p a_p<\infty.
+\]
+
+What remains is only the large-\(m\) tail.
+
+### Relation to order-divisibility literature
+
+The condition
+
+\[
+m\mid\ell_p
+\]
+
+is exactly the set studied by Wiertelak, Pappalardi, and Moree in work on
+primes for which a prescribed integer divides a multiplicative order.
+
+Their fixed-\(m\) density theorems do not by themselves settle the weighted
+series above, because \(B_m\) also depends on the full size of \(\ell_p\).
+But they identify the correct arithmetic object and suggest that a uniform
+order-divisibility estimate, combined with reciprocal-order weights, is the
+natural next theorem.
+
+A sufficient quantitative target is any estimate strong enough to make
+
+\[
+\varphi(m)B_m^2
+\]
+
+summable.  For example, a bound of the shape
+
+\[
+B_m
+\ll
+\frac1{m(\log m)^{1/2+\varepsilon}}
+\]
+
+would suffice.
+
+### Remaining exceptional families
+
+After this reduction, the pair-correlation problem has only three genuinely
+distinct pieces:
+
+1. **non-cross, nondegenerate, bounded shared order:** proved absolutely
+   summable;
+2. **non-cross, nondegenerate, unbounded shared order:** reduced to
+   \(\sum_m\varphi(m)B_m^2\);
+3. **cross-order pairs** \(p\mid\ell_r\), plus the explicitly solved
+   linear-degenerate local primes.
+
+Thus the finite-field cancellation part of the two-prime problem is no
+longer the main bottleneck.  The unsolved part is a concrete statistic of
+multiplicative orders.
