@@ -35,7 +35,8 @@ private theorem hornich_hlawka_sq_identity (x y z : E) :
   ring
 
 omit [InnerProductSpace ℝ E] in
-private theorem norm_pair_le_total_add_other (x y z : E) :
+private theorem norm_pair_le_total_add_other
+    {F : Type*} [NormedAddCommGroup F] (x y z : F) :
     ‖x + y‖ ≤ ‖x + y + z‖ + ‖z‖ := by
   calc
     ‖x + y‖ = ‖(x + y + z) - z‖ := by
