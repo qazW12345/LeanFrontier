@@ -7,7 +7,7 @@ import Mathlib.Tactic
 For every Euclidean triangle with side lengths `a`, `b`, `c` and area `K`,
 Weitzenböck's inequality states
 
-`4 * √3 * K ≤ a² + b² + c²`.
+`4 * √(3 : ℝ) * K ≤ a² + b² + c²`.
 
 We use the angle-area formula
 `K = (1 / 2) * a * b * sin γ`, where `γ` is the angle between the sides `a` and `b`.
@@ -23,10 +23,11 @@ The statement includes degenerate triangles: Mathlib's angle convention makes th
 area expression vanish whenever either adjacent side is zero.
 -/
 
+open scoped EuclideanGeometry
+
 namespace LeanFrontier.EuclideanGeometry
 
 open Real
-open scoped EuclideanGeometry
 
 variable {V P : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [MetricSpace P]
   [NormedAddTorsor V P]
@@ -36,7 +37,7 @@ variable {V P : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [MetricS
 
 The area is written as `(1/2)ab sin γ`, with `γ` the angle at the middle point. -/
 theorem weitzenbock_inequality (p₁ p₂ p₃ : P) :
-    4 * √3 *
+    4 * √(3 : ℝ) *
         (1 / 2 * dist p₁ p₂ * dist p₃ p₂ * sin (∠ p₁ p₂ p₃)) ≤
       dist p₁ p₂ ^ 2 + dist p₃ p₂ ^ 2 + dist p₁ p₃ ^ 2 := by
   let a : ℝ := dist p₁ p₂
@@ -45,7 +46,7 @@ theorem weitzenbock_inequality (p₁ p₂ p₃ : P) :
   let γ : ℝ := ∠ p₁ p₂ p₃
   let K : ℝ := 1 / 2 * a * b * sin γ
   let S : ℝ := a ^ 2 + b ^ 2 + c ^ 2
-  change 4 * √3 * K ≤ S
+  change 4 * √(3 : ℝ) * K ≤ S
 
   have ha : 0 ≤ a := by
     dsimp [a]
@@ -57,13 +58,13 @@ theorem weitzenbock_inequality (p₁ p₂ p₃ : P) :
     dsimp [c]
     exact dist_nonneg
   have hsin : 0 ≤ sin γ := by
-    dsimp [γ, EuclideanGeometry.angle]
+    dsimp [γ, _root_.EuclideanGeometry.angle]
     exact InnerProductGeometry.sin_angle_nonneg _ _
   have hcos :
       c ^ 2 = a ^ 2 + b ^ 2 - 2 * a * b * cos γ := by
     dsimp [a, b, c, γ]
     simpa [pow_two] using
-      EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_sub_two_mul_dist_mul_dist_mul_cos_angle
+      _root_.EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_sub_two_mul_dist_mul_dist_mul_cos_angle
         p₁ p₂ p₃
   have htrig : sin γ ^ 2 + cos γ ^ 2 = 1 :=
     sin_sq_add_cos_sq γ
@@ -88,13 +89,13 @@ theorem weitzenbock_inequality (p₁ p₂ p₃ : P) :
   have hS : 0 ≤ S := by
     dsimp [S]
     positivity
-  have hleft : 0 ≤ 4 * √3 * K := by
+  have hleft : 0 ≤ 4 * √(3 : ℝ) * K := by
     positivity
   have hsqrt : (√(3 : ℝ)) ^ 2 = 3 := Real.sq_sqrt (by norm_num)
 
   rw [← sq_le_sq₀ hleft hS]
   calc
-    (4 * √3 * K) ^ 2 = 48 * K ^ 2 := by
+    (4 * √(3 : ℝ) * K) ^ 2 = 48 * K ^ 2 := by
       nlinarith
     _ ≤ S ^ 2 := hsquared
 
