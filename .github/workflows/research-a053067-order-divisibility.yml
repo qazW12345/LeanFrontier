@@ -1,0 +1,52 @@
+name: A053067 order divisibility
+
+on:
+  push:
+    branches:
+      - research/a053067
+    paths:
+      - research/A053067/order-divisibility-request.env
+      - research/A053067/order_divisibility_probe.py
+      - research/A053067/congruence_families.py
+      - .github/workflows/research-a053067-order-divisibility.yml
+
+permissions:
+  contents: read
+
+jobs:
+  order-divisibility:
+    if: github.repository == 'qazW12345/LeanFrontier' && github.ref == 'refs/heads/research/a053067'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Parse request
+        shell: bash
+        run: |
+          set -euo pipefail
+          request="research/A053067/order-divisibility-request.env"
+          bound="$(awk -F= '$1 == "PRIME_BOUND" {print $2}' "$request" | tail -n 1 | tr -d '[:space:]')"
+          top="$(awk -F= '$1 == "TOP" {print $2}' "$request" | tail -n 1 | tr -d '[:space:]')"
+          [[ "$bound" =~ ^[0-9]+$ ]]
+          [[ "$top" =~ ^[0-9]+$ ]]
+          echo "PRIME_BOUND=$bound" >> "$GITHUB_ENV"
+          echo "TOP=$top" >> "$GITHUB_ENV"
+
+      - name: Measure order-divisibility majorant
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p research/A053067/order-divisibility-run
+          python3 research/A053067/order_divisibility_probe.py             --prime-bound "$PRIME_BOUND"             --top "$TOP"             --output research/A053067/order-divisibility-run/series.csv             | tee research/A053067/order-divisibility-run/summary.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: a053067-order-divisibility-${{ github.run_id }}
+          path: research/A053067/order-divisibility-run/
+          if-no-files-found: error
+          retention-days: 90
