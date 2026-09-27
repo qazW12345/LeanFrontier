@@ -100,17 +100,19 @@ def main() -> int:
         raise SystemExit("--top must be positive")
 
     primes = [p for p in primes_up_to(args.prime_bound) if p > 5]
-    families: dict[int, tuple[int, list[int], float]] = {}
+    families: dict[int, tuple[int, list[int], float, int, bool]] = {}
     for p in primes:
         period, roots = zero_family(args.digits, p)
         rho = conditioned_zero_density(period, roots)
-        families[p] = (period, roots, rho)
+        q = pow(10, args.digits, p)
+        linear_degenerate = (7 * q + 1) % p == 0
+        families[p] = (period, roots, rho, q, linear_degenerate)
 
     rows: list[dict[str, float | int]] = []
     for i, p in enumerate(primes):
-        period_p, roots_p, rho_p = families[p]
+        period_p, roots_p, rho_p, q_p, degenerate_p = families[p]
         for r in primes[i + 1 :]:
-            period_r, roots_r, rho_r = families[r]
+            period_r, roots_r, rho_r, q_r, degenerate_r = families[r]
             rho_pr = joint_zero_density(period_p, roots_p, period_r, roots_r)
 
             independent_joint = rho_p * rho_r
@@ -136,6 +138,16 @@ def main() -> int:
                     f"{period_gcd} != {expected_period_gcd}"
                 )
 
+            fourier_scaled_cov = (
+                abs(covariance)
+                * math.sqrt(p * r)
+                * order_p
+                * order_r
+                / order_gcd
+                if not cross_order
+                else None
+            )
+
             rows.append(
                 {
                     "p": p,
@@ -146,7 +158,12 @@ def main() -> int:
                     "order_r": order_r,
                     "order_gcd": order_gcd,
                     "cross_order": int(cross_order),
+                    "degenerate_p": int(degenerate_p),
+                    "degenerate_r": int(degenerate_r),
                     "period_gcd": period_gcd,
+                    "fourier_scaled_cov": (
+                        fourier_scaled_cov if fourier_scaled_cov is not None else ""
+                    ),
                     "rho_p": rho_p,
                     "rho_r": rho_r,
                     "rho_joint": rho_pr,
@@ -178,10 +195,54 @@ def main() -> int:
         else 0.0
     )
 
+    mean_divisor_count = sum(float(families[p][2]) for p in primes)
+    independent_variance = sum(
+        float(families[p][2]) * (1.0 - float(families[p][2]))
+        for p in primes
+    )
+    signed_pair_covariance = sum(float(row["covariance"]) for row in rows)
+    absolute_pair_covariance = sum(abs(float(row["covariance"])) for row in rows)
+    total_variance = independent_variance + 2.0 * signed_pair_covariance
+
     print(
         f"d={args.digits} B={args.prime_bound} primes={len(primes)} "
         f"pairs={len(rows)} mean_abs_log_survival_ratio={mean_abs_log:.9g} "
         f"rms_phi={rms_phi:.9g}"
+    )
+    print(
+        f"divisor_count_mean={mean_divisor_count:.9g} "
+        f"independent_variance={independent_variance:.9g} "
+        f"signed_pair_covariance={signed_pair_covariance:+.9g} "
+        f"absolute_pair_covariance={absolute_pair_covariance:.9g} "
+        f"total_variance={total_variance:.9g} "
+        f"variance_over_mean={total_variance / mean_divisor_count:.9g}"
+    )
+
+    noncross_nondegenerate = [
+        row for row in rows
+        if int(row["cross_order"]) == 0
+        and int(row["degenerate_p"]) == 0
+        and int(row["degenerate_r"]) == 0
+    ]
+    if noncross_nondegenerate:
+        max_fourier_scaled = max(
+            float(row["fourier_scaled_cov"]) for row in noncross_nondegenerate
+        )
+        mean_fourier_scaled = sum(
+            float(row["fourier_scaled_cov"]) for row in noncross_nondegenerate
+        ) / len(noncross_nondegenerate)
+        print(
+            f"fourier_nondegenerate_noncross pairs={len(noncross_nondegenerate)} "
+            f"mean_scaled_cov={mean_fourier_scaled:.9g} "
+            f"max_scaled_cov={max_fourier_scaled:.9g}"
+        )
+
+    degenerate_primes = [
+        p for p in primes if bool(families[p][4])
+    ]
+    print(
+        f"linear_degenerate_primes={len(degenerate_primes)} "
+        f"values={','.join(map(str, degenerate_primes)) if degenerate_primes else '-'}"
     )
 
     for threshold in (13, 29, 53, 101, 211):
