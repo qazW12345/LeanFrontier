@@ -122,16 +122,20 @@ theorem ordered_unique_of_common_twice_odd_prime_power
     modFour_of_even_third_coordinate ha₂ hb₂ hcpos h₂ heven
 
   have hfourSame : (4 : ℤ) ∣ a₁ * a₂ - b₁ * b₂ := by
-    rw [← ZMod.intCast_zmod_eq_zero_iff_dvd (a₁ * a₂ - b₁ * b₂) 4]
-    push_cast
-    rw [hmod₁.1, hmod₂.1, hmod₁.2.1, hmod₂.2.1]
-    norm_num
+    have hz : ((a₁ * a₂ - b₁ * b₂ : ℤ) : ZMod 4) = 0 := by
+      push_cast
+      rw [hmod₁.1, hmod₂.1, hmod₁.2.1, hmod₂.2.1]
+      norm_num
+    simpa using
+      (ZMod.intCast_zmod_eq_zero_iff_dvd (a₁ * a₂ - b₁ * b₂) 4).mp hz
 
   have hfourCross : (4 : ℤ) ∣ a₁ * b₂ - b₁ * a₂ := by
-    rw [← ZMod.intCast_zmod_eq_zero_iff_dvd (a₁ * b₂ - b₁ * a₂) 4]
-    push_cast
-    rw [hmod₁.1, hmod₂.2.1, hmod₁.2.1, hmod₂.1]
-    norm_num
+    have hz : ((a₁ * b₂ - b₁ * a₂ : ℤ) : ZMod 4) = 0 := by
+      push_cast
+      rw [hmod₁.1, hmod₂.2.1, hmod₁.2.1, hmod₂.1]
+      norm_num
+    simpa using
+      (ZMod.intCast_zmod_eq_zero_iff_dvd (a₁ * b₂ - b₁ * a₂) 4).mp hz
 
   have hpOddNat : Odd p :=
     Nat.odd_iff.mpr (hp.eq_two_or_odd.resolve_left hp2)
