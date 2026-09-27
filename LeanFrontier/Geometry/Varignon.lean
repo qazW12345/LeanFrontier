@@ -22,7 +22,7 @@ This formulation is purely affine; no metric or inner-product structure is requi
 
 namespace LeanFrontier.AffineGeometry
 
-variable {V P : Type*} [AddCommGroup V] [Module ℝ V] [AffineSpace V P]
+variable {V P : Type*} [AddCommGroup V] [Module ℝ V] [AddTorsor V P]
 
 /-- **Varignon's theorem.** The four side midpoints of an arbitrary quadrilateral form a
 parallelogram, expressed by equality of both pairs of opposite side vectors. -/
