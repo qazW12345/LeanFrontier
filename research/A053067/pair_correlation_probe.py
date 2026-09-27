@@ -81,6 +81,73 @@ def joint_zero_density(
     return compatible / admissible_classes
 
 
+def divisors(n: int) -> list[int]:
+    result: list[int] = []
+    d = 1
+    while d * d <= n:
+        if n % d == 0:
+            result.append(d)
+            if d * d != n:
+                result.append(n // d)
+        d += 1
+    return sorted(result)
+
+
+def discrepancy_energy_numerator(
+    order: int,
+    roots: list[int],
+    p: int,
+    h: int,
+) -> int:
+    """Return h times the zero-class discrepancy energy modulo h.
+
+    For period p*order, every zero class has an exponent coordinate
+    b = n mod order.  If alpha_c counts zero classes with b=c mod h, then
+
+        h E = h * sum_c alpha_c^2 - (sum_c alpha_c)^2,
+
+    which is integral and avoids floating-point comparisons.
+    """
+
+    if order % h != 0:
+        raise ValueError("h must divide order")
+    counts = [0] * h
+    for root in roots:
+        counts[root % h] += 1
+    total = len(roots)
+    return h * sum(x * x for x in counts) - total * total
+
+
+def verify_linear_degenerate_energy(
+    d: int,
+    p: int,
+    period: int,
+    roots: list[int],
+) -> None:
+    """Check the exact Section 11 energy formula for 7*10^d+1 == 0 mod p."""
+
+    q = pow(10, d, p)
+    if (7 * q + 1) % p != 0:
+        return
+
+    order = period // p
+    epsilon_raw = pow(q, (p - 1) // 2, p)
+    epsilon = 1 if epsilon_raw == 1 else -1
+
+    for h in divisors(order):
+        actual = discrepancy_energy_numerator(order, roots, p, h)
+        if epsilon == 1 or h % 2 == 1:
+            expected = h - 1
+        else:
+            expected = order * order - 2 * order + h - 1
+        if actual != expected:
+            raise RuntimeError(
+                "linear-degenerate energy identity failed for "
+                f"d={d}, p={p}, order={order}, h={h}: "
+                f"{actual} != {expected}"
+            )
+
+
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
     p.add_argument("--digits", type=int, required=True)
@@ -106,6 +173,10 @@ def main() -> int:
         rho = conditioned_zero_density(period, roots)
         q = pow(10, args.digits, p)
         linear_degenerate = (7 * q + 1) % p == 0
+        if linear_degenerate:
+            verify_linear_degenerate_energy(
+                args.digits, p, period, roots
+            )
         families[p] = (period, roots, rho, q, linear_degenerate)
 
     rows: list[dict[str, float | int]] = []
