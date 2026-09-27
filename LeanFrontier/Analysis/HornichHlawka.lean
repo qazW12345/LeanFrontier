@@ -30,10 +30,11 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 private theorem hornich_hlawka_sq_identity (x y z : E) :
     ‖x + y + z‖ ^ 2 + ‖x‖ ^ 2 + ‖y‖ ^ 2 + ‖z‖ ^ 2 =
       ‖x + y‖ ^ 2 + ‖y + z‖ ^ 2 + ‖z + x‖ ^ 2 := by
-  simp only [norm_add_sq_real, inner_add_left, inner_add_right]
+  simp only [norm_add_sq_real, inner_add_left]
   rw [real_inner_comm z x]
   ring
 
+omit [InnerProductSpace ℝ E] in
 private theorem norm_pair_le_total_add_other (x y z : E) :
     ‖x + y‖ ≤ ‖x + y + z‖ + ‖z‖ := by
   calc
@@ -60,9 +61,11 @@ theorem hornich_hlawka (x y z : E) :
   have hxy₂ : 0 ≤ ‖x + y + z‖ + ‖z‖ - ‖x + y‖ :=
     sub_nonneg.mpr (norm_pair_le_total_add_other x y z)
   have hyz₂ : 0 ≤ ‖x + y + z‖ + ‖x‖ - ‖y + z‖ := by
+    apply sub_nonneg.mpr
     have h := norm_pair_le_total_add_other y z x
     simpa only [add_assoc, add_comm, add_left_comm] using h
   have hzx₂ : 0 ≤ ‖x + y + z‖ + ‖y‖ - ‖z + x‖ := by
+    apply sub_nonneg.mpr
     have h := norm_pair_le_total_add_other z x y
     simpa only [add_assoc, add_comm, add_left_comm] using h
 
