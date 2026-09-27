@@ -989,7 +989,419 @@ the full pair-correlation tail may be absolutely summable.
 That stronger statement is not yet proved, but it is now a concrete
 second-moment target.
 
-## 10. Analytic target
+## 10. Fourier energy bound for shared-order discrepancies
+
+The elementary bound in Section 8 throws away cancellation separately in
+each residue class modulo the shared order.  A Fourier transform recovers that
+cancellation simultaneously across all residue classes and removes one full
+factor of the shared-order gcd.
+
+Fix a local prime \(p>5\), put
+
+\[
+q=10^d\bmod p,
+\qquad
+\ell=\operatorname{ord}_p(q),
+\]
+
+and assume
+
+\[
+q\ne1,
+\qquad
+7q+1\not\equiv0\pmod p.
+\]
+
+For \(b\bmod\ell\), let \(N_p(b)\) be the number of roots in
+\(a=n\bmod p\), and write
+
+\[
+N_p(b)=1+e_p(b).
+\]
+
+As above,
+
+\[
+e_p(0)=0,
+\]
+
+while for \(b\ne0\),
+
+\[
+e_p(b)=\chi_p(\Delta_q(q^b)).
+\]
+
+Let \(h\mid\ell\).  Define
+
+\[
+E_c
+=
+\sum_{\substack{b\bmod\ell\\b\equiv c\pmod h}}
+e_p(b),
+\qquad
+c\bmod h.
+\]
+
+Since the constant contribution \(\ell/h\) disappears after centering,
+
+\[
+E_p(h)
+=
+\sum_{c\bmod h}
+\left(
+E_c-\frac1h\sum_{u\bmod h}E_u
+\right)^2.
+\]
+
+Let
+
+\[
+\zeta_h=e^{2\pi i/h}
+\]
+
+and define the Fourier coefficients
+
+\[
+\widehat E(j)
+=
+\sum_{c\bmod h}E_c\zeta_h^{-jc}
+=
+\sum_{b\bmod\ell}e_p(b)\zeta_h^{-jb}.
+\]
+
+For \(j\ne0\), the phase
+
+\[
+q^b\longmapsto \zeta_h^{-jb}
+\]
+
+is a multiplicative character on the subgroup
+\(\langle q\rangle\).  Extend it to a multiplicative character of
+\(\mathbb F_p^\times\), expand the subgroup indicator by the characters
+trivial on \(\langle q\rangle\), and apply the standard Weil bound to the
+resulting complete sums
+
+\[
+\sum_{t\in\mathbb F_p^\times}
+\lambda(t)\chi_p(\Delta_q(t)).
+\]
+
+The nondegeneracy assumptions imply that \(\Delta_q(t)\) is a genuine
+quadratic with two distinct nonzero roots, so every such complete twisted sum
+is \(O(\sqrt p)\), with an absolute implied constant.  The correction at
+\(b=0\) contributes only \(O(1)\).  Therefore, uniformly for every
+\(j\ne0\),
+
+\[
+\boxed{
+|\widehat E(j)|\ll\sqrt p.
+}
+\]
+
+Parseval now gives
+
+\[
+\begin{aligned}
+E_p(h)
+&=
+\frac1h
+\sum_{j=1}^{h-1}
+|\widehat E(j)|^2\\
+&\ll
+\frac{h-1}{h}\,p.
+\end{aligned}
+\]
+
+Hence
+
+\[
+\boxed{
+E_p(h)\ll p
+}
+\]
+
+uniformly in every divisor \(h\mid\ell\).
+
+This improves the earlier pointwise-coset estimate
+
+\[
+E_p(h)\ll hp
+\]
+
+by a full factor of \(h\).
+
+### Pair-covariance consequence
+
+In the prime-width generator regime, let \(p<r\) be a non-cross pair and put
+
+\[
+\ell_p=\operatorname{ord}_p(10),
+\qquad
+\ell_r=\operatorname{ord}_r(10),
+\qquad
+h=\gcd(\ell_p,\ell_r).
+\]
+
+For nondegenerate \(p,r\), inserting the Fourier energy bounds into the exact
+covariance identity gives
+
+\[
+\boxed{
+|\rho_{p,r}-\rho_p\rho_r|
+\ll
+\frac{h}
+{\sqrt{pr}\,\ell_p\ell_r}.
+}
+\]
+
+The fixed mod-60 admissibility restriction only refines the exponent classes
+by divisors of 60.  Repeating the same Fourier argument on those finitely many
+refined classes changes only the absolute constant, so
+
+\[
+\boxed{
+|\rho^S_{p,r}-\rho^S_p\rho^S_r|
+\ll
+\frac{h}
+{\sqrt{pr}\,\ell_p\ell_r}.
+}
+\]
+
+This is strictly stronger than the earlier character-sum/Cauchy estimate with
+\(h^2\) in the numerator.
+
+### Bounded shared-order gcd is now summable
+
+Fix any constant \(H\).  Restrict to non-cross, nondegenerate local-prime
+pairs satisfying
+
+\[
+\gcd(\ell_p,\ell_r)\le H.
+\]
+
+Then
+
+\[
+\sum_{p<r}
+|\rho^S_{p,r}-\rho^S_p\rho^S_r|
+\ll_H
+\left(
+\sum_p\frac1{\sqrt p\,\ell_p}
+\right)^2.
+\]
+
+The one-prime theory already proves from Pappalardi's reciprocal-order
+estimate that
+
+\[
+\sum_p\frac1{\sqrt p\,\ell_p}<\infty.
+\]
+
+Therefore
+
+\[
+\boxed{
+\sum_{\substack{p<r\\
+p\nmid\ell_r\\
+\gcd(\ell_p,\ell_r)\le H}}
+|\rho^S_{p,r}-\rho^S_p\rho^S_r|
+<\infty
+}
+\]
+
+after omitting the explicitly isolated linear-degenerate primes.
+
+For prime widths \(d\), every local prime \(p<d\) has
+
+\[
+\operatorname{ord}_p(10^d)=\ell_p,
+\]
+
+so this gives a uniform absolutely summable pair-correlation contribution
+from every bounded shared-order-gcd sector as the prime width grows.
+
+The remaining non-cross analytic obstruction has therefore narrowed from
+"all shared periods" to pairs for which
+
+\[
+\gcd(\ell_p,\ell_r)\to\infty.
+\]
+
+That is a much more arithmetic exceptional set.
+
+## 11. Exact linear-degenerate energy
+
+The excluded case
+
+\[
+7q+1\equiv0\pmod p
+\]
+
+can be described exactly rather than hidden inside an \(O(1)\) exceptional
+set.
+
+Assume \(q\ne1\) and \(7q+1\equiv0\pmod p\).  Then the discriminant becomes
+linear:
+
+\[
+\Delta_q(t)
+=
+(q-1)(18q-2)t.
+\]
+
+Put
+
+\[
+\kappa
+=
+\chi_p((q-1)(18q-2)),
+\qquad
+\varepsilon
+=
+\chi_p(q)\in\{\pm1\}.
+\]
+
+For \(b\ne0\),
+
+\[
+e_p(b)=\kappa\varepsilon^b,
+\]
+
+while \(e_p(0)=0\).
+
+Let \(h\mid\ell\) and \(M=\ell/h\).  A direct geometric-series calculation
+gives the exact discrepancy energy
+
+\[
+\boxed{
+E_p(h)=\frac{h-1}{h}
+}
+\]
+
+whenever either
+
+\[
+\varepsilon=1
+\]
+
+or \(h\) is odd.
+
+The only large-energy subcase is
+
+\[
+\varepsilon=-1,
+\qquad
+h\ {\rm even},
+\]
+
+for which
+
+\[
+\boxed{
+E_p(h)
+=
+\frac{\ell^2}{h}
+-\frac{2\ell}{h}
++1-\frac1h.
+}
+\]
+
+Thus even the linear-degenerate primes are completely structured: large
+shared-order discrepancy can occur only when \(q\) is a quadratic nonresidue
+and the shared divisor \(h\) is even.
+
+In the \(d=3001,\ p<3000\) generator experiment, exactly one local prime,
+\(p=59\), was linear-degenerate.
+
+## 12. Second-moment diagnostic at d = 3001
+
+The extended exact probe now also records the variance of the number of local
+prime divisors over one common conditioned period.
+
+For
+
+\[
+d=3001,
+\qquad
+5<p<3000,
+\]
+
+run 36291155701 gives
+
+\[
+\sum_p\rho_p
+=
+1.20194058,
+\]
+
+and the variance predicted from independent Bernoulli divisibility events is
+
+\[
+\sum_p\rho_p(1-\rho_p)
+=
+1.15981685.
+\]
+
+The signed sum of all exact pair covariances is only
+
+\[
+\sum_{p<r}
+(\rho_{p,r}-\rho_p\rho_r)
+=
++0.00378534497,
+\]
+
+whereas the sum of their absolute values is
+
+\[
+0.0813831944.
+\]
+
+Consequently the exact pair-corrected variance is
+
+\[
+1.16738754,
+\]
+
+so
+
+\[
+\boxed{
+\frac{\operatorname{Var}(\#\{p:p\mid A(n)\})}
+{\mathbb E\,\#\{p:p\mid A(n)\}}
+=
+0.971252288.
+}
+\]
+
+This is computational evidence, not a theorem.  It shows that the aggregate
+second moment is substantially better behaved than an absolute-value sum of
+pair errors would suggest.
+
+For the non-cross, nondegenerate pairs, the probe also records the Fourier
+normalization
+
+\[
+|\operatorname{Cov}_{p,r}|
+\frac{\sqrt{pr}\,\ell_p\ell_r}
+{\gcd(\ell_p,\ell_r)}.
+\]
+
+Across 90077 such pairs at \(d=3001\), its mean is
+
+\[
+0.176669753
+\]
+
+and its maximum is
+
+\[
+7.06373084,
+\]
+
+consistent with the uniform \(O(1)\) scale proved above.
+
+## 13. Analytic target
 
 For generator-regime local primes, seek a bound of the schematic form
 
