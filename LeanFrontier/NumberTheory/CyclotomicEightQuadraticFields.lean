@@ -196,7 +196,7 @@ theorem classicalQuadraticFields_pairwise_distinct :
 /-- Every quadratic intermediate field of `ℚ(ζ₈)/ℚ` is one of the three classical fields:
 `ℚ(√2)`, `ℚ(√-2)`, or `ℚ(i)`. The quadratic-degree hypothesis is carried by the
 compact subtype `CyclotomicEightQuadraticFields`. -/
-theorem quadraticIntermediateField_eq_classical
+private theorem quadraticIntermediateField_eq_classical
     (K : CyclotomicEightQuadraticFields) :
     K.1 = sqrtTwoField ∨ K.1 = sqrtNegTwoField ∨ K.1 = gaussianField := by
   classical
@@ -242,6 +242,43 @@ theorem quadraticIntermediateField_eq_classical
       simpa [B] using congrArg Subtype.val hKB))
   · exact Or.inr (Or.inr (by
       simpa [C] using congrArg Subtype.val hKC))
+
+
+/-- The set of all degree-two intermediate fields of the eighth cyclotomic extension. -/
+def cyclotomicEightQuadraticFieldSet :
+    Set (IntermediateField ℚ CyclotomicEight) :=
+  {K | Module.finrank ℚ K = 2}
+
+/-- The three explicitly constructed classical quadratic fields. -/
+def classicalQuadraticFieldSet :
+    Set (IntermediateField ℚ CyclotomicEight) :=
+  {sqrtTwoField, sqrtNegTwoField, gaussianField}
+
+/-- The quadratic intermediate fields of `ℚ(ζ₈)/ℚ` are exactly
+`ℚ(√2)`, `ℚ(√-2)`, and `ℚ(i)`. -/
+theorem cyclotomicEight_quadraticFieldSet_eq_classical :
+    cyclotomicEightQuadraticFieldSet = classicalQuadraticFieldSet := by
+  ext K
+  constructor
+  · intro hK
+    have hdeg : Module.finrank ℚ K = 2 := by
+      simpa [cyclotomicEightQuadraticFieldSet] using hK
+    have hclass :=
+      quadraticIntermediateField_eq_classical
+        (⟨K, hdeg⟩ : CyclotomicEightQuadraticFields)
+    rcases hclass with h | h | h
+    · simp [classicalQuadraticFieldSet, h]
+    · simp [classicalQuadraticFieldSet, h]
+    · simp [classicalQuadraticFieldSet, h]
+  · intro hK
+    have hclass :
+        K = sqrtTwoField ∨ K = sqrtNegTwoField ∨ K = gaussianField := by
+      simpa [classicalQuadraticFieldSet] using hK
+    change Module.finrank ℚ K = 2
+    rcases hclass with h | h | h
+    · simpa [h] using sqrtTwoField_degree_explicit
+    · simpa [h] using sqrtNegTwoField_degree_explicit
+    · simpa [h] using gaussianField_degree_explicit
 
 end
 
