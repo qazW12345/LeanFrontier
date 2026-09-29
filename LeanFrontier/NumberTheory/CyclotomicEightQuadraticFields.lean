@@ -195,7 +195,7 @@ theorem classicalQuadraticFields_pairwise_distinct :
 
 /-- Every quadratic intermediate field of `ℚ(ζ₈)/ℚ` is one of the three classical fields:
 `ℚ(√2)`, `ℚ(√-2)`, or `ℚ(i)`. -/
-theorem quadraticIntermediateField_eq_classical
+private theorem quadraticIntermediateField_eq_classical_aux
     (K : CyclotomicEightQuadraticFields) :
     K.1 = sqrtTwoField ∨ K.1 = sqrtNegTwoField ∨ K.1 = gaussianField := by
   classical
@@ -242,6 +242,44 @@ theorem quadraticIntermediateField_eq_classical
       simpa [Q, B] using congrArg Subtype.val hQB))
   · exact Or.inr (Or.inr (by
       simpa [Q, C] using congrArg Subtype.val hQC))
+
+
+/-- The set of all quadratic intermediate fields of the eighth cyclotomic extension. -/
+def cyclotomicEightQuadraticFieldSet :
+    Set (IntermediateField ℚ CyclotomicEight) :=
+  {K | Module.finrank ℚ K = 2}
+
+/-- The three classical quadratic fields inside the eighth cyclotomic field. -/
+def classicalQuadraticFieldSet :
+    Set (IntermediateField ℚ CyclotomicEight) :=
+  {sqrtTwoField, sqrtNegTwoField, gaussianField}
+
+/-- The quadratic intermediate fields of `ℚ(ζ₈)/ℚ` are exactly
+`ℚ(√2)`, `ℚ(√-2)`, and `ℚ(i)`. -/
+theorem cyclotomicEight_quadraticFieldSet_eq_classical :
+    cyclotomicEightQuadraticFieldSet = classicalQuadraticFieldSet := by
+  ext K
+  constructor
+  · intro hK
+    have hdeg : Module.finrank ℚ K = 2 := by
+      simpa [cyclotomicEightQuadraticFieldSet] using hK
+    have h :=
+      quadraticIntermediateField_eq_classical_aux
+        (K := (⟨K, hdeg⟩ : CyclotomicEightQuadraticFields))
+    simpa [classicalQuadraticFieldSet] using h
+  · intro hK
+    simp only [classicalQuadraticFieldSet, Set.mem_insert_iff,
+      Set.mem_singleton_iff] at hK
+    rcases hK with hK | hK | hK
+    · subst K
+      simpa [cyclotomicEightQuadraticFieldSet] using
+        sqrtTwoField_degree_explicit
+    · subst K
+      simpa [cyclotomicEightQuadraticFieldSet] using
+        sqrtNegTwoField_degree_explicit
+    · subst K
+      simpa [cyclotomicEightQuadraticFieldSet] using
+        gaussianField_degree_explicit
 
 end
 
