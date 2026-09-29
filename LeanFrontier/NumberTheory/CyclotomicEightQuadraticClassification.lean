@@ -110,7 +110,7 @@ private theorem klein_index_two_iff_finrank_one (H : Subgroup KleinFourModel) :
     calc
       Nat.card KleinFourModel = Nat.card F2Plane :=
         Nat.card_congr Multiplicative.ofAdd.symm
-      _ = 4 := by simp [F2Plane, Nat.card_zmod]
+      _ = 4 := by simp [F2Plane]
   have hcard : Nat.card H = Nat.card S := card_kleinSubgroup_eq_card_subspace H
   have hpow : Nat.card S = 2 ^ Module.finrank (ZMod 2) S := by
     rw [Module.natCard_eq_pow_finrank (K := ZMod 2), Nat.card_zmod]
@@ -153,7 +153,7 @@ theorem cyclotomicEight_quadraticFields_card :
       Nat.card_congr quadraticFieldsEquivProjectiveLine
     _ = Nat.card (ZMod 2) + 1 :=
       Projectivization.card_of_finrank_two (ZMod 2) F2Plane (by simp)
-    _ = 3 := by simp [Nat.card_zmod]
+    _ = 3 := by simp
 
 end
 
