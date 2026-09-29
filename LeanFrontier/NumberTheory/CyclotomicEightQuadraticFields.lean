@@ -267,18 +267,24 @@ theorem cyclotomicEight_quadraticFieldSet_eq_classical :
       quadraticIntermediateField_eq_classical
         (⟨K, hdeg⟩ : CyclotomicEightQuadraticFields)
     rcases hclass with h | h | h
-    · simp [classicalQuadraticFieldSet, h]
-    · simp [classicalQuadraticFieldSet, h]
-    · simp [classicalQuadraticFieldSet, h]
+    · change K = sqrtTwoField at h
+      simp [classicalQuadraticFieldSet, h]
+    · change K = sqrtNegTwoField at h
+      simp [classicalQuadraticFieldSet, h]
+    · change K = gaussianField at h
+      simp [classicalQuadraticFieldSet, h]
   · intro hK
     have hclass :
         K = sqrtTwoField ∨ K = sqrtNegTwoField ∨ K = gaussianField := by
       simpa [classicalQuadraticFieldSet] using hK
     change Module.finrank ℚ K = 2
     rcases hclass with h | h | h
-    · simpa [h] using sqrtTwoField_degree_explicit
-    · simpa [h] using sqrtNegTwoField_degree_explicit
-    · simpa [h] using gaussianField_degree_explicit
+    · subst K
+      exact sqrtTwoField_degree_explicit
+    · subst K
+      exact sqrtNegTwoField_degree_explicit
+    · subst K
+      exact gaussianField_degree_explicit
 
 end
 
