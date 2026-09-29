@@ -40,6 +40,14 @@ local instance cyclotomicEight_isCyclotomic_classification :
     IsCyclotomicExtension {8} ℚ CyclotomicEight :=
   CyclotomicField.isCyclotomicExtension 8 ℚ
 
+local instance cyclotomicEight_finiteDimensional_classification :
+    FiniteDimensional ℚ CyclotomicEight :=
+  IsCyclotomicExtension.finiteDimensional {8} ℚ CyclotomicEight
+
+local instance cyclotomicEight_isGalois_classification :
+    IsGalois ℚ CyclotomicEight :=
+  IsCyclotomicExtension.isGalois {8} ℚ CyclotomicEight
+
 private abbrev GalEight := Gal(CyclotomicEight/ℚ)
 private abbrev KleinFourModel := Multiplicative (ZMod 2 × ZMod 2)
 private abbrev F2Plane := ZMod 2 × ZMod 2
@@ -57,9 +65,8 @@ private def OneDimensionalF2Subspaces :=
 private noncomputable def quadraticFieldsEquivIndexTwoGal :
     CyclotomicEightQuadraticFields ≃ IndexTwoSubgroups GalEight where
   toFun K :=
-    ⟨K.1.fixingSubgroup, by
-      rw [← IntermediateField.finrank_eq_fixingSubgroup_index K.1]
-      exact K.2⟩
+    ⟨K.1.fixingSubgroup,
+      (IntermediateField.finrank_eq_fixingSubgroup_index K.1).symm.trans K.2⟩
   invFun H :=
     ⟨(IsGalois.intermediateFieldEquivSubgroup :
         IntermediateField ℚ CyclotomicEight ≃o (Subgroup GalEight)ᵒᵈ).symm
@@ -81,8 +88,8 @@ private noncomputable def galIndexTwoEquivKleinIndexTwo :
     IndexTwoSubgroups GalEight ≃ IndexTwoSubgroups KleinFourModel :=
   Equiv.subtypeEquiv cyclotomicEightGalEquivKleinFour.mapSubgroup.toEquiv fun H => by
     change
-      (Subgroup.map (cyclotomicEightGalEquivKleinFour : GalEight →* KleinFourModel) H).index = 2 ↔
-        H.index = 2
+      H.index = 2 ↔
+        (Subgroup.map (cyclotomicEightGalEquivKleinFour : GalEight →* KleinFourModel) H).index = 2
     rw [Subgroup.index_map_equiv]
 
 private noncomputable def kleinSubgroupToF2Subspace :
@@ -98,7 +105,11 @@ private theorem card_kleinSubgroup_eq_card_subspace (H : Subgroup KleinFourModel
 private theorem klein_index_two_iff_finrank_one (H : Subgroup KleinFourModel) :
     H.index = 2 ↔ Module.finrank (ZMod 2) (kleinSubgroupToF2Subspace H) = 1 := by
   let S := kleinSubgroupToF2Subspace H
-  have hamb : Nat.card KleinFourModel = 4 := by decide
+  have hamb : Nat.card KleinFourModel = 4 := by
+    calc
+      Nat.card KleinFourModel = Nat.card F2Plane :=
+        Nat.card_congr Multiplicative.ofAdd.symm
+      _ = 4 := by simp [F2Plane, Nat.card_zmod]
   have hcard : Nat.card H = Nat.card S := card_kleinSubgroup_eq_card_subspace H
   have hpow : Nat.card S = 2 ^ Module.finrank (ZMod 2) S := by
     rw [Module.natCard_eq_pow_finrank (K := ZMod 2), Nat.card_zmod]
@@ -130,15 +141,18 @@ private noncomputable def quadraticFieldsEquivProjectiveLine :
   quadraticFieldsEquivIndexTwoGal.trans <|
     galIndexTwoEquivKleinIndexTwo.trans <|
       kleinIndexTwoEquivOneDimensional.trans <|
-        Projectivization.equivSubmodule.symm
+        (Projectivization.equivSubmodule (ZMod 2) F2Plane).symm
 
 /-- The eighth cyclotomic field has exactly three quadratic intermediate fields. -/
 theorem cyclotomicEight_quadraticFields_card :
     Nat.card CyclotomicEightQuadraticFields = 3 := by
-  rw [Nat.card_congr quadraticFieldsEquivProjectiveLine]
-  have hdim : Module.finrank (ZMod 2) F2Plane = 2 := by simp
-  rw [Projectivization.card_of_finrank_two (ZMod 2) F2Plane hdim, Nat.card_zmod]
-  norm_num
+  calc
+    Nat.card CyclotomicEightQuadraticFields =
+        Nat.card (ℙ (ZMod 2) F2Plane) :=
+      Nat.card_congr quadraticFieldsEquivProjectiveLine
+    _ = Nat.card (ZMod 2) + 1 :=
+      Projectivization.card_of_finrank_two (ZMod 2) F2Plane (by simp)
+    _ = 3 := by simp [Nat.card_zmod]
 
 end
 
