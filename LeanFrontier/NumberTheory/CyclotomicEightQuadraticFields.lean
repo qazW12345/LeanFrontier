@@ -196,9 +196,8 @@ theorem classicalQuadraticFields_pairwise_distinct :
 /-- Every quadratic intermediate field of `ℚ(ζ₈)/ℚ` is one of the three classical fields:
 `ℚ(√2)`, `ℚ(√-2)`, or `ℚ(i)`. -/
 theorem quadraticIntermediateField_eq_classical
-    (K : IntermediateField ℚ CyclotomicEight)
-    (hK : Module.finrank ℚ K = 2) :
-    K = sqrtTwoField ∨ K = sqrtNegTwoField ∨ K = gaussianField := by
+    (K : CyclotomicEightQuadraticFields) :
+    K.1 = sqrtTwoField ∨ K.1 = sqrtNegTwoField ∨ K.1 = gaussianField := by
   classical
   let A : CyclotomicEightQuadraticFields :=
     ⟨sqrtTwoField, sqrtTwoField_degree_explicit⟩
@@ -206,7 +205,7 @@ theorem quadraticIntermediateField_eq_classical
     ⟨sqrtNegTwoField, sqrtNegTwoField_degree_explicit⟩
   let C : CyclotomicEightQuadraticFields :=
     ⟨gaussianField, gaussianField_degree_explicit⟩
-  let Q : CyclotomicEightQuadraticFields := ⟨K, hK⟩
+  let Q : CyclotomicEightQuadraticFields := K
   have hAB : A ≠ B := by
     intro h
     apply sqrtTwoField_ne_sqrtNegTwoField
