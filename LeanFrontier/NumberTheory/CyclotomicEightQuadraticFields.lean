@@ -194,8 +194,9 @@ theorem classicalQuadraticFields_pairwise_distinct :
     sqrtNegTwoField_ne_gaussianField⟩
 
 /-- Every quadratic intermediate field of `ℚ(ζ₈)/ℚ` is one of the three classical fields:
-`ℚ(√2)`, `ℚ(√-2)`, or `ℚ(i)`. -/
-private theorem quadraticIntermediateField_eq_classical_aux
+`ℚ(√2)`, `ℚ(√-2)`, or `ℚ(i)`. The quadratic-degree hypothesis is carried by the
+compact subtype `CyclotomicEightQuadraticFields`. -/
+theorem quadraticIntermediateField_eq_classical
     (K : CyclotomicEightQuadraticFields) :
     K.1 = sqrtTwoField ∨ K.1 = sqrtNegTwoField ∨ K.1 = gaussianField := by
   classical
@@ -205,7 +206,6 @@ private theorem quadraticIntermediateField_eq_classical_aux
     ⟨sqrtNegTwoField, sqrtNegTwoField_degree_explicit⟩
   let C : CyclotomicEightQuadraticFields :=
     ⟨gaussianField, gaussianField_degree_explicit⟩
-  let Q : CyclotomicEightQuadraticFields := K
   have hAB : A ≠ B := by
     intro h
     apply sqrtTwoField_ne_sqrtNegTwoField
@@ -231,55 +231,17 @@ private theorem quadraticIntermediateField_eq_classical_aux
     exact cyclotomicEight_quadraticFields_card
   have hsuniv : s = Finset.univ :=
     Finset.eq_univ_of_card s (hs.trans htype.symm)
-  have hQ : Q ∈ s := by
+  have hK : K ∈ s := by
     rw [hsuniv]
     simp
-  simp only [s, Finset.mem_insert, Finset.mem_singleton] at hQ
-  rcases hQ with hQA | hQB | hQC
+  simp only [s, Finset.mem_insert, Finset.mem_singleton] at hK
+  rcases hK with hKA | hKB | hKC
   · exact Or.inl (by
-      simpa [Q, A] using congrArg Subtype.val hQA)
+      simpa [A] using congrArg Subtype.val hKA)
   · exact Or.inr (Or.inl (by
-      simpa [Q, B] using congrArg Subtype.val hQB))
+      simpa [B] using congrArg Subtype.val hKB))
   · exact Or.inr (Or.inr (by
-      simpa [Q, C] using congrArg Subtype.val hQC))
-
-
-/-- The set of all quadratic intermediate fields of the eighth cyclotomic extension. -/
-def cyclotomicEightQuadraticFieldSet :
-    Set (IntermediateField ℚ CyclotomicEight) :=
-  {K | Module.finrank ℚ K = 2}
-
-/-- The three classical quadratic fields inside the eighth cyclotomic field. -/
-def classicalQuadraticFieldSet :
-    Set (IntermediateField ℚ CyclotomicEight) :=
-  {sqrtTwoField, sqrtNegTwoField, gaussianField}
-
-/-- The quadratic intermediate fields of `ℚ(ζ₈)/ℚ` are exactly
-`ℚ(√2)`, `ℚ(√-2)`, and `ℚ(i)`. -/
-theorem cyclotomicEight_quadraticFieldSet_eq_classical :
-    cyclotomicEightQuadraticFieldSet = classicalQuadraticFieldSet := by
-  ext K
-  constructor
-  · intro hK
-    have hdeg : Module.finrank ℚ K = 2 := by
-      simpa [cyclotomicEightQuadraticFieldSet] using hK
-    have h :=
-      quadraticIntermediateField_eq_classical_aux
-        (K := (⟨K, hdeg⟩ : CyclotomicEightQuadraticFields))
-    simpa [classicalQuadraticFieldSet] using h
-  · intro hK
-    simp only [classicalQuadraticFieldSet, Set.mem_insert_iff,
-      Set.mem_singleton_iff] at hK
-    rcases hK with hK | hK | hK
-    · subst K
-      simpa [cyclotomicEightQuadraticFieldSet] using
-        sqrtTwoField_degree_explicit
-    · subst K
-      simpa [cyclotomicEightQuadraticFieldSet] using
-        sqrtNegTwoField_degree_explicit
-    · subst K
-      simpa [cyclotomicEightQuadraticFieldSet] using
-        gaussianField_degree_explicit
+      simpa [C] using congrArg Subtype.val hKC))
 
 end
 
