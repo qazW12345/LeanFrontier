@@ -63,33 +63,27 @@ private def OneDimensionalF2Subspaces :=
   {S : Submodule (ZMod 2) F2Plane // Module.finrank (ZMod 2) S = 1}
 
 private noncomputable def quadraticFieldsEquivIndexTwoGal :
-    CyclotomicEightQuadraticFields ≃ IndexTwoSubgroups GalEight := by
-  let e : IntermediateField ℚ CyclotomicEight ≃o (Subgroup GalEight)ᵒᵈ :=
-    IsGalois.intermediateFieldEquivSubgroup
-  refine
-    { toFun := fun K =>
-        ⟨K.1.fixingSubgroup,
-          (IntermediateField.finrank_eq_fixingSubgroup_index
-            CyclotomicEight K.1).symm.trans K.2⟩
-      invFun := fun H => ?_
-      left_inv := fun K => ?_
-      right_inv := fun H => ?_ }
-  · let K : IntermediateField ℚ CyclotomicEight :=
-      e.symm (OrderDual.toDual H.1)
-    refine ⟨K, ?_⟩
-    calc
-      Module.finrank ℚ K = K.fixingSubgroup.index :=
-        IntermediateField.finrank_eq_fixingSubgroup_index CyclotomicEight K
-      _ = H.1.index := by
-        have h : e K = OrderDual.toDual H.1 := e.apply_symm_apply _
-        simpa using
-          congrArg (fun D : (Subgroup GalEight)ᵒᵈ => D.ofDual.index) h
-      _ = 2 := H.2
-  · apply Subtype.ext
-    exact e.symm_apply_apply K.1
-  · apply Subtype.ext
-    have h := e.apply_symm_apply (OrderDual.toDual H.1)
-    exact congrArg OrderDual.ofDual h
+    CyclotomicEightQuadraticFields ≃ IndexTwoSubgroups GalEight where
+  toFun K :=
+    ⟨K.1.fixingSubgroup,
+      (IntermediateField.finrank_eq_fixingSubgroup_index
+        CyclotomicEight K.1).symm.trans K.2⟩
+  invFun H :=
+    ⟨IntermediateField.fixedField H.1, by
+      calc
+        Module.finrank ℚ (IntermediateField.fixedField H.1) =
+            (IntermediateField.fixedField H.1).fixingSubgroup.index :=
+          IntermediateField.finrank_eq_fixingSubgroup_index
+            CyclotomicEight (IntermediateField.fixedField H.1)
+        _ = H.1.index := by
+          rw [IntermediateField.fixingSubgroup_fixedField]
+        _ = 2 := H.2⟩
+  left_inv K := by
+    apply Subtype.ext
+    exact IsGalois.fixedField_fixingSubgroup K.1
+  right_inv H := by
+    apply Subtype.ext
+    exact IntermediateField.fixingSubgroup_fixedField H.1
 
 private noncomputable def galIndexTwoEquivKleinIndexTwo :
     IndexTwoSubgroups GalEight ≃ IndexTwoSubgroups KleinFourModel :=
