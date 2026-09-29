@@ -81,8 +81,9 @@ private noncomputable def quadraticFieldsEquivIndexTwoGal :
       Module.finrank ℚ K = K.fixingSubgroup.index :=
         IntermediateField.finrank_eq_fixingSubgroup_index CyclotomicEight K
       _ = H.1.index := by
-        change (e K).ofDual.index = H.1.index
-        rw [show e K = OrderDual.toDual H.1 from e.apply_symm_apply _]
+        have h : e K = OrderDual.toDual H.1 := e.apply_symm_apply _
+        simpa using
+          congrArg (fun D : (Subgroup GalEight)ᵒᵈ => D.ofDual.index) h
       _ = 2 := H.2
   · apply Subtype.ext
     exact e.symm_apply_apply K.1
