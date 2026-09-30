@@ -1,0 +1,17 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "augmented-descartes-completion-reflection",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.CurvatureCenter.orientedCompletion_augmentedCoordinates_eq_or_eq_reflected"
+  ],
+  "base_mathlib_revision": "v4.34.1",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the curvature-center / Apollonian formalization. The signed geometric Descartes theorem and the positive geometry-to-Vieta completion bridge had both passed LeanFrontier's restricted receiver. GPT-5.6 Sol / ChatGPT then addressed the branch-alignment gap left by separate curvature and bend-center two-root theorems. For an oriented Descartes configuration it represents the four augmented curvature-center rows as a 4x4 matrix W with the fixed Wilker Gram matrix. For a second completion W' sharing the first three rows and the same Gram matrix, it constructs A = W' W^{-1}; A fixes the first three coordinate rows and preserves the tangency Gram form. The final row is forced algebraically to be either (0,0,0,1) or (2,2,2,-1). Hence the replacement circle's entire augmented coordinate row is either the old row or exactly 2 times the first three rows minus the old fourth row. This aligns curvature, co-curvature, and both bend-center components on one Vieta branch. The human did not author or materially edit the Lean text. No claim of new mathematics is made."
+}
