@@ -1,0 +1,19 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "curvature-center-wilker-tangency",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.CurvatureCenter.circlePairing_self",
+    "LeanFrontier.CurvatureCenter.two_mul_circlePairing",
+    "LeanFrontier.CurvatureCenter.isExternallyTangent_iff_circlePairing_eq_neg_one"
+  ],
+  "base_mathlib_revision": "v4.34.1",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the curvature-center / Apollonian formalization. GPT-5.6 Sol / ChatGPT had already prepared a stacked Hermitian bridge candidate on top of the receiver-green curvature-center representation. While that candidate was validating, the producer checked the classical augmented Euclidean Descartes framework of Lagarias, Mallows and Wilks, whose augmented curvature-center coordinates are (bar b, b, b x, b y) with bar b = b(x^2+y^2)-b^{-1}. This candidate formalizes the next matrix-ready layer: the four real augmented coordinates, their symmetric Wilker/Lorentz pairing, normalization of every nonzero-curvature circle to pairing one with itself, an exact centered-distance formula for the pairing of two circles, and the equivalence between positive-curvature external tangency and pairing -1. This is intended as the direct precursor to assembling a four-circle Gram matrix and deriving the accepted Descartes quadratic form. GPT-5.6 Sol / ChatGPT selected and authored the definitions, statements, and proofs; the human did not author or materially edit the Lean text. No claim of new mathematics is made."
+}
