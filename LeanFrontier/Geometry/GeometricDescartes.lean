@@ -99,7 +99,7 @@ private theorem augmentedGram_eq_tangentGram
 private theorem curvatureColumn_isQuadruple
     (W : SquareMatrix)
     (hgram : W * wilkerMatrix * Wᵀ = tangentGram) :
-    DescatesCircle.IsQuadruple (W 0 1) (W 1 1) (W 2 1) (W 3 1) := by
+    DescartesCircle.IsQuadruple (W 0 1) (W 1 1) (W 2 1) (W 3 1) := by
   let L : SquareMatrix := wilkerMatrix * Wᵀ * tangentGramInv
   have hWL : W * L = (1 : SquareMatrix) := by
     dsimp [L]
@@ -115,7 +115,7 @@ private theorem curvatureColumn_isQuadruple
     simpa [L, Matrix.mul_assoc, wilkerMatrixInv_mul_wilkerMatrix] using hh
   have h11 := congrArg (fun M : SquareMatrix => M (1 : Index) (1 : Index)) hq
   simp [Matrix.mul_apply, tangentGramInv, wilkerMatrixInv, Fin.sum_univ_four] at h11
-  unfold DescatesCircle.IsQuadruple
+  unfold DescartesCircle.IsQuadruple
   linear_combination -4 * h11
 
 /-- The curvatures of four pairwise externally tangent positive-curvature Euclidean circles
