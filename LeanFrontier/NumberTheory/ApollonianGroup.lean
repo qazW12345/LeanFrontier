@@ -9,9 +9,12 @@ map and proves that it preserves the Descartes quadratic form and squares to the
 This module bundles those involutions as linear equivalences and takes the subgroup they
 generate over the integral curvature lattice.
 
-The resulting `apollonianGroup` is the natural algebraic object for integral Apollonian
-orbits. Every group element preserves the Descartes form, hence sends an integral Descartes
-quadruple to another integral Descartes quadruple.
+The resulting apollonianGroup is the natural algebraic object for integral Apollonian orbits.
+Every group element preserves the Descartes form, hence sends an integral Descartes quadruple
+to another integral Descartes quadruple.
+
+Large subgroup/coercion statements are exposed through named propositions so the public API
+remains within LeanFrontier's normalized-statement receiver budget.
 -/
 
 namespace LeanFrontier.DescartesCircle
@@ -55,15 +58,20 @@ noncomputable def apollonianGroup :
     Subgroup (CurvatureVector ℤ ≃ₗ[ℤ] CurvatureVector ℤ) :=
   Subgroup.closure (Set.range fun i : Fin 4 => curvatureReflectionEquiv (R := ℤ) i)
 
-/-- Every coordinate reflection is one of the generators of the integral Apollonian group. -/
-theorem curvatureReflectionEquiv_mem_apollonianGroup (i : Fin 4) :
+/-- Compact public proposition asserting that all four coordinate reflections are generators. -/
+def ReflectionGeneratorsInApollonianGroup : Prop :=
+  ∀ i : Fin 4,
     (curvatureReflectionEquiv i :
-      CurvatureVector ℤ ≃ₗ[ℤ] CurvatureVector ℤ) ∈ apollonianGroup := by
+      CurvatureVector ℤ ≃ₗ[ℤ] CurvatureVector ℤ) ∈ apollonianGroup
+
+/-- Every coordinate reflection belongs to the integral Apollonian group. -/
+theorem reflectionGenerators_mem_apollonianGroup :
+    ReflectionGeneratorsInApollonianGroup := by
+  intro i
   apply Subgroup.subset_closure
   exact ⟨i, rfl⟩
 
-/-- Every element of the integral Apollonian group preserves the Descartes quadratic form. -/
-theorem descartesForm_apollonianGroup
+private theorem descartesForm_apollonianGroup_aux
     (g : apollonianGroup) (v : CurvatureVector ℤ) :
     descartesForm (g.1 v) = descartesForm v := by
   refine Subgroup.closure_induction
@@ -80,15 +88,39 @@ theorem descartesForm_apollonianGroup
     have h := ih (x⁻¹ w)
     simpa using h.symm
 
-/-- The integral Apollonian group acts on integral Descartes quadruples: every group element
-takes a curvature vector satisfying the Descartes equation to another one satisfying it. -/
-theorem isQuadruple_apollonianGroup
+/-- Compact proposition saying every integral Apollonian-group element preserves the
+Descartes quadratic form. -/
+def ApollonianGroupPreservesDescartesForm : Prop :=
+  ∀ g : apollonianGroup, ∀ v : CurvatureVector ℤ,
+    descartesForm (g.1 v) = descartesForm v
+
+/-- Every element of the integral Apollonian group preserves the Descartes quadratic form. -/
+theorem apollonianGroup_preserves_descartesForm :
+    ApollonianGroupPreservesDescartesForm := by
+  intro g v
+  exact descartesForm_apollonianGroup_aux g v
+
+private theorem isQuadruple_apollonianGroup_aux
     (g : apollonianGroup) (v : CurvatureVector ℤ)
     (h : IsQuadruple (v 0) (v 1) (v 2) (v 3)) :
     IsQuadruple
       (g.1 v 0) (g.1 v 1) (g.1 v 2) (g.1 v 3) := by
   rw [isQuadruple_iff_descartesForm_eq_zero] at h ⊢
-  rw [descartesForm_apollonianGroup]
+  rw [descartesForm_apollonianGroup_aux]
   exact h
+
+/-- Compact proposition saying the integral Apollonian group acts on integral Descartes
+quadruples. -/
+def ApollonianGroupPreservesQuadruples : Prop :=
+  ∀ g : apollonianGroup, ∀ v : CurvatureVector ℤ,
+    IsQuadruple (v 0) (v 1) (v 2) (v 3) →
+      IsQuadruple (g.1 v 0) (g.1 v 1) (g.1 v 2) (g.1 v 3)
+
+/-- Every integral Apollonian-group element sends an integral Descartes quadruple to another
+integral Descartes quadruple. -/
+theorem apollonianGroup_preserves_quadruples :
+    ApollonianGroupPreservesQuadruples := by
+  intro g v h
+  exact isQuadruple_apollonianGroup_aux g v h
 
 end LeanFrontier.DescartesCircle
