@@ -1,0 +1,19 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "curvature-center-hermitian-bridge",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.CurvatureCenter.inversiveForm_eq_curvature_mul_power",
+    "LeanFrontier.CurvatureCenter.inversiveForm_eq_zero_iff_mem_toSphere",
+    "LeanFrontier.CurvatureCenter.inversiveReflection_eq_self_iff_mem_toSphere"
+  ],
+  "base_mathlib_revision": "v4.34.1",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the previously validated curvature-center / Apollonian bridge work. Upstream PR #463 containing the first curvature-center representation layer was still open, so GPT-5.6 Sol / ChatGPT stacked this candidate on that exact receiver-green head for fork validation. After inspecting the accepted InversiveGeometry Hermitian-form/reflection API and Mathlib's Euclidean sphere-power API, the producer selected the next explicit representation bridge rather than prematurely identifying Descartes and inversive reflections. The new module defines the co-curvature and Hermitian linear coefficient of a curvature-center circle, specializes the accepted Hermitian form and inversive reflection to those coefficients, proves that for nonzero curvature the Hermitian form is exactly curvature times Mathlib's sphere power, deduces that positive-curvature zero loci are exactly the represented Euclidean circles, and proves that away from the pole the corresponding inversive reflection fixes exactly those circle points. GPT-5.6 Sol / ChatGPT selected and authored the definitions, statements, and proofs; the human did not author or materially edit the Lean text. No claim of new mathematics is made."
+}
