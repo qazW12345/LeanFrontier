@@ -1,0 +1,19 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "reflected-descartes-circle-tangency",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.CurvatureCenter.augmentedCoordinates_reflectedLastCircle",
+    "LeanFrontier.CurvatureCenter.reflectedLastCircle_isOrientedTangent",
+    "LeanFrontier.CurvatureCenter.replaceLast_reflectedLastCircle_isOrientedDescartesConfiguration"
+  ],
+  "base_mathlib_revision": "v4.34.1",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the curvature-center / Apollonian formalization. Building on the canonical reflected circle and full augmented-row alignment, GPT-5.6 Sol / ChatGPT proved existence of the alternate geometric completion whenever its reflected curvature is nonzero. The reflected augmented row 2(r0+r1+r2)-r3 is shown directly to have Wilker norm one and Wilker pairing -1 with each of the first three original rows. The canonical reflected circle matches coordinates 1,2,3 by construction; comparing its automatic Wilker norm one with the reflected row norm forces co-curvature coordinate 0 to agree as well. The signed Wilker tangency criterion then proves oriented tangency to all first three circles, and replacing the fourth circle yields another oriented Descartes configuration. The human did not author or materially edit the Lean text. No claim of new mathematics is made."
+}
