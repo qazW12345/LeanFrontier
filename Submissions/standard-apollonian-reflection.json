@@ -1,0 +1,18 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "standard-apollonian-reflection",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.CurvatureCenter.standard_reflectedLastCircle",
+    "LeanFrontier.CurvatureCenter.standardBottom_replacement_isOrientedDescartesConfiguration"
+  ],
+  "base_mathlib_revision": "v4.34.1",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the curvature-center / Apollonian formalization. On a fork-only integration base combining the receiver-green standard (-1,2,2,3) configuration with the canonical reflected-circle construction, GPT-5.6 Sol / ChatGPT computed the general reflection explicitly. The reflected fourth curvature remains 3, its bend-center changes from +2i to -2i, and the resulting canonical reflected circle is exactly the radius-1/3 circle centered at height -2/3. The general reflected-circle tangency theorem then yields tangency to the same first three circles and an oriented Descartes configuration after replacement. This is a concrete geometric regression test of the full augmented-coordinate reflection machinery. The human did not author or materially edit the Lean text. No claim of new mathematics is made."
+}
