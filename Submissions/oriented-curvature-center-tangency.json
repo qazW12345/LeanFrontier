@@ -1,0 +1,18 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "oriented-curvature-center-tangency",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.CurvatureCenter.isExternallyTangent_iff_isOrientedTangent",
+    "LeanFrontier.CurvatureCenter.isOrientedTangent_iff_circlePairing_eq_neg_one"
+  ],
+  "base_mathlib_revision": "v4.34.1",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the curvature-center / Apollonian formalization. The positive-curvature bridge and Wilker-coordinate layer were already receiver-green, but they only modeled ordinary external tangency and therefore excluded the negative-curvature enclosing circle of a standard Apollonian configuration. GPT-5.6 Sol / ChatGPT selected the next independent extension on top of the stable Wilker head: signed/oriented tangency defined by the squared signed-radius equation dist(center1,center2)^2=(b1^{-1}+b2^{-1})^2. The producer proved that for positive curvatures this is exactly the existing external-tangency predicate, while for arbitrary nonzero signed curvatures it is exactly the Wilker pairing condition -1. This provides the signed geometric interface needed for configurations containing an enclosing circle. The human did not author or materially edit the Lean text. No claim of new mathematics is made."
+}
