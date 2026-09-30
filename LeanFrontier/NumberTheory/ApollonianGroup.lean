@@ -71,9 +71,17 @@ theorem reflectionGenerators_mem_apollonianGroup :
   apply Subgroup.subset_closure
   exact ⟨i, rfl⟩
 
-private theorem descartesForm_apollonianGroup_aux
-    (g : apollonianGroup) (v : CurvatureVector ℤ) :
-    descartesForm (g.1 v) = descartesForm v := by
+/-- Compact proposition saying every integral Apollonian-group element preserves the
+Descartes quadratic form. -/
+def ApollonianGroupPreservesDescartesForm : Prop :=
+  ∀ g : apollonianGroup, ∀ v : CurvatureVector ℤ,
+    descartesForm (g.1 v) = descartesForm v
+
+/-- Every element of the integral Apollonian group preserves the Descartes quadratic form. -/
+theorem apollonianGroup_preserves_descartesForm :
+    ApollonianGroupPreservesDescartesForm := by
+  unfold ApollonianGroupPreservesDescartesForm
+  intro g v
   refine Subgroup.closure_induction
     (p := fun x _ => ∀ w : CurvatureVector ℤ, descartesForm (x w) = descartesForm w)
     ?_ ?_ ?_ ?_ g.2 v
@@ -88,27 +96,6 @@ private theorem descartesForm_apollonianGroup_aux
     have h := ih (x⁻¹ w)
     simpa using h.symm
 
-/-- Compact proposition saying every integral Apollonian-group element preserves the
-Descartes quadratic form. -/
-def ApollonianGroupPreservesDescartesForm : Prop :=
-  ∀ g : apollonianGroup, ∀ v : CurvatureVector ℤ,
-    descartesForm (g.1 v) = descartesForm v
-
-/-- Every element of the integral Apollonian group preserves the Descartes quadratic form. -/
-theorem apollonianGroup_preserves_descartesForm :
-    ApollonianGroupPreservesDescartesForm := by
-  intro g v
-  exact descartesForm_apollonianGroup_aux g v
-
-private theorem isQuadruple_apollonianGroup_aux
-    (g : apollonianGroup) (v : CurvatureVector ℤ)
-    (h : IsQuadruple (v 0) (v 1) (v 2) (v 3)) :
-    IsQuadruple
-      (g.1 v 0) (g.1 v 1) (g.1 v 2) (g.1 v 3) := by
-  rw [isQuadruple_iff_descartesForm_eq_zero] at h ⊢
-  rw [descartesForm_apollonianGroup_aux]
-  exact h
-
 /-- Compact proposition saying the integral Apollonian group acts on integral Descartes
 quadruples. -/
 def ApollonianGroupPreservesQuadruples : Prop :=
@@ -120,7 +107,12 @@ def ApollonianGroupPreservesQuadruples : Prop :=
 integral Descartes quadruple. -/
 theorem apollonianGroup_preserves_quadruples :
     ApollonianGroupPreservesQuadruples := by
+  unfold ApollonianGroupPreservesQuadruples
   intro g v h
-  exact isQuadruple_apollonianGroup_aux g v h
+  rw [isQuadruple_iff_descartesForm_eq_zero] at h ⊢
+  have hpres := apollonianGroup_preserves_descartesForm
+  unfold ApollonianGroupPreservesDescartesForm at hpres
+  rw [hpres g v]
+  exact h
 
 end LeanFrontier.DescartesCircle
