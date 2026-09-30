@@ -34,7 +34,7 @@ noncomputable def augmentedCoordinates (c : Circle) : AugmentedCoordinates :=
 
 With coordinates `(bar b, b, h, k)`, this is
 `h h' + k k' - (bar b * b' + b * bar b') / 2`. -/
-def wilkerPairing (u v : AugmentedCoordinates) : ℝ :=
+noncomputable def wilkerPairing (u v : AugmentedCoordinates) : ℝ :=
   u 2 * v 2 + u 3 * v 3 - (u 0 * v 1 + u 1 * v 0) / 2
 
 /-- The Wilker pairing of two circles through their augmented coordinates. -/
