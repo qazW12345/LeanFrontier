@@ -96,18 +96,19 @@ private theorem apollonianGroup_preserves_descartesForm :
     have h := ih (x⁻¹ w)
     simpa using h.symm
 
-/-- Compact proposition saying the integral Apollonian group acts on integral Descartes
-quadruples. -/
-def ApollonianGroupPreservesQuadruples : Prop :=
-  ∀ g : apollonianGroup, ∀ v : CurvatureVector ℤ,
-    IsQuadruple (v 0) (v 1) (v 2) (v 3) →
-      IsQuadruple (g.1 v 0) (g.1 v 1) (g.1 v 2) (g.1 v 3)
+/-- A compact proof certificate that the integral Apollonian group acts on integral
+Descartes quadruples.  Packaging the quantified action as a structure keeps the public theorem
+small while retaining the full mathematical content. -/
+structure ApollonianGroupActionCertificate : Prop where
+  preserves :
+    ∀ g : apollonianGroup, ∀ v : CurvatureVector ℤ,
+      IsQuadruple (v 0) (v 1) (v 2) (v 3) →
+        IsQuadruple (g.1 v 0) (g.1 v 1) (g.1 v 2) (g.1 v 3)
 
-/-- Every integral Apollonian-group element sends an integral Descartes quadruple to another
-integral Descartes quadruple. -/
-theorem apollonianGroup_preserves_quadruples :
-    ApollonianGroupPreservesQuadruples := by
-  unfold ApollonianGroupPreservesQuadruples
+/-- The integral Apollonian group preserves integral Descartes quadruples. -/
+theorem apollonianGroup_action_certificate :
+    ApollonianGroupActionCertificate := by
+  constructor
   intro g v h
   rw [isQuadruple_iff_descartesForm_eq_zero] at h ⊢
   have hpres := apollonianGroup_preserves_descartesForm
