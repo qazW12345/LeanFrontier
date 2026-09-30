@@ -219,8 +219,16 @@ theorem orientedCompletion_augmentedCoordinates_eq_or_eq_reflected
     hrow 2 (by decide)
   simp [Matrix.mul_apply, Matrix.transpose_apply, Fin.sum_univ_four,
     completionTangentGram, hrow0, hrow1, hrow2, Matrix.one_apply] at h30 h31 h32 h33
+  have ha1eq : A 3 1 = A 3 0 := by
+    linarith [h30, h31]
+  have ha2eq : A 3 2 = A 3 0 := by
+    linarith [h30, h32]
+  have ha3eq : A 3 3 = 1 - A 3 0 := by
+    linarith [h30, ha1eq, ha2eq]
+  rw [ha1eq, ha2eq, ha3eq] at h33
+  ring_nf at h33
   have hfactor : A 3 0 * (A 3 0 - 2) = 0 := by
-    nlinarith [h30, h31, h32, h33]
+    nlinarith [h33]
   rcases mul_eq_zero.mp hfactor with hzero | htwo
   · left
     have ha0 : A 3 0 = 0 := hzero
