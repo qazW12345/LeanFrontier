@@ -56,14 +56,16 @@ private theorem wilkerMatrixInv_mul_wilkerMatrix :
     wilkerMatrixInv * wilkerMatrix = (1 : SquareMatrix) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [wilkerMatrixInv, wilkerMatrix, Matrix.mul_apply, Fin.sum_univ_four] <;>
+    simp only [Matrix.mul_apply, wilkerMatrixInv, wilkerMatrix, Fin.sum_univ_succ,
+      Matrix.one_apply] <;>
     norm_num
 
 private theorem tangentGram_mul_tangentGramInv :
     tangentGram * tangentGramInv = (1 : SquareMatrix) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [tangentGram, tangentGramInv, Matrix.mul_apply, Fin.sum_univ_four] <;>
+    simp only [Matrix.mul_apply, tangentGram, tangentGramInv, Fin.sum_univ_succ,
+      Matrix.one_apply] <;>
     norm_num
 
 private noncomputable def augmentedMatrix (c : Index → Circle) : SquareMatrix :=
@@ -72,9 +74,10 @@ private noncomputable def augmentedMatrix (c : Index → Circle) : SquareMatrix 
 private theorem augmentedGram_apply (c : Index → Circle) (i j : Index) :
     (augmentedMatrix c * wilkerMatrix * (augmentedMatrix c)ᵀ) i j =
       circlePairing (c i) (c j) := by
-  simp [augmentedMatrix, wilkerMatrix, circlePairing, wilkerPairing, Matrix.mul_apply,
-    Fin.sum_univ_four]
-  ring_nf
+  simp_rw [Matrix.mul_apply]
+  simp [augmentedMatrix, wilkerMatrix, circlePairing, wilkerPairing,
+    Matrix.transpose_apply, Fin.sum_univ_succ]
+  ring
 
 /-- Four positive-curvature circles form a positive Descartes configuration when every distinct
 pair is externally tangent. -/
