@@ -1,6 +1,6 @@
 import LeanFrontier.Geometry.CurvatureCenterHermitian
 import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Nlinarith
+import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 
 /-!
