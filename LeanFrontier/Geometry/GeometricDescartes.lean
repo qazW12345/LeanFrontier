@@ -34,7 +34,7 @@ open Matrix
 private abbrev Index := Fin 4
 private abbrev SquareMatrix := Matrix Index Index ℝ
 
-private def wilkerMatrix : SquareMatrix :=
+private noncomputable def wilkerMatrix : SquareMatrix :=
   ![![0, -(1 : ℝ) / 2, 0, 0],
     ![-(1 : ℝ) / 2, 0, 0, 0],
     ![0, 0, 1, 0],
@@ -49,22 +49,24 @@ private def wilkerMatrixInv : SquareMatrix :=
 private def tangentGram : SquareMatrix :=
   fun i j => if i = j then 1 else -1
 
-private def tangentGramInv : SquareMatrix :=
+private noncomputable def tangentGramInv : SquareMatrix :=
   fun i j => if i = j then (1 : ℝ) / 4 else -(1 : ℝ) / 4
 
 private theorem wilkerMatrixInv_mul_wilkerMatrix :
     wilkerMatrixInv * wilkerMatrix = (1 : SquareMatrix) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    norm_num [wilkerMatrixInv, wilkerMatrix, Matrix.mul_apply, Fin.sum_univ_four]
+    simp [wilkerMatrixInv, wilkerMatrix, Matrix.mul_apply, Fin.sum_univ_four] <;>
+    norm_num
 
 private theorem tangentGram_mul_tangentGramInv :
     tangentGram * tangentGramInv = (1 : SquareMatrix) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    norm_num [tangentGram, tangentGramInv, Matrix.mul_apply, Fin.sum_univ_four]
+    simp [tangentGram, tangentGramInv, Matrix.mul_apply, Fin.sum_univ_four] <;>
+    norm_num
 
-private def augmentedMatrix (c : Index → Circle) : SquareMatrix :=
+private noncomputable def augmentedMatrix (c : Index → Circle) : SquareMatrix :=
   fun i j => augmentedCoordinates (c i) j
 
 private theorem augmentedGram_apply (c : Index → Circle) (i j : Index) :
@@ -72,7 +74,7 @@ private theorem augmentedGram_apply (c : Index → Circle) (i j : Index) :
       circlePairing (c i) (c j) := by
   simp [augmentedMatrix, wilkerMatrix, circlePairing, wilkerPairing, Matrix.mul_apply,
     Fin.sum_univ_four]
-  ring
+  ring_nf
 
 /-- Four positive-curvature circles form a positive Descartes configuration when every distinct
 pair is externally tangent. -/
