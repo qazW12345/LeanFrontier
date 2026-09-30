@@ -38,13 +38,13 @@ noncomputable def curvatureReflectionEquiv (i : Fin 4) :
     (curvatureReflection_involutive' (R := R) i).bijective
 
 @[simp]
-theorem curvatureReflectionEquiv_apply
+private theorem curvatureReflectionEquiv_apply
     (i : Fin 4) (v : CurvatureVector R) :
     curvatureReflectionEquiv i v = curvatureReflection i v :=
   rfl
 
 /-- Each bundled curvature reflection is itself an involution in the linear-equivalence group. -/
-theorem curvatureReflectionEquiv_mul_self (i : Fin 4) :
+private theorem curvatureReflectionEquiv_mul_self (i : Fin 4) :
     (curvatureReflectionEquiv i : CurvatureVector R ≃ₗ[R] CurvatureVector R) *
         curvatureReflectionEquiv i = 1 := by
   apply LinearEquiv.ext
@@ -65,7 +65,7 @@ def ReflectionGeneratorsInApollonianGroup : Prop :=
       CurvatureVector ℤ ≃ₗ[ℤ] CurvatureVector ℤ) ∈ apollonianGroup
 
 /-- Every coordinate reflection belongs to the integral Apollonian group. -/
-theorem reflectionGenerators_mem_apollonianGroup :
+private theorem reflectionGenerators_mem_apollonianGroup :
     ReflectionGeneratorsInApollonianGroup := by
   intro i
   apply Subgroup.subset_closure
@@ -78,7 +78,7 @@ def ApollonianGroupPreservesDescartesForm : Prop :=
     descartesForm (g.1 v) = descartesForm v
 
 /-- Every element of the integral Apollonian group preserves the Descartes quadratic form. -/
-theorem apollonianGroup_preserves_descartesForm :
+private theorem apollonianGroup_preserves_descartesForm :
     ApollonianGroupPreservesDescartesForm := by
   unfold ApollonianGroupPreservesDescartesForm
   intro g v
