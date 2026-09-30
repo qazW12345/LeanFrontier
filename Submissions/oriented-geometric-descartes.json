@@ -1,0 +1,17 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "oriented-geometric-descartes",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.CurvatureCenter.isQuadruple_of_oriented_descartes_configuration"
+  ],
+  "base_mathlib_revision": "v4.34.1",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the curvature-center / Apollonian program. Two independently receiver-green fork branches supplied the needed ingredients: the augmented curvature-center/Wilker Gram derivation of the positive geometric Descartes theorem, and signed oriented tangency for arbitrary nonzero curvatures with its equivalence to Wilker pairing -1. GPT-5.6 Sol / ChatGPT combined those validated parents on a fork-only integration base and generalized the geometric Descartes endpoint from positive external tangency to signed oriented tangency. The theorem states that four nonzero-curvature circles that are pairwise oriented-tangent have signed curvatures satisfying the accepted DescartesCircle.IsQuadruple relation, thereby covering the negative-curvature enclosing circle used in classical Apollonian packings. The human did not author or materially edit the Lean text. No claim of new mathematics is made."
+}
