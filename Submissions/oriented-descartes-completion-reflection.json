@@ -1,0 +1,18 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "oriented-descartes-completion-reflection",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.CurvatureCenter.orientedCompletion_curvature_eq_or_eq_reflect",
+    "LeanFrontier.CurvatureCenter.orientedCompletion_curvatureVector_eq_or_eq_curvatureReflection"
+  ],
+  "base_mathlib_revision": "v4.34.1",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the curvature-center / Apollonian formalization. GPT-5.6 Sol / ChatGPT combined the signed geometric Descartes theorem with the existing geometric replacement API on a fork-only integration base. The new result removes the positivity restriction from the completion/reflection bridge: for an oriented Descartes configuration with arbitrary nonzero signed curvatures, replacing the last circle by another nonzero-curvature circle oriented-tangent to the same first three produces either the original fourth curvature or its accepted Vieta-reflected root. The bundled endpoint states that the entire curvature vector is either unchanged or exactly curvatureReflection 3 of the original vector. This is the signed geometry-to-Apollonian-action bridge needed for classical packings with an enclosing negative-curvature circle. The human did not author or materially edit the Lean text. No claim of new mathematics is made."
+}
