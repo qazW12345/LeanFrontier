@@ -1,6 +1,6 @@
 import LeanFrontier.Geometry.CurvatureCenterWilker
 import LeanFrontier.NumberTheory.DescartesCircle
-import Mathlib.Data.Matrix.Notation
+import Mathlib.LinearAlgebra.Matrix.Notation
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.LinearCombination
