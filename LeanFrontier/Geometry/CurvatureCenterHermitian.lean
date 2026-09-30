@@ -74,8 +74,7 @@ theorem inversiveForm_eq_curvature_mul_power (c : Circle) (z : ℂ)
       c.curvature * Complex.normSq (z - c.center) - c.curvature⁻¹ =
         c.curvature * (toSphere c).power z := by
     simp [EuclideanGeometry.Sphere.power, toSphere, Complex.dist_eq, Complex.sq_norm]
-    field_simp [hcurv]
-    ring
+    field_simp [hcurv] <;> ring
   exact_mod_cast hreal
 
 /-- For positive curvature, the Hermitian zero locus is exactly the Euclidean circle represented
