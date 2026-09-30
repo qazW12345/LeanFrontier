@@ -1,0 +1,17 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "bend-center-complex-descartes",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.CurvatureCenter.bendCenter_isQuadruple_of_oriented_descartes_configuration"
+  ],
+  "base_mathlib_revision": "v4.34.1",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the curvature-center / Apollonian formalization. After constructing the signed geometric Descartes theorem for curvatures, GPT-5.6 Sol / ChatGPT selected the center-level companion needed for geometric replacement: the complex Descartes theorem for bend-centers b*z. Using the same augmented curvature-center Gram identity, the producer extracts the Lorentz norm equations for the real and imaginary bend-center columns and their zero cross-pairing, then combines those three real identities into the Descartes quadratic relation over the complex numbers. The public theorem states that the four bendCenter values of any oriented Descartes configuration satisfy DescartesCircle.IsQuadruple over ℂ. This is the algebraic input needed to determine replacement centers as well as curvatures. The human did not author or materially edit the Lean text. No claim of new mathematics is made."
+}
