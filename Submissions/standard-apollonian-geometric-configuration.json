@@ -1,0 +1,18 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "standard-apollonian-geometric-configuration",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.CurvatureCenter.standardApollonian_curvatures",
+    "LeanFrontier.CurvatureCenter.standardApollonian_isOrientedDescartesConfiguration"
+  ],
+  "base_mathlib_revision": "v4.34.1",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the curvature-center / Apollonian formalization. After introducing signed oriented tangency on the receiver-green Wilker layer, GPT-5.6 Sol / ChatGPT selected a concrete geometric anchor for the signed theory: the classical Descartes curvature quadruple (-1,2,2,3). The producer defined the enclosing unit circle of curvature -1 at the origin, two radius-1/2 circles centered at -1/2 and 1/2, and a radius-1/3 circle centered at height 2/3. It defined an oriented Descartes configuration as four nonzero-curvature circles with pairwise oriented tangency, proved that the explicit configuration has curvature vector (-1,2,2,3), and proved all six distinct pairs satisfy the oriented tangency equation. A final compatibility theorem reconnects the explicit geometry to the already accepted scalar Descartes example. The human did not author or materially edit the Lean text. No claim of new mathematics is made."
+}
