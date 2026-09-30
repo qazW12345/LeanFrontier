@@ -30,6 +30,7 @@ satisfy the already accepted `DescartesCircle.IsQuadruple` relation.
 namespace LeanFrontier.CurvatureCenter
 
 open Matrix
+open scoped Matrix
 
 private abbrev Index := Fin 4
 private abbrev SquareMatrix := Matrix Index Index ℝ
