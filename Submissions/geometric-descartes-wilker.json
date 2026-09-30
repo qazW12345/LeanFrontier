@@ -1,0 +1,17 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "geometric-descartes-wilker",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.CurvatureCenter.isQuadruple_of_positive_descartes_configuration"
+  ],
+  "base_mathlib_revision": "v4.34.1",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the curvature-center / Apollonian program. Building on the stacked curvature-center, Hermitian, and Wilker-coordinate slices, the producer selected the first theorem that actually closes the geometric-to-algebraic Descartes loop. The representation and proof route are aligned with the augmented curvature-center matrix framework of Lagarias, Mallows and Wilks: four pairwise externally tangent circles have a fixed Wilker Gram matrix with diagonal one and off-diagonal minus one. GPT-5.6 Sol / ChatGPT formalized the explicit four-dimensional Wilker matrix and inverse Gram calculation privately, then exposed the geometric endpoint that the four curvatures of a positive Descartes configuration satisfy the already accepted DescartesCircle.IsQuadruple equation. The human did not author or materially edit the Lean text. No claim of new mathematics is made."
+}
