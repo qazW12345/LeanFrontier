@@ -2,7 +2,7 @@ import LeanFrontier.Geometry.GeometricDescartesCompletion
 import LeanFrontier.Geometry.OrientedGeometricDescartes
 import Mathlib.LinearAlgebra.Matrix.Notation
 import Mathlib.Tactic.FinCases
-import Mathlib.Tactic.Nlinarith
+import Mathlib.Tactic
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Ring
 
