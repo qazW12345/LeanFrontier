@@ -42,7 +42,8 @@ theorem curvatureReflectionEquiv_apply
 
 /-- Each bundled curvature reflection is itself an involution in the linear-equivalence group. -/
 theorem curvatureReflectionEquiv_mul_self (i : Fin 4) :
-    curvatureReflectionEquiv (R := R) i * curvatureReflectionEquiv (R := R) i = 1 := by
+    (curvatureReflectionEquiv i : CurvatureVector R ≃ₗ[R] CurvatureVector R) *
+        curvatureReflectionEquiv i = 1 := by
   ext v
   simp only [LinearEquiv.mul_apply, curvatureReflectionEquiv_apply]
   exact curvatureReflection_involutive' (R := R) i v
@@ -54,7 +55,8 @@ noncomputable def apollonianGroup :
 
 /-- Every coordinate reflection is one of the generators of the integral Apollonian group. -/
 theorem curvatureReflectionEquiv_mem_apollonianGroup (i : Fin 4) :
-    curvatureReflectionEquiv (R := ℤ) i ∈ apollonianGroup := by
+    (curvatureReflectionEquiv i :
+      CurvatureVector ℤ ≃ₗ[ℤ] CurvatureVector ℤ) ∈ apollonianGroup := by
   apply Subgroup.subset_closure
   exact ⟨i, rfl⟩
 
