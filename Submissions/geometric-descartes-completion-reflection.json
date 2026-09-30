@@ -1,0 +1,18 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "geometric-descartes-completion-reflection",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.CurvatureCenter.completion_curvature_eq_or_eq_reflect",
+    "LeanFrontier.CurvatureCenter.completion_curvatureVector_eq_or_eq_curvatureReflection"
+  ],
+  "base_mathlib_revision": "v4.34.1",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue the curvature-center / Apollonian formalization. The producer continued from the stacked geometric Descartes candidate that derives the scalar Descartes equation from four pairwise externally tangent positive-curvature circles through augmented curvature-center/Wilker coordinates. The next missing bridge was from actual geometric completion of a fixed tangent triple to the already accepted algebraic Vieta action. GPT-5.6 Sol / ChatGPT therefore defined replacement of the last circle and the curvature vector of a configuration, proved that replacing the last circle by another positive circle tangent to the same first three circles again gives a positive Descartes configuration, and combined the geometric Descartes theorem with the accepted scalar uniqueness theorem DescartesCircle.eq_or_eq_reflect. The public endpoints state first that the new curvature is either the old fourth curvature or its reflected root, and then that the entire replacement curvature vector is either unchanged or exactly curvatureReflection 3 of the original vector. The human did not author or materially edit the Lean text. No claim of new mathematics is made."
+}
