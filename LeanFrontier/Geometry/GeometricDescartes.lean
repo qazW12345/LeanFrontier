@@ -56,18 +56,18 @@ private noncomputable def tangentGramInv : SquareMatrix :=
 private theorem wilkerMatrixInv_mul_wilkerMatrix :
     wilkerMatrixInv * wilkerMatrix = (1 : SquareMatrix) := by
   ext i j
+  change (∑ k : Index, wilkerMatrixInv i k * wilkerMatrix k j) =
+    (1 : SquareMatrix) i j
   fin_cases i <;> fin_cases j <;>
-    simp only [Matrix.mul_apply, wilkerMatrixInv, wilkerMatrix, Fin.sum_univ_succ,
-      Matrix.one_apply] <;>
-    norm_num
+    norm_num [wilkerMatrixInv, wilkerMatrix, Fin.sum_univ_four, Matrix.one_apply]
 
 private theorem tangentGram_mul_tangentGramInv :
     tangentGram * tangentGramInv = (1 : SquareMatrix) := by
   ext i j
+  change (∑ k : Index, tangentGram i k * tangentGramInv k j) =
+    (1 : SquareMatrix) i j
   fin_cases i <;> fin_cases j <;>
-    simp only [Matrix.mul_apply, tangentGram, tangentGramInv, Fin.sum_univ_succ,
-      Matrix.one_apply] <;>
-    norm_num
+    norm_num [tangentGram, tangentGramInv, Fin.sum_univ_four, Matrix.one_apply]
 
 private noncomputable def augmentedMatrix (c : Index → Circle) : SquareMatrix :=
   fun i j => augmentedCoordinates (c i) j
@@ -75,9 +75,13 @@ private noncomputable def augmentedMatrix (c : Index → Circle) : SquareMatrix 
 private theorem augmentedGram_apply (c : Index → Circle) (i j : Index) :
     (augmentedMatrix c * wilkerMatrix * (augmentedMatrix c)ᵀ) i j =
       circlePairing (c i) (c j) := by
-  simp_rw [Matrix.mul_apply]
+  change
+    (∑ k : Index,
+      (∑ l : Index, augmentedMatrix c i l * wilkerMatrix l k) *
+        (augmentedMatrix c)ᵀ k j) =
+      circlePairing (c i) (c j)
   simp [augmentedMatrix, wilkerMatrix, circlePairing, wilkerPairing,
-    Matrix.transpose_apply, Fin.sum_univ_succ]
+    Matrix.transpose_apply, Fin.sum_univ_four]
   ring
 
 /-- Four positive-curvature circles form a positive Descartes configuration when every distinct
@@ -117,10 +121,21 @@ private theorem curvatureColumn_isQuadruple
       _ = 1 := tangentGram_mul_tangentGramInv
   have hLW : L * W = (1 : SquareMatrix) := (mul_eq_one_comm.mp hWL)
   have hq : Wᵀ * tangentGramInv * W = wilkerMatrixInv := by
-    have hh := congrArg (fun M : SquareMatrix => wilkerMatrixInv * M) hLW
-    simpa [L, Matrix.mul_assoc, wilkerMatrixInv_mul_wilkerMatrix] using hh
+    calc
+      Wᵀ * tangentGramInv * W =
+          (wilkerMatrixInv * wilkerMatrix) * Wᵀ * tangentGramInv * W := by
+            rw [wilkerMatrixInv_mul_wilkerMatrix]
+            simp
+      _ = wilkerMatrixInv * ((wilkerMatrix * Wᵀ * tangentGramInv) * W) := by
+            simp [Matrix.mul_assoc]
+      _ = wilkerMatrixInv * 1 := by rw [hLW]
+      _ = wilkerMatrixInv := by simp
   have h11 := congrArg (fun M : SquareMatrix => M (1 : Index) (1 : Index)) hq
-  simp [Matrix.mul_apply, tangentGramInv, wilkerMatrixInv, Fin.sum_univ_four] at h11
+  change
+    (∑ k : Index,
+      (∑ l : Index, W l (1 : Index) * tangentGramInv l k) * W k (1 : Index)) =
+      wilkerMatrixInv (1 : Index) (1 : Index) at h11
+  simp [tangentGramInv, wilkerMatrixInv, Fin.sum_univ_four] at h11
   unfold DescartesCircle.IsQuadruple
   linear_combination -4 * h11
 
