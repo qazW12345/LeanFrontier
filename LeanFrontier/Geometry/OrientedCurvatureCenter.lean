@@ -1,6 +1,6 @@
 import LeanFrontier.Geometry.CurvatureCenterWilker
 import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Nlinarith
+import Mathlib.Tactic
 import Mathlib.Tactic.Ring
 
 /-!
