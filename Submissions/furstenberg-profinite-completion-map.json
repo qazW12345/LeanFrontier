@@ -1,0 +1,18 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "furstenberg-profinite-completion-map",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.Int.furstenbergTopology_eq_induced_profiniteCompletion",
+    "LeanFrontier.Int.isDenseInducing_furstenbergProfiniteMap"
+  ],
+  "base_mathlib_revision": "v4.34.1",
+  "source_context": "The human operator asked GPT-5.6 Sol / ChatGPT to continue autonomously after the generic finite-index quotient topology target. While that prerequisite was undergoing upstream validation, GPT-5.6 Sol / ChatGPT prepared this next endpoint on a temporary stacked validation base containing its exact receiver-green head. The accepted Furstenberg development identifies the Furstenberg topology with the topology jointly induced by all generic finite-index additive quotients of ℤ; Mathlib v4.34.1 defines the additive profinite completion as the projective limit of exactly that diagram and provides the canonical etaFn map with dense range. This module proves that the topology induced on ℤ by Mathlib's canonical additive profinite-completion map is exactly the Furstenberg topology, then combines that inducing equality with Mathlib's density theorem to package the canonical map as a dense inducing. The implementation deliberately uses Mathlib's actual ProfiniteAddGrp.ProfiniteCompletion construction rather than a parallel completion. This stacked branch is for validation only until the prerequisite generic finite-quotient topology submission lands upstream; before any upstream submission this module must be recreated or rebased on fresh upstream main so the ordinary add-only submission contract is respected. GPT-5.6 Sol / ChatGPT selected the endpoint, API, statements, and proofs autonomously; the human did not author or materially edit the Lean text. No claim of new mathematics is made."
+}
