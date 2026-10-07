@@ -44,6 +44,8 @@ private theorem induced_furstenbergProfiniteMap_eq_genericFiniteQuotientTopology
       continuous_subtype_val.comp heta
     have hcoord :=
       (continuous_apply H).comp hval
+    rw [DiscreteTopology.eq_bot
+      (α := (ProfiniteAddGrp.ProfiniteCompletion.diagram (AddGrpCat.of ℤ)).obj H)] at hcoord
     apply Continuous.le_induced
     have hq :
         @Continuous ℤ (ℤ ⧸ H.toAddSubgroup)
@@ -65,6 +67,8 @@ private theorem induced_furstenbergProfiniteMap_eq_genericFiniteQuotientTopology
       (ProfiniteAddGrp.ProfiniteCompletion.etaFn (AddGrpCat.of ℤ))
     apply continuous_induced_rng.mpr
     exact continuous_pi fun H => by
+      rw [DiscreteTopology.eq_bot
+        (α := (ProfiniteAddGrp.ProfiniteCompletion.diagram (AddGrpCat.of ℤ)).obj H)]
       have hq :
           @Continuous ℤ (ℤ ⧸ H.toAddSubgroup)
             genericFiniteQuotientTopology
