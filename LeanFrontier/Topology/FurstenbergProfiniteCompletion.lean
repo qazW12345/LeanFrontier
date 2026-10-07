@@ -62,10 +62,10 @@ private theorem induced_furstenbergProfiniteMap_eq_genericFiniteQuotientTopology
   apply le_antisymm
   · rw [genericFiniteQuotientTopology]
     refine le_iInf fun H => ?_
-    letI : TopologicalSpace ℤ :=
+    letI tZ : TopologicalSpace ℤ :=
       TopologicalSpace.induced furstenbergProfiniteMap
         (inferInstance : TopologicalSpace intProfiniteCompletion)
-    change (inferInstance : TopologicalSpace ℤ) ≤
+    change tZ ≤
       (⊥ : TopologicalSpace (ℤ ⧸ H.toAddSubgroup)).induced
         (fun x : ℤ => (QuotientAddGroup.mk x : ℤ ⧸ H.toAddSubgroup))
     have heta : Continuous furstenbergProfiniteMap :=
@@ -114,9 +114,9 @@ theorem furstenbergTopology_eq_induced_profiniteCompletion :
   rw [induced_furstenbergProfiniteMap_eq_genericFiniteQuotientTopology]
   exact furstenbergTopology_eq_genericFiniteQuotientTopology
 
+set_option linter.style.haveILetI false in
 /-- The canonical map from the Furstenberg integers into their additive profinite completion is
 a dense inducing: it induces exactly the Furstenberg topology and has dense range. -/
-set_option linter.style.haveILetI false in
 theorem isDenseInducing_furstenbergProfiniteMap :
     @IsDenseInducing ℤ intProfiniteCompletion
       furstenbergTopology
