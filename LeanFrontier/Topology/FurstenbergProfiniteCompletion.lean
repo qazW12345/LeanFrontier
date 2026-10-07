@@ -37,6 +37,12 @@ private theorem diagramObj_type_eq (H : FiniteIndexNormalAddSubgroup (AddGrpCat.
     (intProfiniteDiagram.obj H : Type) = (ℤ ⧸ H.toAddSubgroup) := by
   rfl
 
+private def diagramObjEquivQuotient
+    (H : FiniteIndexNormalAddSubgroup (AddGrpCat.of ℤ)) :
+    (intProfiniteDiagram.obj H : Type) ≃ (ℤ ⧸ H.toAddSubgroup) :=
+  Equiv.cast (diagramObj_type_eq H)
+
+set_option linter.style.haveILetI false in
 private theorem diagramObj_topology_eq_bot (H : FiniteIndexNormalAddSubgroup (AddGrpCat.of ℤ)) :
     ((intProfiniteDiagram.obj H).toProfinite.toTop.str) =
       (⊥ : TopologicalSpace (intProfiniteDiagram.obj H)) := by
@@ -61,20 +67,30 @@ private theorem induced_furstenbergProfiniteMap_eq_genericFiniteQuotientTopology
     have hcoord :
         Continuous (fun x : ℤ => (furstenbergProfiniteMap x).1 H) :=
       (continuous_apply H).comp (continuous_subtype_val.comp heta)
-    rw [diagramObj_topology_eq_bot H] at hcoord
-    rw [diagramObj_type_eq H] at hcoord
+    haveI : DiscreteTopology (intProfiniteDiagram.obj H) :=
+      ⟨diagramObj_topology_eq_bot H⟩
+    letI : TopologicalSpace (ℤ ⧸ H.toAddSubgroup) := ⊥
+    letI : DiscreteTopology (ℤ ⧸ H.toAddSubgroup) := ⟨rfl⟩
+    have htransport : Continuous (diagramObjEquivQuotient H) :=
+      continuous_of_discreteTopology
+    have hq := htransport.comp hcoord
     apply Continuous.le_induced
-    simpa [furstenbergProfiniteMap] using hcoord
+    simpa [diagramObjEquivQuotient, diagramObj_type_eq, furstenbergProfiniteMap] using hq
   · apply Continuous.le_induced
     letI : TopologicalSpace ℤ := genericFiniteQuotientTopology
     change Continuous furstenbergProfiniteMap
     apply continuous_induced_rng.mpr
     exact continuous_pi fun H => by
-      rw [diagramObj_topology_eq_bot H]
-      rw [diagramObj_type_eq H]
-      change Continuous (fun x : ℤ =>
-        (QuotientAddGroup.mk x : ℤ ⧸ H.toAddSubgroup))
-      exact continuous_iff_le_induced.mpr (iInf_le _ H)
+      letI : TopologicalSpace (ℤ ⧸ H.toAddSubgroup) := ⊥
+      letI : DiscreteTopology (ℤ ⧸ H.toAddSubgroup) := ⟨rfl⟩
+      have hq :
+          Continuous (fun x : ℤ =>
+            (QuotientAddGroup.mk x : ℤ ⧸ H.toAddSubgroup)) :=
+        continuous_iff_le_induced.mpr (iInf_le _ H)
+      have htransport : Continuous (diagramObjEquivQuotient H).symm :=
+        continuous_of_discreteTopology
+      have hcoord := htransport.comp hq
+      simpa [diagramObjEquivQuotient, diagramObj_type_eq, furstenbergProfiniteMap] using hcoord
 
 /-- The topology induced on `ℤ` by the canonical map into Mathlib's additive profinite
 completion is exactly the Furstenberg topology. -/
@@ -92,10 +108,7 @@ theorem isDenseInducing_furstenbergProfiniteMap :
       furstenbergTopology
       (inferInstance : TopologicalSpace intProfiniteCompletion)
       furstenbergProfiniteMap := by
-  refine {
-    eq_induced := furstenbergTopology_eq_induced_profiniteCompletion
-    dense := ?_
-  }
+  refine ⟨⟨furstenbergTopology_eq_induced_profiniteCompletion⟩, ?_⟩
   simpa [
     furstenbergProfiniteMap,
     intProfiniteCompletion,
