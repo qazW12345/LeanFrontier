@@ -45,18 +45,38 @@ private theorem induced_furstenbergProfiniteMap_eq_genericFiniteQuotientTopology
     have hcoord :=
       (continuous_apply H).comp hval
     apply Continuous.le_induced
-    change Continuous (fun x : ℤ =>
-      (QuotientAddGroup.mk x : ℤ ⧸ H.toAddSubgroup))
-    simpa [furstenbergProfiniteMap] using hcoord
+    have hq :
+        @Continuous ℤ (ℤ ⧸ H.toAddSubgroup)
+          (TopologicalSpace.induced furstenbergProfiniteMap
+            (inferInstance : TopologicalSpace intProfiniteCompletion))
+          (⊥ : TopologicalSpace (ℤ ⧸ H.toAddSubgroup))
+          (fun x : ℤ => (QuotientAddGroup.mk x : ℤ ⧸ H.toAddSubgroup)) := by
+      simpa [
+        furstenbergProfiniteMap,
+        ProfiniteAddGrp.ProfiniteCompletion.etaFn,
+        ProfiniteAddGrp.ProfiniteCompletion.diagram,
+        ProfiniteAddGrp.ProfiniteCompletion.finiteAddGrpDiagram,
+        ProfiniteAddGrp.ofFiniteAddGrp
+      ] using hcoord
+    exact hq
   · apply Continuous.le_induced
     let _ : TopologicalSpace ℤ := genericFiniteQuotientTopology
     change Continuous
       (ProfiniteAddGrp.ProfiniteCompletion.etaFn (AddGrpCat.of ℤ))
     apply continuous_induced_rng.mpr
     exact continuous_pi fun H => by
-      change Continuous (fun x : ℤ =>
-        (QuotientAddGroup.mk x : ℤ ⧸ H.toAddSubgroup))
-      exact continuous_iff_le_induced.mpr (iInf_le _ H)
+      have hq :
+          @Continuous ℤ (ℤ ⧸ H.toAddSubgroup)
+            genericFiniteQuotientTopology
+            (⊥ : TopologicalSpace (ℤ ⧸ H.toAddSubgroup))
+            (fun x : ℤ => (QuotientAddGroup.mk x : ℤ ⧸ H.toAddSubgroup)) :=
+        continuous_iff_le_induced.mpr (iInf_le _ H)
+      simpa [
+        ProfiniteAddGrp.ProfiniteCompletion.etaFn,
+        ProfiniteAddGrp.ProfiniteCompletion.diagram,
+        ProfiniteAddGrp.ProfiniteCompletion.finiteAddGrpDiagram,
+        ProfiniteAddGrp.ofFiniteAddGrp
+      ] using hq
 
 /-- The topology induced on `ℤ` by the canonical map into Mathlib's additive profinite
 completion is exactly the Furstenberg topology. -/
