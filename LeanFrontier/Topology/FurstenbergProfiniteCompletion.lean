@@ -27,6 +27,7 @@ abbrev intProfiniteCompletion :=
 def furstenbergProfiniteMap : ℤ → intProfiniteCompletion :=
   ProfiniteAddGrp.ProfiniteCompletion.etaFn (AddGrpCat.of ℤ)
 
+set_option linter.style.haveILetI false in
 private theorem induced_furstenbergProfiniteMap_eq_genericFiniteQuotientTopology :
     TopologicalSpace.induced furstenbergProfiniteMap
         (inferInstance : TopologicalSpace intProfiniteCompletion) =
@@ -34,19 +35,32 @@ private theorem induced_furstenbergProfiniteMap_eq_genericFiniteQuotientTopology
   apply le_antisymm
   · rw [genericFiniteQuotientTopology]
     refine le_iInf fun H => ?_
-    have heta :
-        @Continuous ℤ intProfiniteCompletion
-          (TopologicalSpace.induced furstenbergProfiniteMap
-            (inferInstance : TopologicalSpace intProfiniteCompletion))
-          (inferInstance : TopologicalSpace intProfiniteCompletion)
-          furstenbergProfiniteMap :=
+    letI : TopologicalSpace ℤ :=
+      TopologicalSpace.induced furstenbergProfiniteMap
+        (inferInstance : TopologicalSpace intProfiniteCompletion)
+    have heta : Continuous furstenbergProfiniteMap :=
       continuous_induced_dom
-    have hval :=
+    have hval :
+        Continuous (fun x : ℤ => (furstenbergProfiniteMap x).1) :=
       continuous_subtype_val.comp heta
     have hcoord :=
       (continuous_apply H).comp hval
-    rw [DiscreteTopology.eq_bot
-      (α := (ProfiniteAddGrp.ProfiniteCompletion.diagram (AddGrpCat.of ℤ)).obj H)] at hcoord
+    change
+      @Continuous ℤ
+        ((ProfiniteAddGrp.ProfiniteCompletion.diagram (AddGrpCat.of ℤ)).obj H)
+        (TopologicalSpace.induced furstenbergProfiniteMap
+          (inferInstance : TopologicalSpace intProfiniteCompletion))
+        ((ProfiniteAddGrp.ProfiniteCompletion.diagram
+          (AddGrpCat.of ℤ)).obj H).toProfinite.toTop.str
+        _ at hcoord
+    haveI : Finite
+        ((ProfiniteAddGrp.ProfiniteCompletion.diagram (AddGrpCat.of ℤ)).obj H) := by
+      change Finite (ℤ ⧸ H.toAddSubgroup)
+      infer_instance
+    haveI : DiscreteTopology
+        ((ProfiniteAddGrp.ProfiniteCompletion.diagram (AddGrpCat.of ℤ)).obj H) :=
+      Finite.instDiscreteTopology
+    rw [DiscreteTopology.eq_bot] at hcoord
     apply Continuous.le_induced
     simpa [
       furstenbergProfiniteMap,
@@ -56,15 +70,26 @@ private theorem induced_furstenbergProfiniteMap_eq_genericFiniteQuotientTopology
       ProfiniteAddGrp.ofFiniteAddGrp
     ] using hcoord
   · apply Continuous.le_induced
-    change
-      @Continuous ℤ intProfiniteCompletion
-        genericFiniteQuotientTopology
-        (inferInstance : TopologicalSpace intProfiniteCompletion)
-        (ProfiniteAddGrp.ProfiniteCompletion.etaFn (AddGrpCat.of ℤ))
+    letI : TopologicalSpace ℤ := genericFiniteQuotientTopology
+    change Continuous
+      (ProfiniteAddGrp.ProfiniteCompletion.etaFn (AddGrpCat.of ℤ))
     apply continuous_induced_rng.mpr
     exact continuous_pi fun H => by
-      rw [DiscreteTopology.eq_bot
-        (α := (ProfiniteAddGrp.ProfiniteCompletion.diagram (AddGrpCat.of ℤ)).obj H)]
+      change
+        @Continuous ℤ
+          ((ProfiniteAddGrp.ProfiniteCompletion.diagram (AddGrpCat.of ℤ)).obj H)
+          genericFiniteQuotientTopology
+          ((ProfiniteAddGrp.ProfiniteCompletion.diagram
+            (AddGrpCat.of ℤ)).obj H).toProfinite.toTop.str
+          _
+      haveI : Finite
+          ((ProfiniteAddGrp.ProfiniteCompletion.diagram (AddGrpCat.of ℤ)).obj H) := by
+        change Finite (ℤ ⧸ H.toAddSubgroup)
+        infer_instance
+      haveI : DiscreteTopology
+          ((ProfiniteAddGrp.ProfiniteCompletion.diagram (AddGrpCat.of ℤ)).obj H) :=
+        Finite.instDiscreteTopology
+      rw [DiscreteTopology.eq_bot]
       have hq :
           @Continuous ℤ (ℤ ⧸ H.toAddSubgroup)
             genericFiniteQuotientTopology
@@ -95,7 +120,9 @@ theorem isDenseInducing_furstenbergProfiniteMap :
       (inferInstance : TopologicalSpace intProfiniteCompletion)
       furstenbergProfiniteMap := by
   refine {
-    toIsInducing := ⟨furstenbergTopology_eq_induced_profiniteCompletion⟩
+    toIsInducing := {
+      eq_induced := furstenbergTopology_eq_induced_profiniteCompletion
+    }
     dense := ?_
   }
   exact ProfiniteAddGrp.ProfiniteCompletion.denseRange (G := AddGrpCat.of ℤ)
