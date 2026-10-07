@@ -33,11 +33,15 @@ the coordinate form used by Mathlib's `ProfiniteAddGrp.ProfiniteCompletion.etaFn
 def furstenbergProfiniteMap (x : ℤ) : intProfiniteCompletion :=
   ⟨fun _ => QuotientAddGroup.mk x, fun _ _ _ => rfl⟩
 
+private theorem diagramObj_type_eq (H : FiniteIndexNormalAddSubgroup (AddGrpCat.of ℤ)) :
+    (intProfiniteDiagram.obj H : Type) = (ℤ ⧸ H.toAddSubgroup) := by
+  rfl
+
 private theorem diagramObj_topology_eq_bot (H : FiniteIndexNormalAddSubgroup (AddGrpCat.of ℤ)) :
     ((intProfiniteDiagram.obj H).toProfinite.toTop.str) =
       (⊥ : TopologicalSpace (intProfiniteDiagram.obj H)) := by
   haveI : Finite (intProfiniteDiagram.obj H) := by
-    change Finite (ℤ ⧸ H.toAddSubgroup)
+    rw [diagramObj_type_eq H]
     infer_instance
   exact DiscreteTopology.eq_bot
 
@@ -58,20 +62,16 @@ private theorem induced_furstenbergProfiniteMap_eq_genericFiniteQuotientTopology
         Continuous (fun x : ℤ => (furstenbergProfiniteMap x).1 H) :=
       (continuous_apply H).comp (continuous_subtype_val.comp heta)
     rw [diagramObj_topology_eq_bot H] at hcoord
+    rw [diagramObj_type_eq H] at hcoord
     apply Continuous.le_induced
-    simpa [
-      furstenbergProfiniteMap,
-      intProfiniteDiagram,
-      ProfiniteAddGrp.ProfiniteCompletion.diagram,
-      ProfiniteAddGrp.ProfiniteCompletion.finiteAddGrpDiagram,
-      ProfiniteAddGrp.ofFiniteAddGrp
-    ] using hcoord
+    simpa [furstenbergProfiniteMap] using hcoord
   · apply Continuous.le_induced
     letI : TopologicalSpace ℤ := genericFiniteQuotientTopology
     change Continuous furstenbergProfiniteMap
     apply continuous_induced_rng.mpr
     exact continuous_pi fun H => by
       rw [diagramObj_topology_eq_bot H]
+      rw [diagramObj_type_eq H]
       change Continuous (fun x : ℤ =>
         (QuotientAddGroup.mk x : ℤ ⧸ H.toAddSubgroup))
       exact continuous_iff_le_induced.mpr (iInf_le _ H)
