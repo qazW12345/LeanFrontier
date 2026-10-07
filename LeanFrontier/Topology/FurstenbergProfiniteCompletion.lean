@@ -34,7 +34,7 @@ private theorem induced_furstenbergProfiniteMap_eq_genericFiniteQuotientTopology
   apply le_antisymm
   · rw [genericFiniteQuotientTopology]
     refine le_iInf fun H => ?_
-    let _ : TopologicalSpace ℤ :=
+    letI : TopologicalSpace ℤ :=
       TopologicalSpace.induced furstenbergProfiniteMap
         (inferInstance : TopologicalSpace intProfiniteCompletion)
     have heta : Continuous furstenbergProfiniteMap :=
@@ -60,7 +60,7 @@ private theorem induced_furstenbergProfiniteMap_eq_genericFiniteQuotientTopology
       ] using hcoord
     exact hq
   · apply Continuous.le_induced
-    let _ : TopologicalSpace ℤ := genericFiniteQuotientTopology
+    letI : TopologicalSpace ℤ := genericFiniteQuotientTopology
     change Continuous
       (ProfiniteAddGrp.ProfiniteCompletion.etaFn (AddGrpCat.of ℤ))
     apply continuous_induced_rng.mpr
@@ -94,7 +94,7 @@ theorem isDenseInducing_furstenbergProfiniteMap :
       furstenbergTopology
       (inferInstance : TopologicalSpace intProfiniteCompletion)
       furstenbergProfiniteMap := by
-  let _ : TopologicalSpace ℤ := furstenbergTopology
+  letI : TopologicalSpace ℤ := furstenbergTopology
   refine ⟨⟨furstenbergTopology_eq_induced_profiniteCompletion⟩, ?_⟩
   exact ProfiniteAddGrp.ProfiniteCompletion.denseRange (G := AddGrpCat.of ℤ)
 
