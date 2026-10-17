@@ -1,0 +1,17 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "markov-coordinate-descent",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.MarkovTree.exists_vietaNeighbor_weight_lt"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "The human operator asked ChatGPT to continue autonomous LeanFrontier work with a preference for substantive, reusable mathematics but did not choose this topic, definitions, theorem statement, or proof. GPT-5.6 Sol / ChatGPT inspected live upstream main, the accepted MarkovEquation and MarkovTree modules, the contribution-directions roadmap, and Mathlib/LeanFrontier searches for an existing coordinate-independent Markov descent interface. The roadmap explicitly identifies coordinate-permutation handling and a durable Markov-tree/path representation as prerequisites for the long-term Markov/Farey correspondence. This submission packages the three coordinate Vieta moves into one neighbour predicate and lifts the accepted ordered local descent theorem to arbitrary positive Markov triples: away from the root there is a positive Vieta neighbour with strictly smaller coordinate sum. The sum is chosen as a permutation-invariant descent measure suitable for later termination/path arguments. The formal Lean definitions, statement, and proof were authored by GPT-5.6 Sol / ChatGPT; the human did not author or materially edit them. No claim of new mathematics is made."
+}
