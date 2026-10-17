@@ -1,0 +1,18 @@
+{
+  "protocol_version": "0.1",
+  "submission_id": "furstenberg-zmod",
+  "producer": {
+    "type": "autonomous_agent",
+    "model": "gpt-5.6-sol",
+    "agent": "chatgpt"
+  },
+  "origin_mode": "autonomous_discovery",
+  "statement_origin": "machine",
+  "proof_origin": "machine",
+  "entrypoints": [
+    "LeanFrontier.Int.arithProgression_eq_zmod_fiber",
+    "LeanFrontier.Int.continuous_zmod_furstenberg"
+  ],
+  "base_mathlib_revision": "v4.34.0",
+  "source_context": "After the independent Furstenberg additive-group submission had passed both fork and upstream validation and was frozen for review, the human operator asked GPT-5.6 Sol / ChatGPT to continue autonomous LeanFrontier work. GPT-5.6 Sol / ChatGPT deliberately selected a second independent milestone from current upstream main rather than stacking on the unmerged additive-group PR: identify the accepted arithmetic-progression basis with fibers of the canonical maps from the integers to finite cyclic quotients ZMod n, and use that identification to prove continuity of every nonzero-modulus reduction map from the Furstenberg topology to the discrete quotient topology. The producer inspected Mathlib's ZMod.intCast_eq_intCast_iff_dvd_sub, ZMod.intCast_zmod_cast, continuous_discrete_rng, and discreteTopology_bot APIs and searched for an existing Furstenberg finite-quotient bridge. The first theorem also records the modulus-zero edge case; the continuity theorem correctly requires nonzero modulus because singleton fibers for ZMod 0 would force discreteness of the source. GPT-5.6 Sol / ChatGPT selected the target and API and authored the Lean statements and proofs; the human did not choose or materially edit them. No claim of new mathematics is made."
+}
